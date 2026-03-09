@@ -39,16 +39,16 @@
     "@better-auth/passkey": "^1.5.4",
     "@better-openclaw/core": "^1.0.22",
     "@better-openclaw/db": "^1.0.0",
-    "@hono/node-server": "^1.19.9",
+    "@hono/node-server": "^1.19.11",
     "@hono/zod-openapi": "^1.2.2",
     "@simplewebauthn/server": "^13.2.3",
     "archiver": "^7.0.1",
     "better-auth": "^1.5.4",
     "drizzle-orm": "^0.45.1",
-    "hono": "^4.12.3",
+    "hono": "^4.12.5",
     "ioredis": "^5.10.0",
     "postgres": "^3.4.7",
-    "usesend-js": "^1.6.0"
+    "usesend-js": "^1.6.3"
   },
   "devDependencies": {
     "@types/archiver": "^7.0.0",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { CLOUD_ENABLED } from "@/lib/cloud";
+import { docsStats } from "@/lib/docs-stats";
 
 export const metadata: Metadata = {
 	title: "Clawexa Cloud — Hosted OpenClaw Platform",
@@ -92,8 +93,9 @@ function CloudContent() {
 					</h1>
 
 					<p className="mt-8 max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed">
-						The hosted version of better-openclaw. Same powerful stack builder with 100+ services
-						and skill packs — without managing servers, Docker, or infrastructure.
+						The hosted version of better-openclaw. Same powerful stack builder with{" "}
+						{docsStats.serviceCount}+ services and skill packs — without managing servers, Docker,
+						or infrastructure.
 					</p>
 
 					<div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -190,7 +192,7 @@ function CloudContent() {
 								</li>
 								<li className="flex items-center gap-3">
 									<span className="h-1 w-1 bg-primary" />
-									Same 100+ services catalog
+									Same {docsStats.serviceCount}+ services catalog
 								</li>
 							</ul>
 							<a

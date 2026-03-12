@@ -29,7 +29,7 @@ const terminalLines = [
 /* ── Status Indicators ─────────────────────────────────────────────────────── */
 const systemStatus = [
 	{ icon: Activity, label: "System", value: "Operational", color: "text-emerald-400" },
-	{ icon: Server, label: "Nodes", value: "58/58", color: "text-blue-400" },
+	{ icon: Server, label: "Nodes", value: "186/186", color: "text-blue-400" },
 	{ icon: Shield, label: "Security", value: "Enforced", color: "text-purple-400" },
 	{ icon: Cpu, label: "Load", value: "12%", color: "text-amber-400" },
 ];

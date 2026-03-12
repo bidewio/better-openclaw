@@ -1,7 +1,7 @@
 # better-openclaw — Full Documentation
 
 > Comprehensive AI-friendly reference for the better-openclaw stack generator.
-> 75 services, 10 skill packs, 9 presets, 19 categories.
+> 186 services, 43 skill packs, 21 presets, 36 categories.
 
 ---
 
@@ -98,7 +98,7 @@ Interactive Swagger UI for the API
 
 ---
 
-## 3. Service Catalog (75 services)
+## 3. Service Catalog (186 services)
 
 ### AI Coding Agents
 - claude-code: Claude Code AI coding agent (anthropic/claude-code:latest, port 8080)

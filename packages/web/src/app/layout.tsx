@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ThemeProvider } from "@/components/theme-provider";
+import { docsStats } from "@/lib/docs-stats";
 import "./globals.css";
 
 const fontInter = Inter({
@@ -17,14 +18,17 @@ const fontMono = JetBrains_Mono({
 	variable: "--font-mono",
 });
 
+const stackSummary = `${docsStats.serviceCount} services, ${docsStats.skillPackCount} skill packs, one command`;
+const stackDescription = `CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks with Docker Compose. ${stackSummary}. Or deploy instantly with Clawexa Cloud.`;
+const stackOgDescription = `Generate Docker Compose stacks with ${docsStats.serviceCount} companion services pre-wired with OpenClaw skills`;
+
 export const metadata: Metadata = {
 	metadataBase: new URL("https://better-openclaw.dev"),
 	title: {
 		default: "better-openclaw — Build your OpenClaw superstack",
 		template: "%s | better-openclaw",
 	},
-	description:
-		"CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks with Docker Compose. 58+ services, 10 skill packs, one command. Or deploy instantly with Clawexa Cloud.",
+	description: stackDescription,
 	keywords: [
 		"OpenClaw",
 		"docker-compose",
@@ -41,8 +45,7 @@ export const metadata: Metadata = {
 	],
 	openGraph: {
 		title: "better-openclaw — Build your OpenClaw superstack",
-		description:
-			"Generate Docker Compose stacks with 58+ companion services pre-wired with OpenClaw skills",
+		description: stackOgDescription,
 		type: "website",
 		siteName: "better-openclaw",
 		images: [{ url: "/og/og-image.svg", width: 1200, height: 630 }],
@@ -50,8 +53,7 @@ export const metadata: Metadata = {
 	twitter: {
 		card: "summary_large_image",
 		title: "better-openclaw — Build your OpenClaw superstack",
-		description:
-			"Generate Docker Compose stacks with 58+ companion services pre-wired with OpenClaw skills",
+		description: stackOgDescription,
 		images: ["/og/og-image.svg"],
 	},
 	alternates: {
@@ -88,8 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		"@context": "https://schema.org",
 		"@type": "WebSite",
 		name: "better-openclaw",
-		description:
-			"CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks with Docker Compose. 58+ services, 10 skill packs, one command.",
+		description: stackDescription,
 		url: "https://better-openclaw.dev",
 		potentialAction: {
 			"@type": "SearchAction",
@@ -107,8 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		name: "better-openclaw",
 		applicationCategory: "DeveloperApplication",
 		operatingSystem: "Linux, macOS, Windows",
-		description:
-			"Generate Docker Compose stacks with 58+ companion services pre-wired with OpenClaw skills",
+		description: stackOgDescription,
 		url: "https://better-openclaw.dev",
 		offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 		isRelatedTo: {

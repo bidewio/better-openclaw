@@ -1,10 +1,46 @@
 import Link from "next/link";
+import { docsStats } from "@/lib/docs-stats";
 
 export const metadata = {
 	title: "API Endpoints — better-openclaw Docs",
 	description:
 		"Complete REST API endpoint reference for better-openclaw. All 7 endpoints with request/response examples.",
 };
+
+const healthResponseExample = `{
+  "ok": true,
+  "data": {
+    "status": "healthy",
+    "version": "1.4.2",
+    "uptime": 86400,
+    "services": ${docsStats.serviceCount},
+    "skillPacks": ${docsStats.skillPackCount},
+    "presets": ${docsStats.presetCount}
+  }
+}`;
+
+const skillsResponseExample = `{
+  "ok": true,
+  "data": {
+    "total": ${docsStats.skillPackCount},
+    "skillPacks": [
+      {
+        "id": "researcher",
+        "name": "Researcher",
+        "description": "Web search, content extraction, and citation skills",
+        "requiredServices": ["searxng", "browserless"],
+        "optionalServices": ["qdrant"],
+        "skills": [
+          "web-search",
+          "content-extract",
+          "citation-builder",
+          "fact-check"
+        ]
+      }
+      // ... more skill packs
+    ]
+  }
+}`;
 
 export default function EndpointsPage() {
 	return (
@@ -30,17 +66,7 @@ export default function EndpointsPage() {
 				Response <code>200 OK</code>
 			</h3>
 			<pre>
-				<code>{`{
-  "ok": true,
-  "data": {
-    "status": "healthy",
-    "version": "1.4.2",
-    "uptime": 86400,
-    "services": 58,
-    "skillPacks": 10,
-    "presets": 5
-  }
-}`}</code>
+				<code>{healthResponseExample}</code>
 			</pre>
 
 			<hr />
@@ -131,28 +157,7 @@ export default function EndpointsPage() {
 				Response <code>200 OK</code>
 			</h3>
 			<pre>
-				<code>{`{
-  "ok": true,
-  "data": {
-    "total": 10,
-    "skillPacks": [
-      {
-        "id": "researcher",
-        "name": "Researcher",
-        "description": "Web search, content extraction, and citation skills",
-        "requiredServices": ["searxng", "browserless"],
-        "optionalServices": ["qdrant"],
-        "skills": [
-          "web-search",
-          "content-extract",
-          "citation-builder",
-          "fact-check"
-        ]
-      }
-      // ... more skill packs
-    ]
-  }
-}`}</code>
+				<code>{skillsResponseExample}</code>
 			</pre>
 
 			<hr />

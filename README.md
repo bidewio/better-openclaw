@@ -122,7 +122,7 @@ Only services with a native recipe run on the host; others remain in Docker. Cur
 
 ## Service Catalog
 
-186 services across 21 categories, ready to compose:
+186 services across 36 categories, with representative categories below:
 
 | Category | Services |
 |---|---|

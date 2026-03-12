@@ -10,7 +10,7 @@ const features = [
 		icon: TerminalSquare,
 		title: "STACK GENERATION",
 		description:
-			"Instant provisioning of 58+ companion services and automated docker-compose configurations across distributed environments.",
+			"Instant provisioning of 186+ companion services and automated docker-compose configurations across distributed environments.",
 	},
 	{
 		id: "02",

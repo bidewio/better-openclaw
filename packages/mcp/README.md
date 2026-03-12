@@ -54,7 +54,7 @@ The server exposes **10 tools** that AI agents can call:
 
 | Tool | Description |
 |------|-------------|
-| `list-services` | List all 180+ available Docker services, optionally filtered by `category` or `maturity` (stable/beta/experimental) |
+| `list-services` | List all 186 available Docker services, optionally filtered by `category` or `maturity` (stable/beta/experimental) |
 | `get-service` | Get complete definition of a service by ID — image, ports, env vars, volumes, health check, resource limits |
 | `search-services` | Keyword search across the service catalog with relevance scoring |
 | `suggest-services` | Suggest services from a natural language description (e.g. *"I need a research stack with vector search and local LLM"*) |
@@ -164,7 +164,7 @@ AI Agent (Claude, GPT, etc.)
 │             ▼             │
 │    @better-openclaw/core  │
 │  ┌──────────────────────┐ │
-│  │ 180+ service defs    │ │
+│  │ 186 service defs     │ │
 │  │ Dependency resolver  │ │
 │  │ Docker Compose gen   │ │
 │  │ Validation engine    │ │
@@ -230,7 +230,7 @@ registerMyTool(server);
 
 ## Available Services
 
-The server provides access to **180+ self-hosted services** across categories:
+The server provides access to **186 self-hosted services** across categories:
 
 - **Database** — PostgreSQL, Redis, MongoDB, Neo4j, SurrealDB, ClickHouse
 - **AI & ML** — Ollama, Qdrant, ChromaDB, Meilisearch, Weaviate

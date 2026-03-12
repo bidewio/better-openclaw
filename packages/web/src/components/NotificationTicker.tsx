@@ -8,7 +8,7 @@ const TICKER_MESSAGES = [
 	"WARN: Latency_spike detected in zone_3 (resolved)",
 	"INFO: New node registered [US-WEST-2] — status: ONLINE",
 	"SYS: Auto-scaling triggered — +2 compute nodes allocated",
-	"OK: Health check passed — all 58 services nominal",
+	"OK: Health check passed — all 186 services nominal",
 	"INFO: Skill pack 'researcher' deployed to cluster_alpha",
 	"SYS: TLS certificates renewed — expires: 2027-02-21",
 ];

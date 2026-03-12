@@ -16,22 +16,30 @@ const nextConfig: NextConfig = {
 	transpilePackages: ["@better-openclaw/core"],
 	async headers() {
 		return [
+			// Security headers for all routes
+			{
+				source: "/(.*)",
+				headers: [
+					{ key: "X-Content-Type-Options", value: "nosniff" },
+					{ key: "X-Frame-Options", value: "DENY" },
+					{ key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+					{ key: "X-XSS-Protection", value: "1; mode=block" },
+					{
+						key: "Strict-Transport-Security",
+						value: "max-age=31536000; includeSubDomains",
+					},
+					{
+						key: "Permissions-Policy",
+						value: "camera=(), microphone=(), geolocation=()",
+					},
+				],
+			},
+			// Static asset caching (CORS restricted to GET only)
 			{
 				source: "/(.*)\\.(png|jpg|jpeg|svg|webp|gif|mp4)$",
 				headers: [
-					{
-						key: "Access-Control-Allow-Origin",
-						value: "*",
-					},
-					{
-						key: "Access-Control-Allow-Methods",
-						value: "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-					},
-					{
-						key: "Access-Control-Allow-Headers",
-						value:
-							"Set-Cookie, Cookie, Content-Type, Authorization, x-api-key, x-request-id, x-visitor-id, x-idempotency-key, baggage, sentry-trace, sentry-release, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Access-Control-Allow-Origin",
-					},
+					{ key: "Access-Control-Allow-Origin", value: "*" },
+					{ key: "Access-Control-Allow-Methods", value: "GET, OPTIONS" },
 					{
 						key: "Cache-Control",
 						value: "public, max-age=31536000, immutable",

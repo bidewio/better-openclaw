@@ -109,3 +109,20 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             VITE_CONVEX_URL=__MISSION_CONTROL_CONVEX_URL_PLACEHOLDER__
+
+      # - name: Make package public
+      #   continue-on-error: true
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     # Try org endpoint first, then user endpoint
+      #     curl -sf -X PATCH \
+      #       -H "Accept: application/vnd.github.v3+json" \
+      #       -H "Authorization: Bearer $GH_TOKEN" \
+      #       "https://api.github.com/orgs/${{ github.repository_owner }}/packages/container/mission-control" \
+      #       -d '{"visibility":"public"}' \
+      #     || curl -sf -X PATCH \
+      #       -H "Accept: application/vnd.github.v3+json" \
+      #       -H "Authorization: Bearer $GH_TOKEN" \
+      #       "https://api.github.com/users/${{ github.repository_owner }}/packages/container/mission-control" \
+      #       -d '{"visibility":"public"}'

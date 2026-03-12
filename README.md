@@ -20,7 +20,7 @@
 
 <p align="center">
   <img alt="License" src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" />
-  <img alt="Node" src="https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg" />
+  <img alt="Node" src="https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg" />
   <img alt="pnpm" src="https://img.shields.io/badge/pnpm-10.30.3-orange.svg" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.7-blue.svg" />
 </p>

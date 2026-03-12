@@ -307,7 +307,9 @@ export const GenerationInputSchema = z.object({
 
 export const ResolvedServiceSchema = z.object({
 	definition: ServiceDefinitionSchema,
-	addedBy: z.enum(["user", "dependency", "skill-pack", "proxy", "monitoring", "mandatory"]).default("user"),
+	addedBy: z
+		.enum(["user", "dependency", "skill-pack", "proxy", "monitoring", "mandatory"])
+		.default("user"),
 });
 
 export const AddedDependencySchema = z.object({

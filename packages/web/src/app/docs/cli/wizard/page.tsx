@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { docsStats } from "@/lib/docs-stats";
 
 export const metadata = {
 	title: "Interactive Wizard — better-openclaw Docs",
@@ -7,6 +8,8 @@ export const metadata = {
 };
 
 export default function WizardPage() {
+	const { serviceCount, categoryCount, skillPackCount } = docsStats;
+
 	return (
 		<>
 			<h1>Interactive Wizard</h1>
@@ -67,7 +70,7 @@ export default function WizardPage() {
   ◻ n8n            — Workflow automation
   ◻ searxng        — Privacy-respecting search
   ◻ browserless    — Headless browser for web scraping
-  ... (58+ services across 8 categories)`}</code>
+  ... (${serviceCount} services across ${categoryCount} categories)`}</code>
 			</pre>
 			<p>
 				This step only appears if you chose <strong>custom</strong> in Step 2. Services are
@@ -97,7 +100,7 @@ export default function WizardPage() {
   ◻ memory         — Long-term memory with vector storage
   ◻ local-ai       — Local LLM inference with Ollama
   ◻ code           — Code execution sandbox
-  ... (10 skill packs)`}</code>
+  ... (${skillPackCount} skill packs)`}</code>
 			</pre>
 			<p>
 				Skill packs are curated bundles of OpenClaw skills that work with specific services. The

@@ -2,7 +2,7 @@
   <h1 align="center">better-openclaw</h1>
   <p align="center">
     <strong>Build your OpenClaw superstack in seconds.</strong><br/>
-    94 services. 10 skill packs. 9 presets. One command.
+    186 services. 43 skill packs. 21 presets. One command.
   </p>
 </p>
 
@@ -57,7 +57,7 @@ npx create-better-openclaw --preset minimal --yes --json
 
 ```bash
 npx create-better-openclaw generate [dir]       # Generate a stack (default command)
-npx create-better-openclaw services list        # List all 94 available services
+npx create-better-openclaw services list        # List all 186 available services
 npx create-better-openclaw presets list         # List all preset stacks
 npx create-better-openclaw presets info <id>    # Show preset details
 npx create-better-openclaw validate <dir>      # Validate an existing stack
@@ -122,7 +122,7 @@ Only services with a native recipe run on the host; others remain in Docker. Cur
 
 ## Service Catalog
 
-94 services across 21 categories, ready to compose:
+186 services across 21 categories, ready to compose:
 
 | Category | Services |
 |---|---|

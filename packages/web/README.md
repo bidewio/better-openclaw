@@ -27,7 +27,7 @@ NEXT_PUBLIC_CLAWEXA_DEPLOY_URL=https://clawexa.net/deploy
 
 ## Running Web Execution
 
-Ensure standard Node 20 environments are active:
+Ensure standard Node 22 environments are active:
 
 ```bash
 # Launch hot-reload watcher spanning port 3654

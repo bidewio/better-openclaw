@@ -280,19 +280,22 @@ function AddPolicyModal({ onClose }: { onClose: () => void }) {
 	};
 
 	return (
-		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-			onClick={onClose}
-		>
-			<div
-				className="bg-background rounded-xl border border-border p-6 w-full max-w-md space-y-4"
-				onClick={(e) => e.stopPropagation()}
-			>
+		<div className="fixed inset-0 z-50 flex items-center justify-center">
+			<button
+				type="button"
+				className="absolute inset-0 bg-black/50"
+				onClick={onClose}
+				aria-label="Close compliance policy modal"
+			/>
+			<div className="relative bg-background rounded-xl border border-border p-6 w-full max-w-md space-y-4">
 				<h3 className="text-lg font-semibold">New Compliance Policy</h3>
 				<div className="space-y-3">
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Name</label>
+						<label htmlFor="policy-name" className="text-xs text-muted-foreground block mb-1">
+							Name
+						</label>
 						<input
+							id="policy-name"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
@@ -300,8 +303,14 @@ function AddPolicyModal({ onClose }: { onClose: () => void }) {
 						/>
 					</div>
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Description</label>
+						<label
+							htmlFor="policy-description"
+							className="text-xs text-muted-foreground block mb-1"
+						>
+							Description
+						</label>
 						<input
+							id="policy-description"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
@@ -309,8 +318,11 @@ function AddPolicyModal({ onClose }: { onClose: () => void }) {
 						/>
 					</div>
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Type</label>
+						<label htmlFor="policy-type" className="text-xs text-muted-foreground block mb-1">
+							Type
+						</label>
 						<select
+							id="policy-type"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={type}
 							onChange={(e) => setType(e.target.value)}
@@ -322,8 +334,11 @@ function AddPolicyModal({ onClose }: { onClose: () => void }) {
 						</select>
 					</div>
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Configuration (JSON)</label>
+						<label htmlFor="policy-config" className="text-xs text-muted-foreground block mb-1">
+							Configuration (JSON)
+						</label>
 						<textarea
+							id="policy-config"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50 font-mono h-20 resize-none"
 							value={config}
 							onChange={(e) => setConfig(e.target.value)}

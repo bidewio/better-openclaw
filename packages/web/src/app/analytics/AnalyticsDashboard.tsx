@@ -45,7 +45,11 @@ function MetricCard({
 	label,
 	value,
 	sub,
-}: { label: string; value: string | number; sub?: string }) {
+}: {
+	label: string;
+	value: string | number;
+	sub?: string;
+}) {
 	return (
 		<div className="border border-border/50 bg-background/60 p-6 backdrop-blur-xl">
 			<span className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
@@ -54,25 +58,18 @@ function MetricCard({
 			<span className="block text-3xl font-bold tracking-tight text-foreground md:text-4xl">
 				{value}
 			</span>
-			{sub && (
-				<span className="block mt-1 font-mono text-xs text-muted-foreground/60">{sub}</span>
-			)}
+			{sub && <span className="block mt-1 font-mono text-xs text-muted-foreground/60">{sub}</span>}
 		</div>
 	);
 }
 
-function PercentCard({
-	label,
-	percent,
-}: { label: string; percent: number }) {
+function PercentCard({ label, percent }: { label: string; percent: number }) {
 	return (
 		<div className="border border-border/50 bg-background/60 p-6 backdrop-blur-xl">
 			<span className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
 				{label}
 			</span>
-			<span className="block text-3xl font-bold tracking-tight text-foreground">
-				{percent}%
-			</span>
+			<span className="block text-3xl font-bold tracking-tight text-foreground">{percent}%</span>
 			<div className="mt-3 h-1.5 w-full bg-muted overflow-hidden rounded-sm">
 				<div
 					className="h-full bg-primary transition-all duration-700"
@@ -163,8 +160,7 @@ function TimelineChart({
 					const val = Number(item[valueKey]) || 0;
 					const pct = (val / max) * 100;
 					const label = String(item[labelKey]);
-					const shortLabel =
-						labelKey === "date" ? label.slice(5) : label; // MM-DD or YYYY-MM
+					const shortLabel = labelKey === "date" ? label.slice(5) : label; // MM-DD or YYYY-MM
 					return (
 						<div
 							key={label}
@@ -174,7 +170,10 @@ function TimelineChart({
 							<span className="font-mono text-[8px] text-muted-foreground/60">
 								{val > 0 ? val : ""}
 							</span>
-							<div className="w-full bg-muted/30 rounded-sm flex flex-col justify-end" style={{ height: "100px" }}>
+							<div
+								className="w-full bg-muted/30 rounded-sm flex flex-col justify-end"
+								style={{ height: "100px" }}
+							>
 								<div
 									className="w-full bg-primary rounded-sm transition-all duration-500"
 									style={{ height: `${Math.max(pct, 2)}%` }}
@@ -226,9 +225,7 @@ function PieChart({
 		return { label: String(item[labelKey]), pct, color: COLORS[i % COLORS.length], start, val };
 	});
 
-	const gradient = segments
-		.map((s) => `${s.color} ${s.start}% ${s.start + s.pct}%`)
-		.join(", ");
+	const gradient = segments.map((s) => `${s.color} ${s.start}% ${s.start + s.pct}%`).join(", ");
 
 	return (
 		<div className="border border-border/50 bg-background/60 p-6 backdrop-blur-xl">
@@ -247,9 +244,7 @@ function PieChart({
 								className="h-2 w-2 rounded-full shrink-0"
 								style={{ backgroundColor: s.color }}
 							/>
-							<span className="font-mono text-xs text-foreground/80">
-								{s.label}
-							</span>
+							<span className="font-mono text-xs text-foreground/80">{s.label}</span>
 							<span className="font-mono text-[10px] text-muted-foreground/60">
 								{s.val} ({s.pct.toFixed(1)}%)
 							</span>
@@ -267,9 +262,7 @@ function SectionHeader({ title }: { title: string }) {
 	return (
 		<div className="flex items-center gap-3 mb-6 mt-12">
 			<span className="h-1 w-1 bg-primary" />
-			<h2 className="font-mono text-sm uppercase tracking-widest text-foreground/80">
-				{title}
-			</h2>
+			<h2 className="font-mono text-sm uppercase tracking-widest text-foreground/80">{title}</h2>
 			<div className="flex-1 h-px bg-border/50" />
 		</div>
 	);
@@ -285,23 +278,14 @@ export function AnalyticsDashboard({ stats }: { stats: AnalyticsStats }) {
 			{/* KEY METRICS */}
 			<SectionHeader title="KEY_METRICS" />
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-				<MetricCard
-					label="Total Stacks"
-					value={totals.totalStacks.toLocaleString()}
-				/>
+				<MetricCard label="Total Stacks" value={totals.totalStacks.toLocaleString()} />
 				<MetricCard
 					label="CLI / Online"
 					value={`${totals.cliCount} / ${totals.webCount}`}
 					sub="cli vs web+api"
 				/>
-				<MetricCard
-					label="Top Service"
-					value={totals.topService ?? "—"}
-				/>
-				<MetricCard
-					label="Top Preset"
-					value={totals.topPreset ?? "—"}
-				/>
+				<MetricCard label="Top Service" value={totals.topService ?? "—"} />
+				<MetricCard label="Top Preset" value={totals.topPreset ?? "—"} />
 			</div>
 
 			{/* TIMELINE */}
@@ -336,12 +320,7 @@ export function AnalyticsDashboard({ stats }: { stats: AnalyticsStats }) {
 					labelKey="category"
 					valueKey="count"
 				/>
-				<PieChart
-					title="Preset Distribution"
-					data={presets}
-					labelKey="preset"
-					valueKey="count"
-				/>
+				<PieChart title="Preset Distribution" data={presets} labelKey="preset" valueKey="count" />
 				<PieChart
 					title="Source Distribution"
 					data={features.sources}

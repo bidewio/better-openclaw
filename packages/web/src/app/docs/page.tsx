@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { docsStats } from "@/lib/docs-stats";
 
 export const metadata = {
 	title: "Quick Start — better-openclaw Docs",
@@ -7,6 +8,8 @@ export const metadata = {
 };
 
 export default function QuickStartPage() {
+	const { serviceCount } = docsStats;
+
 	return (
 		<>
 			<h1>Quick Start</h1>
@@ -28,7 +31,7 @@ export default function QuickStartPage() {
 				<tbody>
 					<tr>
 						<td>Node.js</td>
-						<td>20.0+</td>
+						<td>22.0+</td>
 						<td>
 							<code>node --version</code>
 						</td>
@@ -215,7 +218,7 @@ open http://localhost:3000`}</code>
 					<Link href="/docs/cli">CLI reference</Link> — all flags and options
 				</li>
 				<li>
-					<Link href="/docs/services">Service catalog</Link> — browse all 58+ services
+					<Link href="/docs/services">Service catalog</Link> — browse {serviceCount} services
 				</li>
 				<li>
 					<Link href="/docs/skill-packs">Skill packs</Link> — curated bundles for common tasks

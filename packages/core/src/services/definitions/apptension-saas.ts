@@ -37,7 +37,8 @@ export const apptensionSaasDefinition: ServiceDefinition = {
 		},
 		{
 			key: "DB_CONNECTION",
-			defaultValue: "postgresql://apptensionsaas:${APPTENSION_SAAS_DB_PASSWORD}@postgresql:5432/apptensionsaas",
+			defaultValue:
+				"postgresql://apptensionsaas:${APPTENSION_SAAS_DB_PASSWORD}@postgresql:5432/apptensionsaas",
 			secret: false,
 			description: "PostgreSQL connection string",
 			required: true,

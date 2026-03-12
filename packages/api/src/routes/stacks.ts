@@ -6,25 +6,32 @@ import { requireSession } from "../middleware/session.js";
 
 /** Zod schema for creating a stack (POST). */
 const CreateStackSchema = z.object({
-	name: z.string().min(1, "Stack name is required").max(100, "Stack name must be 100 characters or fewer"),
+	name: z
+		.string()
+		.min(1, "Stack name is required")
+		.max(100, "Stack name must be 100 characters or fewer"),
 	description: z.string().max(1000, "Description must be 1000 characters or fewer").nullish(),
 	services: z
 		.array(z.string().max(100))
 		.min(1, "At least one service is required")
 		.max(200, "Too many services"),
-	config: z.record(z.unknown()).optional().default({}),
+	config: z.record(z.string(), z.unknown()).optional().default({}),
 });
 
 /** Zod schema for updating a stack (PATCH). All fields optional. */
 const UpdateStackSchema = z.object({
-	name: z.string().min(1, "Stack name cannot be empty").max(100, "Stack name must be 100 characters or fewer").optional(),
+	name: z
+		.string()
+		.min(1, "Stack name cannot be empty")
+		.max(100, "Stack name must be 100 characters or fewer")
+		.optional(),
 	description: z.string().max(1000, "Description must be 1000 characters or fewer").nullish(),
 	services: z
 		.array(z.string().max(100))
 		.min(1, "At least one service is required")
 		.max(200, "Too many services")
 		.optional(),
-	config: z.record(z.unknown()).optional(),
+	config: z.record(z.string(), z.unknown()).optional(),
 });
 
 const route = new Hono();

@@ -32,7 +32,7 @@ export default function InstallationPage() {
 					</tr>
 					<tr>
 						<td>Node.js</td>
-						<td>20.0 or later</td>
+						<td>22.0 or later</td>
 						<td>LTS version recommended</td>
 					</tr>
 					<tr>
@@ -161,7 +161,7 @@ openclaw onboard`}</code>
 			<h2>Verify Installation</h2>
 			<p>Run the following commands to verify everything is set up correctly:</p>
 			<pre>
-				<code>{`# Check Node.js version (must be 20+)
+				<code>{`# Check Node.js version (must be 22+)
 node --version
 
 # Check Docker is running
@@ -201,11 +201,11 @@ Options:
 			<p>If you see errors about unsupported syntax or missing APIs, update Node.js:</p>
 			<pre>
 				<code>{`# Using nvm (recommended)
-nvm install 20
-nvm use 20
+nvm install 22
+nvm use 22
 
 # Using volta
-volta install node@20
+volta install node@22
 
 # Or download from https://nodejs.org`}</code>
 			</pre>

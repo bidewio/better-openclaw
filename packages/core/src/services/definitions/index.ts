@@ -3,6 +3,7 @@ export { airbyteDefinition } from "./airbyte.js";
 export { airflowDefinition } from "./airflow.js";
 export { anythingLlmDefinition } from "./anything-llm.js";
 export { appflowyDefinition } from "./appflowy.js";
+export { apptensionSaasDefinition } from "./apptension-saas.js";
 export { appwriteDefinition } from "./appwrite.js";
 export { audiobookshelfDefinition } from "./audiobookshelf.js";
 export { autheliaDefinition } from "./authelia.js";
@@ -10,6 +11,7 @@ export { authentikDefinition } from "./authentik.js";
 export { axolotlDefinition } from "./axolotl.js";
 export { baserowDefinition } from "./baserow.js";
 export { beszelDefinition } from "./beszel.js";
+export { boxyhqSaasDefinition } from "./boxyhq-saas.js";
 export { browserlessDefinition } from "./browserless.js";
 export { caddyDefinition } from "./caddy.js";
 export { calComDefinition } from "./cal-com.js";
@@ -20,6 +22,7 @@ export { chromadbDefinition } from "./chromadb.js";
 export { claudeCodeDefinition } from "./claude-code.js";
 export { clickhouseDefinition } from "./clickhouse.js";
 export { cloudflaredDefinition } from "./cloudflared.js";
+export { cmsaasStarterDefinition } from "./cmsaas-starter.js";
 export { cockroachdbDefinition } from "./cockroachdb.js";
 export { codeServerDefinition } from "./code-server.js";
 export { coderDefinition } from "./coder.js";
@@ -66,6 +69,7 @@ export { immichDefinition } from "./immich.js";
 export { infisicalDefinition } from "./infisical.js";
 export { influxdbDefinition } from "./influxdb.js";
 export { invokeAiDefinition } from "./invoke-ai.js";
+export { ixartzSaasDefinition } from "./ixartz-saas.js";
 export { jaegerDefinition } from "./jaeger.js";
 export { janDefinition } from "./jan.js";
 export { jellyfinDefinition } from "./jellyfin.js";
@@ -111,6 +115,8 @@ export { nocodbDefinition } from "./nocodb.js";
 export { nodeRedDefinition } from "./node-red.js";
 export { ntfyDefinition } from "./ntfy.js";
 export { ollamaDefinition } from "./ollama.js";
+// ── SaaS Boilerplates ──────────────────────────────────────────────────────
+export { openSaasDefinition } from "./open-saas.js";
 export { openWebuiDefinition } from "./open-webui.js";
 export { opencodeDefinition } from "./opencode.js";
 export { openhandsDefinition } from "./openhands.js";
@@ -180,19 +186,13 @@ export { woodpeckerCiDefinition } from "./woodpecker-ci.js";
 export { xyopsDefinition } from "./xyops.js";
 export { zulipDefinition } from "./zulip.js";
 
-// ── SaaS Boilerplates ──────────────────────────────────────────────────────
-export { openSaasDefinition } from "./open-saas.js";
-export { apptensionSaasDefinition } from "./apptension-saas.js";
-export { boxyhqSaasDefinition } from "./boxyhq-saas.js";
-export { ixartzSaasDefinition } from "./ixartz-saas.js";
-export { cmsaasStarterDefinition } from "./cmsaas-starter.js";
-
 import type { ServiceDefinition } from "../../types.js";
 import { adguardHomeDefinition } from "./adguard-home.js";
 import { airbyteDefinition } from "./airbyte.js";
 import { airflowDefinition } from "./airflow.js";
 import { anythingLlmDefinition } from "./anything-llm.js";
 import { appflowyDefinition } from "./appflowy.js";
+import { apptensionSaasDefinition } from "./apptension-saas.js";
 import { appwriteDefinition } from "./appwrite.js";
 import { audiobookshelfDefinition } from "./audiobookshelf.js";
 import { autheliaDefinition } from "./authelia.js";
@@ -200,6 +200,7 @@ import { authentikDefinition } from "./authentik.js";
 import { axolotlDefinition } from "./axolotl.js";
 import { baserowDefinition } from "./baserow.js";
 import { beszelDefinition } from "./beszel.js";
+import { boxyhqSaasDefinition } from "./boxyhq-saas.js";
 import { browserlessDefinition } from "./browserless.js";
 import { caddyDefinition } from "./caddy.js";
 import { calComDefinition } from "./cal-com.js";
@@ -210,6 +211,7 @@ import { chromadbDefinition } from "./chromadb.js";
 import { claudeCodeDefinition } from "./claude-code.js";
 import { clickhouseDefinition } from "./clickhouse.js";
 import { cloudflaredDefinition } from "./cloudflared.js";
+import { cmsaasStarterDefinition } from "./cmsaas-starter.js";
 import { cockroachdbDefinition } from "./cockroachdb.js";
 import { codeServerDefinition } from "./code-server.js";
 import { coderDefinition } from "./coder.js";
@@ -256,6 +258,7 @@ import { immichDefinition } from "./immich.js";
 import { infisicalDefinition } from "./infisical.js";
 import { influxdbDefinition } from "./influxdb.js";
 import { invokeAiDefinition } from "./invoke-ai.js";
+import { ixartzSaasDefinition } from "./ixartz-saas.js";
 import { jaegerDefinition } from "./jaeger.js";
 import { janDefinition } from "./jan.js";
 import { jellyfinDefinition } from "./jellyfin.js";
@@ -301,6 +304,8 @@ import { nocodbDefinition } from "./nocodb.js";
 import { nodeRedDefinition } from "./node-red.js";
 import { ntfyDefinition } from "./ntfy.js";
 import { ollamaDefinition } from "./ollama.js";
+// ── SaaS Boilerplates ──────────────────────────────────────────────────────
+import { openSaasDefinition } from "./open-saas.js";
 import { openWebuiDefinition } from "./open-webui.js";
 import { opencodeDefinition } from "./opencode.js";
 import { openhandsDefinition } from "./openhands.js";
@@ -369,13 +374,6 @@ import { wireguardDefinition } from "./wireguard.js";
 import { woodpeckerCiDefinition } from "./woodpecker-ci.js";
 import { xyopsDefinition } from "./xyops.js";
 import { zulipDefinition } from "./zulip.js";
-
-// ── SaaS Boilerplates ──────────────────────────────────────────────────────
-import { openSaasDefinition } from "./open-saas.js";
-import { apptensionSaasDefinition } from "./apptension-saas.js";
-import { boxyhqSaasDefinition } from "./boxyhq-saas.js";
-import { ixartzSaasDefinition } from "./ixartz-saas.js";
-import { cmsaasStarterDefinition } from "./cmsaas-starter.js";
 
 export const allServiceDefinitions: ServiceDefinition[] = [
 	redisDefinition,

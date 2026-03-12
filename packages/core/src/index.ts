@@ -45,9 +45,6 @@ export { generatePrometheusConfig } from "./generators/prometheus.js";
 export { generateReadme } from "./generators/readme.js";
 export { generateScripts } from "./generators/scripts.js";
 export { generateSkillFiles } from "./generators/skills.js";
-// ─── Analytics ─────────────────────────────────────────────────────────────
-export type { AnalyticsPayload } from "./track-analytics.js";
-export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 export type {
 	StackManifest,
 	StackManifestService,
@@ -128,6 +125,9 @@ export {
 	getManifestSkillById,
 	getManifestSkillCount,
 } from "./skills/skill-manifest.js";
+// ─── Analytics ─────────────────────────────────────────────────────────────
+export type { AnalyticsPayload } from "./track-analytics.js";
+export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 // ─── Types ──────────────────────────────────────────────────────────────────
 export type {
 	AddedDependency,

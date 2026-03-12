@@ -15,8 +15,8 @@
  */
 
 import { readdirSync, readFileSync, statSync } from "fs";
-import { join } from "path";
 import { homedir } from "os";
+import { join } from "path";
 
 // Rough per-token pricing (USD) for cost estimation
 export const MODEL_PRICING: Record<string, { input: number; output: number }> = {
@@ -221,7 +221,7 @@ export function scanClaudeSessions(claudeHome?: string): SessionStats[] {
 	for (const projectSlug of projectDirs) {
 		const projectDir = join(projectsDir, projectSlug);
 
-		let stat;
+		let stat: ReturnType<typeof statSync>;
 		try {
 			stat = statSync(projectDir);
 		} catch {

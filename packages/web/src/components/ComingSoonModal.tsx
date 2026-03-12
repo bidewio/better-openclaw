@@ -25,22 +25,16 @@ export function ComingSoonModal({ open, onClose }: ComingSoonModalProps) {
 					</span>
 				</div>
 
-				<h2
-					id="coming-soon-title"
-					className="text-2xl font-bold tracking-tight text-foreground"
-				>
+				<h2 id="coming-soon-title" className="text-2xl font-bold tracking-tight text-foreground">
 					CLAWEXA <span className="text-muted-foreground/60">CLOUD</span>
 				</h2>
 
 				<p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-					Clawexa Cloud is currently under development. The hosted version of
-					better-openclaw will let you deploy AI agent stacks without managing
-					servers, Docker, or infrastructure.
+					Clawexa Cloud is currently under development. The hosted version of better-openclaw will
+					let you deploy AI agent stacks without managing servers, Docker, or infrastructure.
 				</p>
 
-				<p className="mt-3 font-mono text-xs text-muted-foreground/60">
-					Stay tuned for updates.
-				</p>
+				<p className="mt-3 font-mono text-xs text-muted-foreground/60">Stay tuned for updates.</p>
 
 				<button
 					type="button"

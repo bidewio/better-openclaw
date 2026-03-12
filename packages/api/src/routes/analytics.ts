@@ -7,6 +7,19 @@ const route = new OpenAPIHono();
 
 // ── Schemas ──────────────────────────────────────────────────────────────────
 
+function extractRows<T>(result: unknown): T[] {
+	if (Array.isArray(result)) {
+		return result as T[];
+	}
+	if (typeof result === "object" && result !== null && "rows" in result) {
+		const rows = (result as { rows?: unknown }).rows;
+		if (Array.isArray(rows)) {
+			return rows as T[];
+		}
+	}
+	return [];
+}
+
 const AnalyticsEventSchema = z
 	.object({
 		source: z.enum(["cli", "web", "api", "mcp"]),
@@ -161,10 +174,7 @@ route.openapi(getStats, async (c: any) => {
 		db.select({ total: count() }).from(ae),
 
 		// Count by source
-		db
-			.select({ source: ae.source, total: count() })
-			.from(ae)
-			.groupBy(ae.source),
+		db.select({ source: ae.source, total: count() }).from(ae).groupBy(ae.source),
 
 		// Top services (unnest JSONB array, count each)
 		db.execute(sql`
@@ -249,10 +259,10 @@ route.openapi(getStats, async (c: any) => {
 	}
 
 	// Derive top service from raw result
-	const topServicesRows = (topServicesResult.rows ?? topServicesResult) as Array<{
+	const topServicesRows = extractRows<{
 		service: string;
 		count: number;
-	}>;
+	}>(topServicesResult);
 	const topService = topServicesRows[0]?.service ?? null;
 
 	// Derive top preset
@@ -269,21 +279,21 @@ route.openapi(getStats, async (c: any) => {
 		.map(([category, cnt]) => ({ category, count: cnt }))
 		.sort((a, b) => b.count - a.count);
 
-	const featureRows = (featureResult.rows ?? featureResult) as Array<{
+	const featureRows = extractRows<{
 		gpu_percent: number;
 		monitoring_percent: number;
 		domain_percent: number;
-	}>;
+	}>(featureResult);
 	const feat = featureRows[0] ?? { gpu_percent: 0, monitoring_percent: 0, domain_percent: 0 };
 
-	const dailyRows = (dailyResult.rows ?? dailyResult) as Array<{
+	const dailyRows = extractRows<{
 		date: string;
 		count: number;
-	}>;
-	const monthlyRows = (monthlyResult.rows ?? monthlyResult) as Array<{
+	}>(dailyResult);
+	const monthlyRows = extractRows<{
 		month: string;
 		count: number;
-	}>;
+	}>(monthlyResult);
 
 	return c.json({
 		totals: {
@@ -322,8 +332,7 @@ route.openapi(getStats, async (c: any) => {
 		features: {
 			sources: sourceResult.map((r) => ({ source: r.source, count: r.total })),
 			gpuPercent: Math.round((Number(feat.gpu_percent) + Number.EPSILON) * 10) / 10,
-			monitoringPercent:
-				Math.round((Number(feat.monitoring_percent) + Number.EPSILON) * 10) / 10,
+			monitoringPercent: Math.round((Number(feat.monitoring_percent) + Number.EPSILON) * 10) / 10,
 			domainPercent: Math.round((Number(feat.domain_percent) + Number.EPSILON) * 10) / 10,
 		},
 	});

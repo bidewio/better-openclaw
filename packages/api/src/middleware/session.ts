@@ -10,7 +10,6 @@ type Variables = {
  * Middleware that requires a valid session. Returns 401 if not authenticated.
  * Attaches `user` and `session` to the Hono context.
  */
-// biome-ignore lint/suspicious/noExplicitAny: Hono middleware must be untyped
 export function requireSession(): MiddlewareHandler<{ Variables: Variables }> {
 	// biome-ignore lint/suspicious/noExplicitAny: Hono middleware must be untyped
 	return async (c: any, next: any) => {

@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { docsStats } from "@/lib/docs-stats";
 
 export const metadata = {
 	title: "Skill Packs — better-openclaw Docs",
 	description:
-		"Complete reference for all 10 better-openclaw skill packs. Each pack's description, required services, and included skills.",
+		"Reference for better-openclaw skill packs. Descriptions, required services, and included skills.",
 };
 
 const skillPacks = [
@@ -136,13 +137,15 @@ const skillPacks = [
 ];
 
 export default function SkillPacksPage() {
+	const { skillPackCount } = docsStats;
+
 	return (
 		<>
 			<h1>Skill Packs</h1>
 			<p>
 				Skill packs are curated bundles of OpenClaw skills that work together with specific
 				companion services. Each pack provides a coherent set of capabilities for a particular use
-				case. There are currently <strong>10 skill packs</strong> available.
+				case. There are currently <strong>{skillPackCount} skill packs</strong> available.
 			</p>
 
 			<h2>How Skill Packs Work</h2>

@@ -43,9 +43,7 @@ export default function StandupPanel() {
 					<IconReport size={24} className="text-primary" />
 					<div>
 						<h2 className="text-lg font-semibold text-foreground">Daily Standup</h2>
-						<p className="text-xs text-muted-foreground">
-							Generate and review daily team reports
-						</p>
+						<p className="text-xs text-muted-foreground">Generate and review daily team reports</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
@@ -89,9 +87,7 @@ export default function StandupPanel() {
 				</div>
 			</div>
 
-			{view === "current" && latestReport && (
-				<StandupReport report={latestReport} />
-			)}
+			{view === "current" && latestReport && <StandupReport report={latestReport} />}
 
 			{view === "current" && !latestReport && (
 				<div className="bg-card rounded-lg border border-border p-8 text-center">
@@ -132,19 +128,29 @@ function StandupReport({ report }: { report: any }) {
 			{/* Summary Cards */}
 			<div className="bg-card rounded-lg border border-border p-4">
 				<div className="flex items-center justify-between mb-3">
-					<h3 className="text-sm font-medium text-foreground">
-						{report.date}
-					</h3>
+					<h3 className="text-sm font-medium text-foreground">{report.date}</h3>
 					<span className="text-xs text-muted-foreground">
 						Generated {formatDate(report.generatedAt)}
 					</span>
 				</div>
 				<div className="grid grid-cols-3 md:grid-cols-6 gap-3">
 					<StatBadge label="Agents" value={summary.totalAgents} color="text-[var(--accent-blue)]" />
-					<StatBadge label="Completed" value={summary.totalCompleted} color="text-[var(--accent-green)]" />
-					<StatBadge label="In Progress" value={summary.totalInProgress} color="text-[var(--accent-orange)]" />
+					<StatBadge
+						label="Completed"
+						value={summary.totalCompleted}
+						color="text-[var(--accent-green)]"
+					/>
+					<StatBadge
+						label="In Progress"
+						value={summary.totalInProgress}
+						color="text-[var(--accent-orange)]"
+					/>
 					<StatBadge label="Assigned" value={summary.totalAssigned} color="text-muted-foreground" />
-					<StatBadge label="In Review" value={summary.totalReview} color="text-[var(--accent-blue)]" />
+					<StatBadge
+						label="In Review"
+						value={summary.totalReview}
+						color="text-[var(--accent-blue)]"
+					/>
 					<StatBadge label="Blocked" value={summary.totalBlocked} color="text-destructive" />
 				</div>
 			</div>
@@ -158,7 +164,10 @@ function StandupReport({ report }: { report: any }) {
 					</h4>
 					<ul className="space-y-1">
 						{teamAccomplishments.map((task: any, i: number) => (
-							<li key={task.id || i} className="text-sm text-muted-foreground flex items-start gap-2">
+							<li
+								key={task.id || i}
+								className="text-sm text-muted-foreground flex items-start gap-2"
+							>
 								<span className="text-[var(--accent-green)] mt-0.5">+</span>
 								{task.title}
 							</li>
@@ -176,7 +185,10 @@ function StandupReport({ report }: { report: any }) {
 					</h4>
 					<ul className="space-y-1">
 						{teamBlockers.map((task: any, i: number) => (
-							<li key={task.id || i} className="text-sm text-muted-foreground flex items-start gap-2">
+							<li
+								key={task.id || i}
+								className="text-sm text-muted-foreground flex items-start gap-2"
+							>
 								<span className="text-destructive mt-0.5">!</span>
 								{task.title}
 							</li>
@@ -194,10 +206,7 @@ function StandupReport({ report }: { report: any }) {
 					</h4>
 					<div className="space-y-3">
 						{agentReports.map((ar: any) => (
-							<div
-								key={ar.agent.name}
-								className="border border-border/50 rounded-md p-3"
-							>
+							<div key={ar.agent.name} className="border border-border/50 rounded-md p-3">
 								<div className="flex items-center gap-2 mb-2">
 									<span>{ar.agent.avatar}</span>
 									<span className="text-sm font-medium text-foreground">{ar.agent.name}</span>

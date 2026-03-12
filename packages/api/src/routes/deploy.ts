@@ -54,12 +54,13 @@ function validateInstanceUrl(url: string): string | null {
 	// Block private/internal IP ranges
 	const ipv4 = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
 	if (ipv4) {
-		const [, a, b] = ipv4.map(Number);
+		const a = Number.parseInt(ipv4[1] ?? "", 10);
+		const b = Number.parseInt(ipv4[2] ?? "", 10);
 		if (
-			a === 10 ||                          // 10.0.0.0/8
-			(a === 172 && b! >= 16 && b! <= 31) || // 172.16.0.0/12
-			(a === 192 && b === 168) ||           // 192.168.0.0/16
-			a === 169 && b === 254                // 169.254.0.0/16 (link-local)
+			a === 10 || // 10.0.0.0/8
+			(a === 172 && b >= 16 && b <= 31) || // 172.16.0.0/12
+			(a === 192 && b === 168) || // 192.168.0.0/16
+			(a === 169 && b === 254) // 169.254.0.0/16 (link-local)
 		) {
 			return "URL must not point to a private network address";
 		}

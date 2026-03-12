@@ -301,19 +301,22 @@ function AddAlertModal({ onClose }: { onClose: () => void }) {
 	};
 
 	return (
-		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-			onClick={onClose}
-		>
-			<div
-				className="bg-background rounded-xl border border-border p-6 w-full max-w-md space-y-4"
-				onClick={(e) => e.stopPropagation()}
-			>
+		<div className="fixed inset-0 z-50 flex items-center justify-center">
+			<button
+				type="button"
+				className="absolute inset-0 bg-black/50"
+				onClick={onClose}
+				aria-label="Close alert rule modal"
+			/>
+			<div className="relative bg-background rounded-xl border border-border p-6 w-full max-w-md space-y-4">
 				<h3 className="text-lg font-semibold">New Alert Rule</h3>
 				<div className="space-y-3">
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Name</label>
+						<label htmlFor="alert-name" className="text-xs text-muted-foreground block mb-1">
+							Name
+						</label>
 						<input
+							id="alert-name"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
@@ -321,8 +324,11 @@ function AddAlertModal({ onClose }: { onClose: () => void }) {
 						/>
 					</div>
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Condition</label>
+						<label htmlFor="alert-condition" className="text-xs text-muted-foreground block mb-1">
+							Condition
+						</label>
 						<select
+							id="alert-condition"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={condition}
 							onChange={(e) => setCondition(e.target.value)}
@@ -335,8 +341,11 @@ function AddAlertModal({ onClose }: { onClose: () => void }) {
 					</div>
 					<div className="grid grid-cols-2 gap-3">
 						<div>
-							<label className="text-xs text-muted-foreground block mb-1">Threshold</label>
+							<label htmlFor="alert-threshold" className="text-xs text-muted-foreground block mb-1">
+								Threshold
+							</label>
 							<input
+								id="alert-threshold"
 								type="number"
 								className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 								value={threshold}
@@ -344,8 +353,11 @@ function AddAlertModal({ onClose }: { onClose: () => void }) {
 							/>
 						</div>
 						<div>
-							<label className="text-xs text-muted-foreground block mb-1">Window (min)</label>
+							<label htmlFor="alert-window" className="text-xs text-muted-foreground block mb-1">
+								Window (min)
+							</label>
 							<input
+								id="alert-window"
 								type="number"
 								className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 								value={windowMinutes}

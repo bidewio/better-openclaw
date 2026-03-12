@@ -87,13 +87,14 @@ export default function TokenDashboard() {
 		// Group by approximate category
 		const categories = new Map<string, number>();
 		for (const t of toolUsage) {
-			const category = t.tool.includes("read") || t.tool.includes("Read")
-				? "Read Operations"
-				: t.tool.includes("write") || t.tool.includes("Write") || t.tool.includes("Edit")
-					? "Write Operations"
-					: t.tool.includes("search") || t.tool.includes("Grep") || t.tool.includes("Glob")
-						? "Search Operations"
-						: "Other Tools";
+			const category =
+				t.tool.includes("read") || t.tool.includes("Read")
+					? "Read Operations"
+					: t.tool.includes("write") || t.tool.includes("Write") || t.tool.includes("Edit")
+						? "Write Operations"
+						: t.tool.includes("search") || t.tool.includes("Grep") || t.tool.includes("Glob")
+							? "Search Operations"
+							: "Other Tools";
 			categories.set(category, (categories.get(category) || 0) + t.count);
 		}
 		return Array.from(categories.entries()).map(([name, value]) => ({ name, value }));
@@ -172,9 +173,7 @@ export default function TokenDashboard() {
 						{/* Cost Timeline */}
 						{timelineData.length > 0 && (
 							<div className="bg-card rounded-lg border border-border p-4">
-								<h3 className="text-sm font-medium text-foreground mb-4">
-									Cost Timeline (7 days)
-								</h3>
+								<h3 className="text-sm font-medium text-foreground mb-4">Cost Timeline (7 days)</h3>
 								<ResponsiveContainer width="100%" height={200}>
 									<LineChart data={timelineData}>
 										<CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -211,16 +210,11 @@ export default function TokenDashboard() {
 						{/* Tool Usage Breakdown */}
 						{toolChartData.length > 0 && (
 							<div className="bg-card rounded-lg border border-border p-4">
-								<h3 className="text-sm font-medium text-foreground mb-4">
-									Tool Usage Breakdown
-								</h3>
+								<h3 className="text-sm font-medium text-foreground mb-4">Tool Usage Breakdown</h3>
 								<ResponsiveContainer width="100%" height={200}>
 									<BarChart data={toolChartData} layout="vertical">
 										<CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-										<XAxis
-											type="number"
-											tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
-										/>
+										<XAxis type="number" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} />
 										<YAxis
 											type="category"
 											dataKey="name"
@@ -236,13 +230,14 @@ export default function TokenDashboard() {
 											}}
 											formatter={(value, _name, props) => [
 												Number(value),
-												(props as { payload?: { fullName?: string } }).payload?.fullName ?? String(_name),
+												(props as { payload?: { fullName?: string } }).payload?.fullName ??
+													String(_name),
 											]}
 										/>
 										<Bar dataKey="count" radius={[0, 4, 4, 0]}>
-											{toolChartData.map((_entry, i) => (
+											{toolChartData.map((entry, i) => (
 												<Cell
-													key={`cell-${i}`}
+													key={`tool-${entry.name}`}
 													fill={CHART_COLORS[i % CHART_COLORS.length]!}
 												/>
 											))}
@@ -255,9 +250,7 @@ export default function TokenDashboard() {
 						{/* Operation Distribution */}
 						{modelDistribution.length > 0 && (
 							<div className="bg-card rounded-lg border border-border p-4">
-								<h3 className="text-sm font-medium text-foreground mb-4">
-									Operation Distribution
-								</h3>
+								<h3 className="text-sm font-medium text-foreground mb-4">Operation Distribution</h3>
 								<ResponsiveContainer width="100%" height={200}>
 									<PieChart>
 										<Pie
@@ -269,9 +262,9 @@ export default function TokenDashboard() {
 											paddingAngle={3}
 											dataKey="value"
 										>
-											{modelDistribution.map((_, i) => (
+											{modelDistribution.map((item, i) => (
 												<Cell
-													key={`cell-${i}`}
+													key={`operation-${item.name}`}
 													fill={CHART_COLORS[i % CHART_COLORS.length]}
 												/>
 											))}
@@ -311,7 +304,12 @@ function MetricCard({
 	value,
 	icon,
 	accent,
-}: { label: string; value: string; icon: React.ReactNode; accent: string }) {
+}: {
+	label: string;
+	value: string;
+	icon: React.ReactNode;
+	accent: string;
+}) {
 	return (
 		<div className="bg-card rounded-lg border border-border p-4">
 			<div className="flex items-center justify-between mb-2">

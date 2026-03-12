@@ -69,9 +69,9 @@ pnpm --filter cli dev -- test-stack --preset minimal --dry-run`}</code>
 
 			<h3>Prerequisites</h3>
 			<ul>
-				<li>Node.js 20+</li>
+				<li>Node.js 22+</li>
 				<li>
-					pnpm 9+ (<code>npm install -g pnpm</code>)
+					pnpm 10+ (<code>corepack enable</code>)
 				</li>
 				<li>Docker (for testing generated stacks)</li>
 			</ul>

@@ -536,6 +536,148 @@ curl -X POST http://{{STEEL_HOST}}:{{STEEL_PORT}}/v1/scrape \\
 - Auto CAPTCHA solving
 - Puppeteer/Playwright/Selenium compatible
 `,
+
+	"code-sandbox": `---
+name: code-sandbox
+description: "Execute code safely in an isolated OpenSandbox container"
+metadata:
+  openclaw:
+    emoji: "📦"
+---
+
+# Code Sandbox
+
+Execute code safely in an isolated OpenSandbox container.
+
+## Description
+
+This skill provides secure, containerized code execution for AI agents. Code runs in ephemeral Docker containers with resource limits, network isolation, and automatic cleanup.
+
+## Connection Details
+
+- **Host:** \`{{OPENSANDBOX_HOST}}\`
+- **Port:** \`{{OPENSANDBOX_PORT}}\`
+- **Auth:** API key (auto-configured)
+
+## Supported Languages
+
+- Python 3.12
+- JavaScript / TypeScript (Node.js 22)
+- Java 21
+- Go 1.24
+- Bash
+
+## Available Actions
+
+### execute_code
+
+Run a code snippet in a fresh sandbox.
+
+**Parameters:**
+- \`language\` (required): Programming language ("python", "javascript", "typescript", "java", "go", "bash")
+- \`code\` (required): The code to execute
+- \`timeout_seconds\` (optional): Max execution time (default: 60, max: 300)
+
+**Returns:** stdout, stderr, exit_code, execution_time_ms
+
+### execute_shell
+
+Run a shell command in an existing or new sandbox.
+
+**Parameters:**
+- \`command\` (required): Shell command to execute
+- \`sandbox_id\` (optional): Reuse an existing sandbox (for multi-step workflows)
+- \`background\` (optional): Run in background (default: false)
+
+**Returns:** stdout, stderr, exit_code
+
+### upload_file
+
+Upload a file to a sandbox for processing.
+
+**Parameters:**
+- \`sandbox_id\` (required): Target sandbox
+- \`path\` (required): Destination path inside sandbox
+- \`content\` (required): File content (text or base64 for binary)
+
+### download_file
+
+Download a file from a sandbox.
+
+**Parameters:**
+- \`sandbox_id\` (required): Source sandbox
+- \`path\` (required): File path inside sandbox
+
+**Returns:** File content
+
+### list_sandboxes
+
+List active sandboxes on this instance.
+
+**Returns:** Array of { id, status, image, created_at, expires_at }
+
+### terminate_sandbox
+
+Terminate a running sandbox immediately.
+
+**Parameters:**
+- \`sandbox_id\` (required): Sandbox to terminate
+
+### create_desktop
+
+Create a GUI desktop sandbox with VNC access (for Homespace live preview).
+
+**Parameters:**
+- \`image\` (optional): Desktop image (default: "opensandbox/desktop:latest", also: "opensandbox/chrome:latest", "opensandbox/vscode:latest")
+- \`resolution\` (optional): Screen resolution (default: "1280x800x24")
+
+**Returns:** sandbox_id, vnc_endpoint (port 5900), novnc_url (port 6080 WebSocket), devtools_url (port 9222, chrome only)
+
+### get_preview_url
+
+Get the browser-accessible noVNC URL for an existing desktop sandbox.
+
+**Parameters:**
+- \`sandbox_id\` (required): Desktop sandbox ID
+
+**Returns:** novnc_url (embeddable in iframe), vnc_endpoint, status
+
+## Examples
+
+### Run Python code
+
+\`\`\`bash
+curl -X POST http://{{OPENSANDBOX_HOST}}:{{OPENSANDBOX_PORT}}/v1/sandboxes \\
+  -H "Authorization: Bearer $OPENSANDBOX_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{"image": "opensandbox/code-interpreter:python"}'
+\`\`\`
+
+### Execute code in a sandbox
+
+\`\`\`bash
+curl -X POST http://{{OPENSANDBOX_HOST}}:{{OPENSANDBOX_PORT}}/v1/sandboxes/{id}/code \\
+  -H "Authorization: Bearer $OPENSANDBOX_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{"language": "python", "code": "print(42 * 42)"}'
+\`\`\`
+
+## Configuration
+
+- **Default timeout:** 60 seconds
+- **Max concurrent sandboxes:** Determined by VPS RAM
+- **Idle cleanup:** Sandboxes with no activity for 30 minutes are auto-terminated
+- **Network:** Bridge mode (isolated from host services)
+- **Security:** gVisor runtime, capability dropping, PID limits
+
+## Limitations
+
+- No persistent storage between sandbox sessions (ephemeral by design)
+- No GPU access (CPU-only execution)
+- No outbound network access by default (egress blocked)
+- Max 512 PIDs per sandbox (fork bomb protection)
+- Memory capped per sandbox (default 512MB)
+`,
 };
 
 /**

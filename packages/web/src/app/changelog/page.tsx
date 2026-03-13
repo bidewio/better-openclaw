@@ -22,6 +22,43 @@ interface Release {
 
 const RELEASES: Release[] = [
 	{
+		version: "v1.0.26",
+		date: "March 2026",
+		title: "OpenSandbox: Secure AI Code Execution",
+		changes: [
+			{
+				type: "feature",
+				description:
+					"Added OpenSandbox service definition — secure, containerized code execution for AI agents with multi-language support (Python, JS/TS, Java, Go, Bash).",
+			},
+			{
+				type: "feature",
+				description:
+					"New `code-sandbox` skill with 8 actions: execute_code, execute_shell, upload/download files, sandbox management, and VNC desktop preview via create_desktop and get_preview_url.",
+			},
+			{
+				type: "feature",
+				description:
+					"Automatic `sandbox.toml` config generation via new `additionalFiles` field in AddonStackResult, supporting gVisor runtime, capability dropping, and PID limits.",
+			},
+			{
+				type: "feature",
+				description:
+					"Pre-pull image declarations with 3-tier priority system (8 images: server, execd, desktop, chrome, vscode, and code interpreters).",
+			},
+			{
+				type: "improvement",
+				description:
+					"Port conflict resolution between OpenSandbox and SearXNG (both port 8080) with automatic remapping.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Extended schema with `additionalFiles` and `prePullImages` metadata fields for richer stack output.",
+			},
+		],
+	},
+	{
 		version: "v1.2.0",
 		date: "March 2026",
 		title: "User Accounts & Cloud Persistence",

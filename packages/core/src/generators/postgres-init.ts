@@ -52,6 +52,8 @@ const DB_REQUIREMENTS: Record<string, Omit<DbRequirement, "serviceId" | "service
 	openpanel: { dbName: "openpanel", dbUser: "openpanel", passwordEnvVar: "OPENPANEL_DB_PASSWORD" },
 	usesend: { dbName: "usesend", dbUser: "usesend", passwordEnvVar: "USESEND_DB_PASSWORD" },
 	nextcloud: { dbName: "nextcloud", dbUser: "nextcloud", passwordEnvVar: "NEXTCLOUD_DB_PASSWORD" },
+	// ── Agent Memory ────────────────────────────────────────────────────────
+	hindsight: { dbName: "hindsight", dbUser: "hindsight", passwordEnvVar: "HINDSIGHT_DB_PASSWORD" },
 	// ── SaaS Boilerplates ────────────────────────────────────────────────────
 	"open-saas": { dbName: "opensaas", dbUser: "opensaas", passwordEnvVar: "OPENSAAS_DB_PASSWORD" },
 	"apptension-saas": {

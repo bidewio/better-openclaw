@@ -475,6 +475,8 @@ export const AddonStackResultSchema = z.object({
 	}),
 	/** Port mapping for reverse proxy configuration. */
 	proxyRoutes: z.array(ProxyRouteSchema),
+	/** Additional files to write alongside compose (e.g. sandbox.toml). Keyed by filename. */
+	additionalFiles: z.record(z.string(), z.string()).default({}),
 	/** Metadata. */
 	metadata: z.object({
 		serviceCount: z.number(),
@@ -484,6 +486,11 @@ export const AddonStackResultSchema = z.object({
 		skippedServices: z.array(SkippedServiceSchema),
 		generatedSecretKeys: z.array(z.string()),
 		portAssignments: z.record(z.string(), z.number()),
+		/** Docker images to pre-pull during cloud-init, grouped by priority. */
+		prePullImages: z.array(z.object({
+			image: z.string(),
+			priority: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+		})).default([]),
 	}),
 	/** Warnings (non-fatal issues). */
 	warnings: z.array(z.string()),

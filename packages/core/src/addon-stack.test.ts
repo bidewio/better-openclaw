@@ -310,6 +310,164 @@ describe("generateAddonStack", () => {
 		expect(isSkipped).toBe(false);
 		expect(result.metadata.resolvedServices).toContain("ollama");
 	});
+
+	// ── OpenSandbox ────────────────────────────────────────────────────────
+
+	it("generates valid compose YAML for opensandbox", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox"],
+		});
+
+		expect(result.metadata.resolvedServices).toContain("opensandbox");
+		const composed = parse(result.composeOverride);
+		expect(composed.services).toHaveProperty("opensandbox");
+
+		// Should have Docker socket mount
+		const volumes = composed.services.opensandbox.volumes as string[];
+		expect(volumes.some((v: string) => v.includes("/var/run/docker.sock"))).toBe(true);
+
+		// Should have config bind mount
+		expect(volumes.some((v: string) => v.includes("sandbox.toml"))).toBe(true);
+	});
+
+	it("generates OPEN_SANDBOX_API_KEY with min 32 bytes via env quirk", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox"],
+			generateSecrets: true,
+		});
+
+		const match = result.envFile.match(/OPEN_SANDBOX_API_KEY=([^\n]+)/);
+		expect(match).not.toBeNull();
+		// 32 bytes base64url ≈ 43 chars
+		expect(match![1].length).toBeGreaterThanOrEqual(43);
+	});
+
+	it("generates code-sandbox skill file and config patch", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox"],
+		});
+
+		// Skill config patch
+		expect(result.openclawConfigPatch.skills.entries).toHaveProperty("code-sandbox");
+		expect(result.openclawConfigPatch.skills.entries["code-sandbox"].enabled).toBe(true);
+
+		// Skill file content should exist and contain key actions
+		const skillFile = Object.values(result.skillFiles).find((content) =>
+			content.includes("code-sandbox"),
+		);
+		expect(skillFile).toBeDefined();
+		expect(skillFile).toContain("execute_code");
+		expect(skillFile).toContain("create_desktop");
+		expect(skillFile).toContain("get_preview_url");
+	});
+
+	it("generates proxy route for opensandbox at /sandbox", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox"],
+		});
+
+		const route = result.proxyRoutes.find((r) => r.serviceId === "opensandbox");
+		expect(route).toBeDefined();
+		expect(route!.path).toBe("/sandbox");
+		expect(route!.port).toBe(8080);
+	});
+
+	it("generates sandbox.toml in additionalFiles", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox"],
+		});
+
+		expect(result.additionalFiles).toHaveProperty("sandbox.toml");
+		const toml = result.additionalFiles["sandbox.toml"];
+		expect(toml).toContain('[server]');
+		expect(toml).toContain('api_key = "${OPEN_SANDBOX_API_KEY}"');
+		expect(toml).toContain('[runtime]');
+		expect(toml).toContain('[docker]');
+		expect(toml).toContain('[secure_runtime]');
+		expect(toml).toContain('type = "gvisor"');
+	});
+
+	it("populates prePullImages with 8 images across 3 priority tiers", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox"],
+		});
+
+		const images = result.metadata.prePullImages;
+		expect(images.length).toBe(8);
+
+		// Priority 1: core + Homespace
+		const p1 = images.filter((i) => i.priority === 1);
+		expect(p1.length).toBe(4);
+		expect(p1.map((i) => i.image)).toContain("opensandbox/server:v1.0.6");
+		expect(p1.map((i) => i.image)).toContain("opensandbox/execd:v1.0.6");
+		expect(p1.map((i) => i.image)).toContain("opensandbox/desktop:latest");
+		expect(p1.map((i) => i.image)).toContain("opensandbox/chrome:latest");
+
+		// Priority 2: common languages
+		const p2 = images.filter((i) => i.priority === 2);
+		expect(p2.length).toBe(2);
+		expect(p2.map((i) => i.image)).toContain("opensandbox/code-interpreter:python");
+		expect(p2.map((i) => i.image)).toContain("opensandbox/code-interpreter:node");
+
+		// Priority 3: optional
+		const p3 = images.filter((i) => i.priority === 3);
+		expect(p3.length).toBe(2);
+		expect(p3.map((i) => i.image)).toContain("opensandbox/code-interpreter:latest");
+		expect(p3.map((i) => i.image)).toContain("opensandbox/vscode:latest");
+	});
+
+	it("resolves port conflict between opensandbox and searxng (both 8080)", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox", "searxng"],
+		});
+
+		expect(result.metadata.resolvedServices).toContain("opensandbox");
+		expect(result.metadata.resolvedServices).toContain("searxng");
+
+		// Both should have port assignments, but they should differ
+		const assignments = result.metadata.portAssignments;
+		const opensandboxPort = assignments["opensandbox:8080"];
+		const searxngPort = assignments["searxng:8080"];
+		expect(opensandboxPort).toBeDefined();
+		expect(searxngPort).toBeDefined();
+		expect(opensandboxPort).not.toBe(searxngPort);
+	});
+
+	it("does not include opensandbox in prePullImages when not selected", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["qdrant"],
+		});
+
+		expect(result.metadata.prePullImages.length).toBe(0);
+		expect(result.additionalFiles).not.toHaveProperty("sandbox.toml");
+	});
+
+	it("opensandbox does not require postgresql (no postgres-setup)", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox"],
+		});
+
+		const composed = parse(result.composeOverride);
+		expect(composed.services).not.toHaveProperty("postgres-setup");
+	});
+
+	it("accounts for 768MB memory in estimatedMemoryMB", () => {
+		const result = generateAddonStack({
+			instanceId: "test-instance",
+			services: ["opensandbox"],
+		});
+
+		expect(result.metadata.estimatedMemoryMB).toBeGreaterThanOrEqual(768);
+	});
 });
 
 describe("updateAddonStack", () => {

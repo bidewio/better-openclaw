@@ -714,6 +714,50 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 	// 14. Build proxy routes
 	const proxyRoutes = buildProxyRoutes(deployableServices);
 
+	// 14b. Build additional files (e.g. sandbox.toml for opensandbox)
+	const additionalFiles: Record<string, string> = {};
+	if (deployableServices.some((s) => s.definition.id === "opensandbox")) {
+		additionalFiles["sandbox.toml"] = [
+			"[server]",
+			'host = "0.0.0.0"',
+			"port = 8080",
+			'log_level = "INFO"',
+			'api_key = "${OPEN_SANDBOX_API_KEY}"',
+			"",
+			"[runtime]",
+			'type = "docker"',
+			'execd_image = "opensandbox/execd:v1.0.6"',
+			"",
+			"[docker]",
+			"network_mode = \"bridge\"",
+			'drop_capabilities = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "MKNOD", "NET_RAW", "SYS_RAWIO"]',
+			"no_new_privileges = true",
+			"pids_limit = 512",
+			"",
+			"[secure_runtime]",
+			'type = "gvisor"',
+			"",
+		].join("\n");
+	}
+
+	// 14c. Build pre-pull images list
+	const prePullImages: Array<{ image: string; priority: 1 | 2 | 3 }> = [];
+	if (deployableServices.some((s) => s.definition.id === "opensandbox")) {
+		prePullImages.push(
+			// Priority 1: always pulled (core + Homespace)
+			{ image: "opensandbox/server:v1.0.6", priority: 1 },
+			{ image: "opensandbox/execd:v1.0.6", priority: 1 },
+			{ image: "opensandbox/desktop:latest", priority: 1 },
+			{ image: "opensandbox/chrome:latest", priority: 1 },
+			// Priority 2: recommended (common languages)
+			{ image: "opensandbox/code-interpreter:python", priority: 2 },
+			{ image: "opensandbox/code-interpreter:node", priority: 2 },
+			// Priority 3: optional (full multi-lang and IDE)
+			{ image: "opensandbox/code-interpreter:latest", priority: 3 },
+			{ image: "opensandbox/vscode:latest", priority: 3 },
+		);
+	}
+
 	// 15. Compose single YAML
 	const volumeMap: Record<string, null> = {};
 	for (const v of allVolumes) {
@@ -746,6 +790,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 			skills: { entries: skillEntries },
 		},
 		proxyRoutes,
+		additionalFiles,
 		metadata: {
 			serviceCount: Object.keys(services).length,
 			skillCount,
@@ -754,6 +799,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 			skippedServices,
 			generatedSecretKeys,
 			portAssignments: portConflicts.assignments,
+			prePullImages,
 		},
 		warnings,
 	};
@@ -956,6 +1002,7 @@ function emptyResultBase(): AddonStackResult {
 		skillFiles: {},
 		openclawConfigPatch: { skills: { entries: {} } },
 		proxyRoutes: [],
+		additionalFiles: {},
 		metadata: {
 			serviceCount: 0,
 			skillCount: 0,
@@ -964,6 +1011,7 @@ function emptyResultBase(): AddonStackResult {
 			skippedServices: [],
 			generatedSecretKeys: [],
 			portAssignments: {},
+			prePullImages: [],
 		},
 		warnings: [],
 	};

@@ -11,6 +11,7 @@ export { axolotlDefinition } from "./axolotl.js";
 export { baserowDefinition } from "./baserow.js";
 export { beszelDefinition } from "./beszel.js";
 export { browserlessDefinition } from "./browserless.js";
+export { burnlinkDefinition } from "./burnlink.js";
 export { caddyDefinition } from "./caddy.js";
 export { calComDefinition } from "./cal-com.js";
 export { calibreWebDefinition } from "./calibre-web.js";
@@ -58,6 +59,7 @@ export { grafanaDefinition } from "./grafana.js";
 export { graylogDefinition } from "./graylog.js";
 export { headscaleDefinition } from "./headscale.js";
 export { hedgedocDefinition } from "./hedgedoc.js";
+export { hindsightDefinition } from "./hindsight.js";
 export { hexstrikeDefinition } from "./hexstrike.js";
 export { heyformDefinition } from "./heyform.js";
 export { homeassistantDefinition } from "./homeassistant.js";
@@ -115,6 +117,7 @@ export { openWebuiDefinition } from "./open-webui.js";
 export { opencodeDefinition } from "./opencode.js";
 export { openhandsDefinition } from "./openhands.js";
 export { openpanelDefinition } from "./openpanel.js";
+export { opensandboxDefinition } from "./opensandbox.js";
 export { opensearchDefinition } from "./opensearch.js";
 export { outlineDefinition } from "./outline.js";
 export { paperlessNgxDefinition } from "./paperless-ngx.js";
@@ -201,6 +204,7 @@ import { axolotlDefinition } from "./axolotl.js";
 import { baserowDefinition } from "./baserow.js";
 import { beszelDefinition } from "./beszel.js";
 import { browserlessDefinition } from "./browserless.js";
+import { burnlinkDefinition } from "./burnlink.js";
 import { caddyDefinition } from "./caddy.js";
 import { calComDefinition } from "./cal-com.js";
 import { calibreWebDefinition } from "./calibre-web.js";
@@ -248,6 +252,7 @@ import { grafanaDefinition } from "./grafana.js";
 import { graylogDefinition } from "./graylog.js";
 import { headscaleDefinition } from "./headscale.js";
 import { hedgedocDefinition } from "./hedgedoc.js";
+import { hindsightDefinition } from "./hindsight.js";
 import { hexstrikeDefinition } from "./hexstrike.js";
 import { heyformDefinition } from "./heyform.js";
 import { homeassistantDefinition } from "./homeassistant.js";
@@ -305,6 +310,7 @@ import { openWebuiDefinition } from "./open-webui.js";
 import { opencodeDefinition } from "./opencode.js";
 import { openhandsDefinition } from "./openhands.js";
 import { openpanelDefinition } from "./openpanel.js";
+import { opensandboxDefinition } from "./opensandbox.js";
 import { opensearchDefinition } from "./opensearch.js";
 import { outlineDefinition } from "./outline.js";
 import { paperlessNgxDefinition } from "./paperless-ngx.js";
@@ -561,6 +567,10 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	vikunjaDefinition,
 	wireguardDefinition,
 	woodpeckerCiDefinition,
+	// ── New Integrations ────────────────────────────────────────────────────
+	hindsightDefinition,
+	burnlinkDefinition,
+	opensandboxDefinition,
 	// ── SaaS Boilerplates ────────────────────────────────────────────────────
 	openSaasDefinition,
 	apptensionSaasDefinition,

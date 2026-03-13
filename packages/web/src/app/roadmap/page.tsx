@@ -46,6 +46,18 @@ const ROADMAP: { quarter: string; items: RoadmapItem[] }[] = [
 					"Animated Data Visualization in Blog Posts",
 				],
 			},
+			{
+				title: "Sandboxed AI Code Execution",
+				description:
+					"Enabling AI agents to execute code safely in isolated containers with OpenSandbox integration, supporting multi-language runtimes and VNC desktop preview.",
+				status: "current",
+				features: [
+					"OpenSandbox service with gVisor secure runtime and Docker socket management",
+					"Multi-language sandboxes (Python, JS/TS, Java, Go, Bash) with resource limits",
+					"VNC desktop preview for live GUI sandboxes (XFCE, Chrome, VS Code Web)",
+					"Pre-pull image system with 3-tier priority for optimized deployment",
+				],
+			},
 		],
 	},
 	{

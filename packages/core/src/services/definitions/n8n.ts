@@ -150,4 +150,13 @@ export const n8nDefinition: ServiceDefinition = {
 
 	minMemoryMB: 512,
 	gpuRequired: false,
+	capDropCompatible: true,
+	proxyPath: "/n8n",
+	envQuirks: [
+		{
+			key: "DB_POSTGRESDB_PASSWORD",
+			issue: "must_sync" as const,
+			fix: { type: "sync_with" as const, syncKey: "N8N_DB_PASSWORD" },
+		},
+	],
 };

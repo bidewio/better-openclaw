@@ -1,6 +1,6 @@
 {
     "name": "@better-openclaw/db",
-    "version": "1.0.24",
+    "version": "1.0.25",
     "private": false,
     "description": "Shared database client and schema for better-openclaw",
     "author": "bidew.io <bachir@bidew.io>",

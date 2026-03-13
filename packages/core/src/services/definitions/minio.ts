@@ -102,4 +102,6 @@ export const minioDefinition: ServiceDefinition = {
 
 	minMemoryMB: 256,
 	gpuRequired: false,
+	capDropCompatible: true,
+	proxyPath: "/minio",
 };

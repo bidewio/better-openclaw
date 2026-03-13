@@ -1,6 +1,6 @@
 {
   "name": "@better-openclaw/web",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "private": true,
   "scripts": {
     "dev": "next dev --port 3654 --webpack",
@@ -16,7 +16,7 @@
     "@better-auth/drizzle-adapter": "^1.5.4",
     "@better-auth/infra": "^0.1.8",
     "@better-auth/passkey": "^1.5.4",
-    "@better-openclaw/core": "^1.0.24",
+    "@better-openclaw/core": "^1.0.25",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-slot": "^1.2.4",
     "@simplewebauthn/browser": "^13.2.2",

@@ -1,5 +1,9 @@
 import type { z } from "zod";
 import type {
+	AddonStackInputSchema,
+	AddonStackResultSchema,
+	AddonStackUpdateInputSchema,
+	AddonStackUpdateResultSchema,
 	AddedDependencySchema,
 	AiProviderSchema,
 	ApiErrorSchema,
@@ -9,6 +13,8 @@ import type {
 	DeploymentTypeSchema,
 	DeploySchema,
 	DeployTargetSchema,
+	EnvQuirkFixSchema,
+	EnvQuirkSchema,
 	EnvVariableSchema,
 	ErrorSchema,
 	GenerationInputSchema,
@@ -24,6 +30,7 @@ import type {
 	PlatformSchema,
 	PortMappingSchema,
 	PresetSchema,
+	ProxyRouteSchema,
 	ProxyTypeSchema,
 	ResolvedServiceSchema,
 	ResolverOutputSchema,
@@ -33,6 +40,7 @@ import type {
 	ServiceDefinitionSchema,
 	SkillBindingSchema,
 	SkillPackSchema,
+	SkippedServiceSchema,
 	ValidateRequestSchema,
 	ValidateResponseSchema,
 	VolumeMappingSchema,
@@ -85,6 +93,16 @@ export type ResolverOutput = z.infer<typeof ResolverOutputSchema>;
 export type ValidateRequest = z.infer<typeof ValidateRequestSchema>;
 export type ValidateResponse = z.infer<typeof ValidateResponseSchema>;
 export type ApiError = z.infer<typeof ApiErrorSchema>;
+
+// Addon Stack (Clawexa)
+export type EnvQuirkFix = z.infer<typeof EnvQuirkFixSchema>;
+export type EnvQuirk = z.infer<typeof EnvQuirkSchema>;
+export type ProxyRoute = z.infer<typeof ProxyRouteSchema>;
+export type SkippedService = z.infer<typeof SkippedServiceSchema>;
+export type AddonStackInput = z.infer<typeof AddonStackInputSchema>;
+export type AddonStackResult = z.infer<typeof AddonStackResultSchema>;
+export type AddonStackUpdateInput = z.infer<typeof AddonStackUpdateInputSchema>;
+export type AddonStackUpdateResult = z.infer<typeof AddonStackUpdateResultSchema>;
 
 // ─── Additional Types ───────────────────────────────────────────────────────
 

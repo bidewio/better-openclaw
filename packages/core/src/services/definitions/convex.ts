@@ -89,6 +89,14 @@ export const convexDefinition: ServiceDefinition = {
 				"Admin key for CLI access. Generate with: docker compose exec convex ./generate_admin_key.sh",
 			required: false,
 		},
+		{
+			key: "CONVEX_INSTANCE_SECRET",
+			defaultValue: "${INSTANCE_SECRET}",
+			secret: true,
+			description:
+				"Convex instance secret used by Mission Control (synced with INSTANCE_SECRET)",
+			required: false,
+		},
 	],
 	healthcheck: {
 		test: "curl -f http://localhost:3210/version",
@@ -118,4 +126,27 @@ export const convexDefinition: ServiceDefinition = {
 
 	minMemoryMB: 256,
 	gpuRequired: false,
+	capDropCompatible: false,
+	envQuirks: [
+		{
+			key: "DISABLE_BEACON",
+			issue: "empty_string_crashes" as const,
+			fix: { type: "set_value" as const, value: "true" },
+		},
+		{
+			key: "INSTANCE_SECRET",
+			issue: "min_length" as const,
+			fix: { type: "generate_hex" as const, minBytes: 32 },
+		},
+		{
+			key: "CONVEX_SELF_HOSTED_ADMIN_KEY",
+			issue: "min_length" as const,
+			fix: { type: "generate_hex" as const, minBytes: 32 },
+		},
+		{
+			key: "INSTANCE_SECRET",
+			issue: "must_sync" as const,
+			fix: { type: "sync_with" as const, syncKey: "CONVEX_INSTANCE_SECRET" },
+		},
+	],
 };

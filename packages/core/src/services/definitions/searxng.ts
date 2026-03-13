@@ -65,4 +65,7 @@ export const searxngDefinition: ServiceDefinition = {
 
 	minMemoryMB: 256,
 	gpuRequired: false,
+	capDropCompatible: false,
+	proxyPath: "/searxng",
+	firstBootCapabilities: ["CHOWN", "SETGID", "SETUID"],
 };

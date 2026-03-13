@@ -23,7 +23,7 @@ function getOpenclawImage(variant: OpenclawImageVariant, version: string): strin
 }
 
 /** Creates a YAML scalar that is always quoted — avoids YAML 1.1 bare `no` → false. */
-function quotedStr(value: string): Scalar {
+export function quotedStr(value: string): Scalar {
 	const s = new Scalar(value);
 	s.type = Scalar.QUOTE_DOUBLE;
 	return s;
@@ -53,7 +53,7 @@ const CATEGORY_PROFILE_MAP: Partial<Record<ServiceCategory, { file: string; prof
 	"saas-boilerplate": { file: "docker-compose.saas.yml", profile: "saas" },
 };
 
-const YAML_OPTIONS = { lineWidth: 120, nullStr: "" };
+export const YAML_OPTIONS = { lineWidth: 120, nullStr: "" };
 
 // ── Shared Gateway Builder ──────────────────────────────────────────────────
 
@@ -222,7 +222,7 @@ function buildGatewayServices(
 
 // ── Shared Companion Service Builder ────────────────────────────────────────
 
-function buildCompanionService(
+export function buildCompanionService(
 	def: ResolverOutput["services"][number]["definition"],
 	resolved: ResolverOutput,
 	options: ComposeOptions,
@@ -445,7 +445,7 @@ function buildCompanionService(
  *
  * Returns null when no setup is needed (no PostgreSQL or no DB requirements).
  */
-function buildPostgresSetup(resolved: ResolverOutput): Record<string, unknown> | null {
+export function buildPostgresSetup(resolved: ResolverOutput): Record<string, unknown> | null {
 	const hasPostgres = resolved.services.some((s) => s.definition.id === "postgresql");
 	if (!hasPostgres) return null;
 

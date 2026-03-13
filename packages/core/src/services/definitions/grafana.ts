@@ -80,4 +80,13 @@ export const grafanaDefinition: ServiceDefinition = {
 
 	minMemoryMB: 256,
 	gpuRequired: false,
+	capDropCompatible: true,
+	proxyPath: "/grafana",
+	envQuirks: [
+		{
+			key: "GF_SECURITY_ADMIN_PASSWORD",
+			issue: "min_length" as const,
+			fix: { type: "generate_base64url" as const, minBytes: 16 },
+		},
+	],
 };

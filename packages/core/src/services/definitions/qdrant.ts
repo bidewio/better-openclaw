@@ -79,4 +79,6 @@ export const qdrantDefinition: ServiceDefinition = {
 
 	minMemoryMB: 512,
 	gpuRequired: false,
+	capDropCompatible: true,
+	proxyPath: "/qdrant",
 };

@@ -65,4 +65,6 @@ export const ollamaDefinition: ServiceDefinition = {
 
 	minMemoryMB: 2048,
 	gpuRequired: false,
+	capDropCompatible: false,
+	proxyPath: "/ollama",
 };

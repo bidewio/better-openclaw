@@ -3,6 +3,7 @@
 import {
 	BookOpen,
 	ChevronRight,
+	Code,
 	Globe,
 	Menu,
 	Package,
@@ -60,6 +61,7 @@ const navigation: NavSection[] = [
 		items: [
 			{ title: "Overview", href: "/docs/api" },
 			{ title: "Endpoints", href: "/docs/api/endpoints" },
+			{ title: "Addon Stack API", href: "/docs/api/addon-stack" },
 		],
 	},
 	{
@@ -83,6 +85,13 @@ const navigation: NavSection[] = [
 			{ title: "Bare-metal", href: "/docs/deployment#bare-metal" },
 			{ title: "VPS / Cloud", href: "/docs/deployment/vps" },
 			{ title: "Homelab", href: "/docs/deployment/homelab" },
+		],
+	},
+	{
+		title: "Guides",
+		icon: <Code className="h-4 w-4" />,
+		items: [
+			{ title: "Hosting Integration", href: "/docs/guides/hosting-integration" },
 		],
 	},
 	{

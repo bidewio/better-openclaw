@@ -1,3 +1,4 @@
+import { post as post42 } from "./posts/addon-stack-generation-hosting-guide";
 import { post as post24 } from "./posts/ai-agent-memory-redis-persistent-context";
 import { post as post41 } from "./posts/ai-powerhouse-self-hosted-manus-alternative";
 import { post as post5 } from "./posts/ai-skill-packs-explained";
@@ -5,6 +6,7 @@ import { post as post33 } from "./posts/authentik-vs-keycloak-identity-managemen
 import { post as post15 } from "./posts/backing-up-docker-volumes-guide";
 import { post as post23 } from "./posts/browser-automation-playwright-browserless";
 import { post as post32 } from "./posts/building-ai-coding-assistant-continue-dev";
+import { post as post43 } from "./posts/building-service-marketplace-skills-addons";
 import { post as post12 } from "./posts/building-personal-ai-assistant-2026";
 import { post as post16 } from "./posts/caddy-vs-traefik-homelab-reverse-proxy";
 import { post as post20 } from "./posts/cicd-docker-compose-automated-deployments";
@@ -83,6 +85,8 @@ export const blogPosts: BlogPost[] = [
 	post39,
 	post40,
 	post41,
+	post42,
+	post43,
 ];
 
 // Helper functions for accessing posts

@@ -1,6 +1,6 @@
 {
   "name": "@better-openclaw/core",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "private": false,
   "description": "Core logic for better-openclaw: schemas, service registry, resolver, composer, validators and generators",
   "author": "bidew.io <bachir@bidew.io>",

@@ -1,4 +1,5 @@
-// ─── Schemas ────────────────────────────────────────────────────────────────
+// ─── Addon Stack (Clawexa) ──────────────────────────────────────────────────
+export { generateAddonStack, updateAddonStack } from "./addon-stack.js";
 
 // ─── Core Engines ───────────────────────────────────────────────────────────
 export {
@@ -7,7 +8,7 @@ export {
 	resolvedWithOnlyServices,
 } from "./bare-metal-partition.js";
 export type { ComposeResult } from "./composer.js";
-export { compose, composeMultiFile } from "./composer.js";
+export { buildCompanionService, buildPostgresSetup, compose, composeMultiFile, quotedStr, YAML_OPTIONS } from "./composer.js";
 // ─── PaaS Deployers ─────────────────────────────────────────────────────────
 export type {
 	DeployInput as PaasDeployInput,
@@ -71,6 +72,10 @@ export {
 } from "./presets/registry.js";
 export { resolve } from "./resolver.js";
 export {
+	AddonStackInputSchema,
+	AddonStackResultSchema,
+	AddonStackUpdateInputSchema,
+	AddonStackUpdateResultSchema,
 	AddedDependencySchema,
 	ApiErrorSchema,
 	BuildContextSchema,
@@ -79,6 +84,8 @@ export {
 	DeploymentTypeSchema,
 	DeploySchema,
 	DeployTargetSchema,
+	EnvQuirkFixSchema,
+	EnvQuirkSchema,
 	EnvVariableSchema,
 	ErrorSchema,
 	GenerationInputSchema,
@@ -93,6 +100,7 @@ export {
 	PlatformSchema,
 	PortMappingSchema,
 	PresetSchema,
+	ProxyRouteSchema,
 	ProxyTypeSchema,
 	ResolvedServiceSchema,
 	ResolverOutputSchema,
@@ -102,6 +110,8 @@ export {
 	ServiceDefinitionSchema,
 	SkillBindingSchema,
 	SkillPackSchema,
+	SkippedServiceReasonSchema,
+	SkippedServiceSchema,
 	ValidateRequestSchema,
 	ValidateResponseSchema,
 	VolumeMappingSchema,
@@ -130,6 +140,10 @@ export {
 } from "./skills/skill-manifest.js";
 // ─── Types ──────────────────────────────────────────────────────────────────
 export type {
+	AddonStackInput,
+	AddonStackResult,
+	AddonStackUpdateInput,
+	AddonStackUpdateResult,
 	AddedDependency,
 	AiProvider,
 	ApiError,
@@ -140,6 +154,8 @@ export type {
 	DeploymentTarget,
 	DeploymentType,
 	DeployTarget,
+	EnvQuirk,
+	EnvQuirkFix,
 	EnvVariable,
 	GeneratedFiles,
 	GenerationInput,
@@ -157,6 +173,7 @@ export type {
 	Platform,
 	PortMapping,
 	Preset,
+	ProxyRoute,
 	ProxyType,
 	ResolvedService,
 	ResolverError,
@@ -168,6 +185,7 @@ export type {
 	ServiceDefinition,
 	SkillBinding,
 	SkillPack,
+	SkippedService,
 	ValidateRequest,
 	ValidateResponse,
 	VolumeMapping,

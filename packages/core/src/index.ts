@@ -8,7 +8,14 @@ export {
 	resolvedWithOnlyServices,
 } from "./bare-metal-partition.js";
 export type { ComposeResult } from "./composer.js";
-export { buildCompanionService, buildPostgresSetup, compose, composeMultiFile, quotedStr, YAML_OPTIONS } from "./composer.js";
+export {
+	buildCompanionService,
+	buildPostgresSetup,
+	compose,
+	composeMultiFile,
+	quotedStr,
+	YAML_OPTIONS,
+} from "./composer.js";
 // ─── PaaS Deployers ─────────────────────────────────────────────────────────
 export type {
 	DeployInput as PaasDeployInput,
@@ -46,9 +53,6 @@ export { generatePrometheusConfig } from "./generators/prometheus.js";
 export { generateReadme } from "./generators/readme.js";
 export { generateScripts } from "./generators/scripts.js";
 export { generateSkillFiles } from "./generators/skills.js";
-// ─── Analytics ─────────────────────────────────────────────────────────────
-export type { AnalyticsPayload } from "./track-analytics.js";
-export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 export type {
 	StackManifest,
 	StackManifestService,
@@ -72,11 +76,11 @@ export {
 } from "./presets/registry.js";
 export { resolve } from "./resolver.js";
 export {
+	AddedDependencySchema,
 	AddonStackInputSchema,
 	AddonStackResultSchema,
 	AddonStackUpdateInputSchema,
 	AddonStackUpdateResultSchema,
-	AddedDependencySchema,
 	ApiErrorSchema,
 	BuildContextSchema,
 	ComposeOptionsSchema,
@@ -138,13 +142,16 @@ export {
 	getManifestSkillById,
 	getManifestSkillCount,
 } from "./skills/skill-manifest.js";
+// ─── Analytics ─────────────────────────────────────────────────────────────
+export type { AnalyticsPayload } from "./track-analytics.js";
+export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 // ─── Types ──────────────────────────────────────────────────────────────────
 export type {
+	AddedDependency,
 	AddonStackInput,
 	AddonStackResult,
 	AddonStackUpdateInput,
 	AddonStackUpdateResult,
-	AddedDependency,
 	AiProvider,
 	ApiError,
 	BuildContext,

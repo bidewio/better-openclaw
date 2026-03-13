@@ -1,5 +1,5 @@
 import type { TestHelpers } from "better-auth/plugins";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { getTestHelpers, testAuth } from "./fixtures/test-auth.js";
 
 describe("Auth — email + password", () => {

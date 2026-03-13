@@ -6,7 +6,10 @@ import { requireSession } from "../middleware/session.js";
 
 /** Zod schema for creating a stack (POST). */
 const CreateStackSchema = z.object({
-	name: z.string().min(1, "Stack name is required").max(100, "Stack name must be 100 characters or fewer"),
+	name: z
+		.string()
+		.min(1, "Stack name is required")
+		.max(100, "Stack name must be 100 characters or fewer"),
 	description: z.string().max(1000, "Description must be 1000 characters or fewer").nullish(),
 	services: z
 		.array(z.string().max(100))
@@ -17,7 +20,11 @@ const CreateStackSchema = z.object({
 
 /** Zod schema for updating a stack (PATCH). All fields optional. */
 const UpdateStackSchema = z.object({
-	name: z.string().min(1, "Stack name cannot be empty").max(100, "Stack name must be 100 characters or fewer").optional(),
+	name: z
+		.string()
+		.min(1, "Stack name cannot be empty")
+		.max(100, "Stack name must be 100 characters or fewer")
+		.optional(),
 	description: z.string().max(1000, "Description must be 1000 characters or fewer").nullish(),
 	services: z
 		.array(z.string().max(100))

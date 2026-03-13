@@ -20,7 +20,7 @@ describe("generateScripts", () => {
 
 		for (const script of expectedScripts) {
 			expect(result).toHaveProperty(script);
-			expect(result[script]!.length).toBeGreaterThan(0);
+			expect(result[script]?.length).toBeGreaterThan(0);
 		}
 	});
 

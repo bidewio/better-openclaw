@@ -1,19 +1,25 @@
-import {
-	IconLoader2,
-	IconMessage,
-	IconSend,
-	IconX,
-} from "@tabler/icons-react";
+import { IconLoader2, IconMessage, IconSend } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
 
 // Agent color themes for message bubbles
 const AGENT_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-	LEAD: { bg: "bg-[var(--accent-orange)]/15", text: "text-[var(--accent-orange)]", border: "border-[var(--accent-orange)]/30" },
-	INT: { bg: "bg-[var(--accent-blue)]/15", text: "text-[var(--accent-blue)]", border: "border-[var(--accent-blue)]/30" },
-	SPC: { bg: "bg-[var(--accent-brown)]/15", text: "text-[var(--accent-brown)]", border: "border-[var(--accent-brown)]/30" },
+	LEAD: {
+		bg: "bg-[var(--accent-orange)]/15",
+		text: "text-[var(--accent-orange)]",
+		border: "border-[var(--accent-orange)]/30",
+	},
+	INT: {
+		bg: "bg-[var(--accent-blue)]/15",
+		text: "text-[var(--accent-blue)]",
+		border: "border-[var(--accent-blue)]/30",
+	},
+	SPC: {
+		bg: "bg-[var(--accent-brown)]/15",
+		text: "text-[var(--accent-brown)]",
+		border: "border-[var(--accent-brown)]/30",
+	},
 };
 
 const DEFAULT_COLORS = { bg: "bg-secondary/50", text: "text-foreground", border: "border-border" };
@@ -138,9 +144,7 @@ export default function ChatPanel() {
 								{conv.lastMessage}
 							</div>
 							<div className="flex items-center justify-between mt-1">
-								<span className="text-xs text-muted-foreground/60">
-									{conv.messageCount} msgs
-								</span>
+								<span className="text-xs text-muted-foreground/60">{conv.messageCount} msgs</span>
 								<span className="text-xs text-muted-foreground/60">
 									{formatTime(conv.lastMessageAt)}
 								</span>
@@ -221,7 +225,7 @@ function MessageList({ conversationId }: { conversationId: string }) {
 
 	return (
 		<>
-			{messages.map((msg, i) => {
+			{messages.map((msg, _i) => {
 				const isFromUser = !!msg.fromUser;
 				const agentInfo = msg.fromAgent;
 				const colors = agentInfo
@@ -241,10 +245,7 @@ function MessageList({ conversationId }: { conversationId: string }) {
 				}
 
 				return (
-					<div
-						key={msg._id}
-						className={`flex ${isFromUser ? "justify-end" : "justify-start"}`}
-					>
+					<div key={msg._id} className={`flex ${isFromUser ? "justify-end" : "justify-start"}`}>
 						<div
 							className={`max-w-[70%] rounded-lg px-3 py-2 border ${
 								isFromUser
@@ -258,9 +259,7 @@ function MessageList({ conversationId }: { conversationId: string }) {
 								</div>
 							)}
 							{isFromUser && (
-								<div className="text-xs font-medium mb-1 text-primary">
-									{msg.fromUser}
-								</div>
+								<div className="text-xs font-medium mb-1 text-primary">{msg.fromUser}</div>
 							)}
 							<div className="text-sm text-foreground whitespace-pre-wrap">{msg.content}</div>
 							<div className="text-xs text-muted-foreground/60 mt-1 text-right">

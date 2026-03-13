@@ -16,7 +16,6 @@ import {
 import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
 	tool_call: "bg-blue-500/20 text-blue-400",

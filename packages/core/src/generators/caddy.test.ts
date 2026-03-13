@@ -19,7 +19,7 @@ describe("generateCaddyfile (via generate)", () => {
 		const result = generate(baseInput);
 
 		expect(result.files).toHaveProperty("caddy/Caddyfile");
-		expect(result.files["caddy/Caddyfile"]!.length).toBeGreaterThan(0);
+		expect(result.files["caddy/Caddyfile"]?.length).toBeGreaterThan(0);
 	});
 
 	it("does not generate Caddyfile when proxy is none", () => {

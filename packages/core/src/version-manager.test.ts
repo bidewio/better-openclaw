@@ -52,7 +52,7 @@ describe("pinImageTags", () => {
 			if (svc.definition.gitSource) continue;
 			expect(svc.definition.imageTag).toBeDefined();
 			expect(typeof svc.definition.imageTag).toBe("string");
-			expect(svc.definition.imageTag!.length).toBeGreaterThan(0);
+			expect(svc.definition.imageTag?.length).toBeGreaterThan(0);
 		}
 	});
 
@@ -85,7 +85,7 @@ describe("pinImageTags", () => {
 		const pinned = pinImageTags(resolved);
 		const redis = pinned.services.find((s) => s.definition.id === "redis");
 		expect(redis).toBeDefined();
-		expect(redis!.definition.name).toBe("Redis");
+		expect(redis?.definition.name).toBe("Redis");
 		expect(pinned.estimatedMemoryMB).toBe(resolved.estimatedMemoryMB);
 	});
 });

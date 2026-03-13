@@ -14,9 +14,9 @@
  * NOTE: This uses Node.js `fs` — it runs in Vite dev middleware, NOT in the browser.
  */
 
-import { readdirSync, readFileSync, statSync } from "fs";
-import { join } from "path";
-import { homedir } from "os";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 
 // Rough per-token pricing (USD) for cost estimation
 export const MODEL_PRICING: Record<string, { input: number; output: number }> = {

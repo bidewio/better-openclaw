@@ -1,10 +1,10 @@
 import type { z } from "zod";
 import type {
+	AddedDependencySchema,
 	AddonStackInputSchema,
 	AddonStackResultSchema,
 	AddonStackUpdateInputSchema,
 	AddonStackUpdateResultSchema,
-	AddedDependencySchema,
 	AiProviderSchema,
 	ApiErrorSchema,
 	BuildContextSchema,

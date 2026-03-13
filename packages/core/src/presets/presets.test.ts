@@ -20,10 +20,10 @@ describe("preset smoke tests", () => {
 		it(`getPresetById returns correct preset for "${preset.id}"`, () => {
 			const found = getPresetById(preset.id);
 			expect(found).toBeDefined();
-			expect(found!.id).toBe(preset.id);
-			expect(found!.name).toBe(preset.name);
-			expect(found!.services).toEqual(preset.services);
-			expect(found!.skillPacks).toEqual(preset.skillPacks);
+			expect(found?.id).toBe(preset.id);
+			expect(found?.name).toBe(preset.name);
+			expect(found?.services).toEqual(preset.services);
+			expect(found?.skillPacks).toEqual(preset.skillPacks);
 		});
 	}
 

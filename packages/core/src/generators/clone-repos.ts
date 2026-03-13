@@ -22,7 +22,10 @@ export function generateCloneScripts(resolved: ResolverOutput): Record<string, s
 			let block = `clone_or_update "${s.definition.id}" "${gs.repoUrl}" ${branchArg}`;
 			if (gs.postCloneCommands && gs.postCloneCommands.length > 0) {
 				const cmds = gs.postCloneCommands
-					.map((cmd) => `  (cd "$REPOS_DIR/${s.definition.id}${gs.subdirectory ? `/${gs.subdirectory}` : ""}" && ${cmd})`)
+					.map(
+						(cmd) =>
+							`  (cd "$REPOS_DIR/${s.definition.id}${gs.subdirectory ? `/${gs.subdirectory}` : ""}" && ${cmd})`,
+					)
 					.join("\n");
 				block += `\n${cmds}`;
 			}
@@ -96,7 +99,9 @@ ok "All repositories ready."
 			if (gs.postCloneCommands && gs.postCloneCommands.length > 0) {
 				const subdir = gs.subdirectory ? `/${gs.subdirectory}` : "";
 				const cmds = gs.postCloneCommands
-					.map((cmd) => `Push-Location "$ReposDir/${s.definition.id}${subdir}"; ${cmd}; Pop-Location`)
+					.map(
+						(cmd) => `Push-Location "$ReposDir/${s.definition.id}${subdir}"; ${cmd}; Pop-Location`,
+					)
 					.join("\n");
 				block += `\n${cmds}`;
 			}

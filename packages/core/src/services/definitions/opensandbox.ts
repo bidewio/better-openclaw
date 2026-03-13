@@ -22,8 +22,7 @@ export const opensandboxDefinition: ServiceDefinition = {
 		{
 			name: "/var/run/docker.sock",
 			containerPath: "/var/run/docker.sock",
-			description:
-				"Docker socket (required for managing sandbox containers)",
+			description: "Docker socket (required for managing sandbox containers)",
 		},
 		{
 			name: "./sandbox.toml",
@@ -36,8 +35,7 @@ export const opensandboxDefinition: ServiceDefinition = {
 			key: "OPEN_SANDBOX_API_KEY",
 			defaultValue: "",
 			secret: true,
-			description:
-				"API key for OpenSandbox lifecycle API authentication (min 32 chars)",
+			description: "API key for OpenSandbox lifecycle API authentication (min 32 chars)",
 			required: true,
 		},
 		{
@@ -58,16 +56,14 @@ export const opensandboxDefinition: ServiceDefinition = {
 			key: "OPENSANDBOX_EXECD_IMAGE",
 			defaultValue: "opensandbox/execd:v1.0.6",
 			secret: false,
-			description:
-				"Execution daemon image injected into sandbox containers",
+			description: "Execution daemon image injected into sandbox containers",
 			required: false,
 		},
 		{
 			key: "OPENSANDBOX_NETWORK_MODE",
 			defaultValue: "bridge",
 			secret: false,
-			description:
-				"Container networking mode (always bridge for isolation)",
+			description: "Container networking mode (always bridge for isolation)",
 			required: false,
 		},
 		{
@@ -129,13 +125,7 @@ export const opensandboxDefinition: ServiceDefinition = {
 	],
 
 	docsUrl: "https://github.com/anthropics/OpenSandbox",
-	tags: [
-		"sandbox",
-		"code-execution",
-		"security",
-		"ai-agent",
-		"isolation",
-	],
+	tags: ["sandbox", "code-execution", "security", "ai-agent", "isolation"],
 	maturity: "stable",
 
 	requires: [],

@@ -101,7 +101,7 @@ function generateBashScript(resolved: ResolverOutput, options: HealthCheckOption
 	}
 
 	// Build the log-scan service list
-	const svcIdList = checks.map((s) => '"' + s.id + '"').join(" ");
+	const svcIdList = checks.map((s) => `"${s.id}"`).join(" ");
 
 	const lines: string[] = [
 		"#!/usr/bin/env bash",
@@ -450,7 +450,7 @@ function generateBashScript(resolved: ResolverOutput, options: HealthCheckOption
 		"fi",
 	];
 
-	return lines.join("\n") + "\n";
+	return `${lines.join("\n")}\n`;
 }
 
 // ─── PowerShell Script ──────────────────────────────────────────────────────
@@ -522,7 +522,7 @@ function generatePowerShellScript(resolved: ResolverOutput, options: HealthCheck
 		bmChecks.push("");
 	}
 
-	const svcIdList = checks.map((s) => '"' + s.id + '"').join(", ");
+	const svcIdList = checks.map((s) => `"${s.id}"`).join(", ");
 
 	const lines: string[] = [
 		"#Requires -Version 5.1",
@@ -808,5 +808,5 @@ function generatePowerShellScript(resolved: ResolverOutput, options: HealthCheck
 		"}",
 	];
 
-	return lines.join("\n") + "\n";
+	return `${lines.join("\n")}\n`;
 }

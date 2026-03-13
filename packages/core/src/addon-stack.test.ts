@@ -1,5 +1,5 @@
-import { parse } from "yaml";
 import { describe, expect, it } from "vitest";
+import { parse } from "yaml";
 import { generateAddonStack, updateAddonStack } from "./addon-stack.js";
 import { AddonStackInputSchema } from "./schema.js";
 
@@ -83,7 +83,7 @@ describe("generateAddonStack", () => {
 		// Password should be non-empty (48 hex chars = 24 bytes)
 		const match = result.envFile.match(/N8N_DB_PASSWORD=([a-f0-9]+)/);
 		expect(match).not.toBeNull();
-		expect(match![1].length).toBe(48);
+		expect(match?.[1].length).toBe(48);
 	});
 
 	it("gracefully handles unknown service IDs without throwing", () => {
@@ -131,8 +131,8 @@ describe("generateAddonStack", () => {
 
 		const n8nRoute = result.proxyRoutes.find((r) => r.serviceId === "n8n");
 		expect(n8nRoute).toBeDefined();
-		expect(n8nRoute!.path).toBe("/n8n");
-		expect(n8nRoute!.port).toBe(5678);
+		expect(n8nRoute?.path).toBe("/n8n");
+		expect(n8nRoute?.port).toBe(5678);
 	});
 
 	it("generates skill files and openclaw config patch", () => {
@@ -155,11 +155,9 @@ describe("generateAddonStack", () => {
 
 		// Port should be reassigned
 		const portAssignments = result.metadata.portAssignments;
-		const n8nAssignment = Object.entries(portAssignments).find(([key]) =>
-			key.startsWith("n8n:"),
-		);
+		const n8nAssignment = Object.entries(portAssignments).find(([key]) => key.startsWith("n8n:"));
 		expect(n8nAssignment).toBeDefined();
-		expect(n8nAssignment![1]).not.toBe(5678);
+		expect(n8nAssignment?.[1]).not.toBe(5678);
 	});
 
 	it("sanitizes project name from instanceId", () => {
@@ -211,9 +209,9 @@ describe("generateAddonStack", () => {
 		// MEILI_MASTER_KEY should be a base64url string of at least 32 chars (24 bytes)
 		const match = result.envFile.match(/MEILI_MASTER_KEY=([^\n]+)/);
 		expect(match).not.toBeNull();
-		expect(match![1].length).toBeGreaterThanOrEqual(32);
+		expect(match?.[1].length).toBeGreaterThanOrEqual(32);
 		// Should not be empty
-		expect(match![1]).not.toBe("");
+		expect(match?.[1]).not.toBe("");
 	});
 
 	it("applies env quirks to envFile output (grafana GF_SECURITY_ADMIN_PASSWORD)", () => {
@@ -226,7 +224,7 @@ describe("generateAddonStack", () => {
 		const match = result.envFile.match(/GF_SECURITY_ADMIN_PASSWORD=([^\n]+)/);
 		expect(match).not.toBeNull();
 		// Should be at least 22 chars (16 bytes base64url)
-		expect(match![1].length).toBeGreaterThanOrEqual(22);
+		expect(match?.[1].length).toBeGreaterThanOrEqual(22);
 	});
 
 	it("syncs DB_POSTGRESDB_PASSWORD with N8N_DB_PASSWORD via must_sync quirk", () => {
@@ -241,7 +239,7 @@ describe("generateAddonStack", () => {
 		expect(n8nDbPw).not.toBeNull();
 		expect(dbPostgresPw).not.toBeNull();
 		// Both passwords must match due to must_sync quirk
-		expect(n8nDbPw![1]).toBe(dbPostgresPw![1]);
+		expect(n8nDbPw?.[1]).toBe(dbPostgresPw?.[1]);
 	});
 
 	it("syncs user-provided credential with DB password reference", () => {
@@ -270,11 +268,9 @@ describe("generateAddonStack", () => {
 
 		// n8n should still get its default port (no conflict with qdrant)
 		const portAssignments = result.metadata.portAssignments;
-		const n8nAssignment = Object.entries(portAssignments).find(([key]) =>
-			key.startsWith("n8n:"),
-		);
+		const n8nAssignment = Object.entries(portAssignments).find(([key]) => key.startsWith("n8n:"));
 		expect(n8nAssignment).toBeDefined();
-		expect(n8nAssignment![1]).toBe(5678);
+		expect(n8nAssignment?.[1]).toBe(5678);
 	});
 
 	it("does not dual-list GPU services in both skipped and resolved", () => {
@@ -341,7 +337,7 @@ describe("generateAddonStack", () => {
 		const match = result.envFile.match(/OPEN_SANDBOX_API_KEY=([^\n]+)/);
 		expect(match).not.toBeNull();
 		// 32 bytes base64url ≈ 43 chars
-		expect(match![1].length).toBeGreaterThanOrEqual(43);
+		expect(match?.[1].length).toBeGreaterThanOrEqual(43);
 	});
 
 	it("generates code-sandbox skill file and config patch", () => {
@@ -372,8 +368,8 @@ describe("generateAddonStack", () => {
 
 		const route = result.proxyRoutes.find((r) => r.serviceId === "opensandbox");
 		expect(route).toBeDefined();
-		expect(route!.path).toBe("/sandbox");
-		expect(route!.port).toBe(8080);
+		expect(route?.path).toBe("/sandbox");
+		expect(route?.port).toBe(8080);
 	});
 
 	it("generates sandbox.toml in additionalFiles", () => {
@@ -384,11 +380,11 @@ describe("generateAddonStack", () => {
 
 		expect(result.additionalFiles).toHaveProperty("sandbox.toml");
 		const toml = result.additionalFiles["sandbox.toml"];
-		expect(toml).toContain('[server]');
+		expect(toml).toContain("[server]");
 		expect(toml).toContain('api_key = "${OPEN_SANDBOX_API_KEY}"');
-		expect(toml).toContain('[runtime]');
-		expect(toml).toContain('[docker]');
-		expect(toml).toContain('[secure_runtime]');
+		expect(toml).toContain("[runtime]");
+		expect(toml).toContain("[docker]");
+		expect(toml).toContain("[secure_runtime]");
 		expect(toml).toContain('type = "gvisor"');
 	});
 

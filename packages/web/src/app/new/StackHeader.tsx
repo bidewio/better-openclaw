@@ -35,7 +35,7 @@ export function StackHeader() {
 					platform={lastDownloadOptions?.platform}
 					onDismiss={() => setDownloadComplete(false)}
 					onDeployToServer={() => setShowDeployToServerModal(true)}
-					onDeployClawexa={() => CLOUD_ENABLED ? setShowClawexaModal(true) : comingSoon.open()}
+					onDeployClawexa={() => (CLOUD_ENABLED ? setShowClawexaModal(true) : comingSoon.open())}
 				/>
 			) : null}
 

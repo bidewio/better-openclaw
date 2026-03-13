@@ -11,14 +11,14 @@ export default function AddonStackApiPage() {
 		<>
 			<h1>Addon Stack API</h1>
 			<p>
-				The Addon Stack API lets hosting providers generate Docker Compose overlay files that
-				add services to an <strong>existing</strong> OpenClaw infrastructure. Unlike the
-				full-stack <code>generate()</code> pipeline, these functions produce only the addon
-				layer &mdash; no gateway, no Redis, no PostgreSQL, no reverse proxy.
+				The Addon Stack API lets hosting providers generate Docker Compose overlay files that add
+				services to an <strong>existing</strong> OpenClaw infrastructure. Unlike the full-stack{" "}
+				<code>generate()</code> pipeline, these functions produce only the addon layer &mdash; no
+				gateway, no Redis, no PostgreSQL, no reverse proxy.
 			</p>
 			<p>
-				This is the recommended integration point for platforms like Clawexa that already
-				provision core infrastructure via cloud-init or similar tooling.
+				This is the recommended integration point for platforms like Clawexa that already provision
+				core infrastructure via cloud-init or similar tooling.
 			</p>
 
 			<h2>Installation</h2>
@@ -52,9 +52,9 @@ const result = generateAddonStack({
 				<code>generateAddonStack(input)</code>
 			</h2>
 			<p>
-				Generates a complete addon stack from a list of service IDs. Returns Docker Compose
-				YAML, environment variables, proxy routes, and skill configuration &mdash; ready to
-				write to disk and <code>docker compose up</code>.
+				Generates a complete addon stack from a list of service IDs. Returns Docker Compose YAML,
+				environment variables, proxy routes, and skill configuration &mdash; ready to write to disk
+				and <code>docker compose up</code>.
 			</p>
 
 			<h3>Parameters</h3>
@@ -69,47 +69,58 @@ const result = generateAddonStack({
 				</thead>
 				<tbody>
 					<tr>
-						<td><code>instanceId</code></td>
+						<td>
+							<code>instanceId</code>
+						</td>
 						<td>string</td>
 						<td>Yes</td>
 						<td>Unique identifier for this deployment (used as Docker project name)</td>
 					</tr>
 					<tr>
-						<td><code>services</code></td>
+						<td>
+							<code>services</code>
+						</td>
 						<td>string[]</td>
 						<td>Yes</td>
 						<td>
-							Service IDs to install (e.g. <code>["n8n", "qdrant"]</code>). Infrastructure
-							IDs like <code>redis</code> or <code>postgresql</code> are automatically
-							filtered out with a warning.
+							Service IDs to install (e.g. <code>["n8n", "qdrant"]</code>). Infrastructure IDs like{" "}
+							<code>redis</code> or <code>postgresql</code> are automatically filtered out with a
+							warning.
 						</td>
 					</tr>
 					<tr>
-						<td><code>skillPacks</code></td>
+						<td>
+							<code>skillPacks</code>
+						</td>
 						<td>string[]</td>
 						<td>No</td>
 						<td>Optional skill pack IDs to include</td>
 					</tr>
 					<tr>
-						<td><code>reservedPorts</code></td>
+						<td>
+							<code>reservedPorts</code>
+						</td>
 						<td>number[]</td>
 						<td>No</td>
 						<td>
-							Host ports already in use by your infrastructure. Conflicts are
-							auto-reassigned to port+1000.
+							Host ports already in use by your infrastructure. Conflicts are auto-reassigned to
+							port+1000.
 						</td>
 					</tr>
 					<tr>
-						<td><code>generateSecrets</code></td>
+						<td>
+							<code>generateSecrets</code>
+						</td>
 						<td>boolean</td>
 						<td>No</td>
 						<td>
-							Generate random secrets for all service passwords/keys (default:{" "}
-							<code>true</code>)
+							Generate random secrets for all service passwords/keys (default: <code>true</code>)
 						</td>
 					</tr>
 					<tr>
-						<td><code>credentials</code></td>
+						<td>
+							<code>credentials</code>
+						</td>
 						<td>Record&lt;string, Record&lt;string, string&gt;&gt;</td>
 						<td>No</td>
 						<td>
@@ -118,16 +129,19 @@ const result = generateAddonStack({
 						</td>
 					</tr>
 					<tr>
-						<td><code>prebuiltImages</code></td>
+						<td>
+							<code>prebuiltImages</code>
+						</td>
 						<td>Record&lt;string, string&gt;</td>
 						<td>No</td>
 						<td>
-							Override Docker images for services that normally require{" "}
-							<code>docker build</code>
+							Override Docker images for services that normally require <code>docker build</code>
 						</td>
 					</tr>
 					<tr>
-						<td><code>platform</code></td>
+						<td>
+							<code>platform</code>
+						</td>
 						<td>string</td>
 						<td>No</td>
 						<td>
@@ -135,7 +149,9 @@ const result = generateAddonStack({
 						</td>
 					</tr>
 					<tr>
-						<td><code>gpu</code></td>
+						<td>
+							<code>gpu</code>
+						</td>
 						<td>boolean</td>
 						<td>No</td>
 						<td>Whether the host has GPU support</td>
@@ -143,7 +159,9 @@ const result = generateAddonStack({
 				</tbody>
 			</table>
 
-			<h3>Return Value: <code>AddonStackResult</code></h3>
+			<h3>
+				Return Value: <code>AddonStackResult</code>
+			</h3>
 			<table>
 				<thead>
 					<tr>
@@ -154,53 +172,66 @@ const result = generateAddonStack({
 				</thead>
 				<tbody>
 					<tr>
-						<td><code>composeOverride</code></td>
+						<td>
+							<code>composeOverride</code>
+						</td>
 						<td>string</td>
 						<td>
-							Complete <code>docker-compose.override.yml</code> YAML. Includes only addon
-							services plus <code>openclaw-network</code> as external.
+							Complete <code>docker-compose.override.yml</code> YAML. Includes only addon services
+							plus <code>openclaw-network</code> as external.
 						</td>
 					</tr>
 					<tr>
-						<td><code>envFile</code></td>
+						<td>
+							<code>envFile</code>
+						</td>
 						<td>string</td>
 						<td>
-							Environment variable file contents. Excludes infrastructure-managed keys
-							(REDIS_*, POSTGRES_*, OPENCLAW_*).
+							Environment variable file contents. Excludes infrastructure-managed keys (REDIS_*,
+							POSTGRES_*, OPENCLAW_*).
 						</td>
 					</tr>
 					<tr>
-						<td><code>envVars</code></td>
+						<td>
+							<code>envVars</code>
+						</td>
 						<td>EnvVarGroup[]</td>
 						<td>Structured env vars grouped by service, suitable for UI rendering</td>
 					</tr>
 					<tr>
-						<td><code>proxyRoutes</code></td>
-						<td>ProxyRoute[]</td>
 						<td>
-							Reverse proxy routes to register (path, port, protocol, stripPrefix flag)
+							<code>proxyRoutes</code>
 						</td>
+						<td>ProxyRoute[]</td>
+						<td>Reverse proxy routes to register (path, port, protocol, stripPrefix flag)</td>
 					</tr>
 					<tr>
-						<td><code>skillFiles</code></td>
+						<td>
+							<code>skillFiles</code>
+						</td>
 						<td>Record&lt;string, string&gt;</td>
 						<td>Skill definition files to write to the config directory</td>
 					</tr>
 					<tr>
-						<td><code>openclawConfigPatch</code></td>
+						<td>
+							<code>openclawConfigPatch</code>
+						</td>
 						<td>object</td>
 						<td>
-							JSON patch for <code>openclaw.json</code> &mdash; contains skill entries to
-							merge
+							JSON patch for <code>openclaw.json</code> &mdash; contains skill entries to merge
 						</td>
 					</tr>
 					<tr>
-						<td><code>warnings</code></td>
+						<td>
+							<code>warnings</code>
+						</td>
 						<td>string[]</td>
 						<td>Non-fatal warnings (filtered infra services, dependency notes, etc.)</td>
 					</tr>
 					<tr>
-						<td><code>metadata</code></td>
+						<td>
+							<code>metadata</code>
+						</td>
 						<td>object</td>
 						<td>
 							Includes <code>serviceCount</code>, <code>resolvedServices</code>,{" "}
@@ -225,25 +256,32 @@ const result = generateAddonStack({
 				</thead>
 				<tbody>
 					<tr>
-						<td><code>missing_credentials</code></td>
 						<td>
-							Service requires API keys that weren&apos;t provided and can&apos;t be
-							auto-generated
+							<code>missing_credentials</code>
+						</td>
+						<td>
+							Service requires API keys that weren&apos;t provided and can&apos;t be auto-generated
 						</td>
 					</tr>
 					<tr>
-						<td><code>no_image</code></td>
 						<td>
-							Service requires <code>docker build</code> and no{" "}
-							<code>prebuiltImage</code> is available
+							<code>no_image</code>
+						</td>
+						<td>
+							Service requires <code>docker build</code> and no <code>prebuiltImage</code> is
+							available
 						</td>
 					</tr>
 					<tr>
-						<td><code>gpu_required</code></td>
+						<td>
+							<code>gpu_required</code>
+						</td>
 						<td>Service needs GPU but host doesn&apos;t have GPU support</td>
 					</tr>
 					<tr>
-						<td><code>unknown_service</code></td>
+						<td>
+							<code>unknown_service</code>
+						</td>
 						<td>Service ID doesn&apos;t match any known service definition</td>
 					</tr>
 				</tbody>
@@ -255,8 +293,8 @@ const result = generateAddonStack({
 				<code>updateAddonStack(input)</code>
 			</h2>
 			<p>
-				Incrementally adds or removes services from an existing addon stack. Preserves
-				user-modified environment values and computes diffs for orchestration.
+				Incrementally adds or removes services from an existing addon stack. Preserves user-modified
+				environment values and computes diffs for orchestration.
 			</p>
 
 			<h3>Parameters</h3>
@@ -271,37 +309,49 @@ const result = generateAddonStack({
 				</thead>
 				<tbody>
 					<tr>
-						<td><code>instanceId</code></td>
+						<td>
+							<code>instanceId</code>
+						</td>
 						<td>string</td>
 						<td>Yes</td>
 						<td>Same instance ID used in the original generation</td>
 					</tr>
 					<tr>
-						<td><code>currentCompose</code></td>
+						<td>
+							<code>currentCompose</code>
+						</td>
 						<td>string</td>
 						<td>Yes</td>
 						<td>Current compose override YAML (as returned by generateAddonStack)</td>
 					</tr>
 					<tr>
-						<td><code>currentEnv</code></td>
+						<td>
+							<code>currentEnv</code>
+						</td>
 						<td>string</td>
 						<td>Yes</td>
 						<td>Current .env file contents</td>
 					</tr>
 					<tr>
-						<td><code>addServices</code></td>
+						<td>
+							<code>addServices</code>
+						</td>
 						<td>string[]</td>
 						<td>No</td>
 						<td>Service IDs to add</td>
 					</tr>
 					<tr>
-						<td><code>removeServices</code></td>
+						<td>
+							<code>removeServices</code>
+						</td>
 						<td>string[]</td>
 						<td>No</td>
 						<td>Service IDs to remove</td>
 					</tr>
 					<tr>
-						<td><code>generateSecrets</code></td>
+						<td>
+							<code>generateSecrets</code>
+						</td>
 						<td>boolean</td>
 						<td>No</td>
 						<td>Generate secrets for newly added services</td>
@@ -309,7 +359,9 @@ const result = generateAddonStack({
 				</tbody>
 			</table>
 
-			<h3>Return Value: <code>AddonStackUpdateResult</code></h3>
+			<h3>
+				Return Value: <code>AddonStackUpdateResult</code>
+			</h3>
 			<table>
 				<thead>
 					<tr>
@@ -320,33 +372,41 @@ const result = generateAddonStack({
 				</thead>
 				<tbody>
 					<tr>
-						<td><code>composeOverride</code></td>
+						<td>
+							<code>composeOverride</code>
+						</td>
 						<td>string</td>
 						<td>Updated Docker Compose YAML</td>
 					</tr>
 					<tr>
-						<td><code>envFile</code></td>
-						<td>string</td>
 						<td>
-							Merged environment file &mdash; existing values are preserved, new vars added
+							<code>envFile</code>
 						</td>
+						<td>string</td>
+						<td>Merged environment file &mdash; existing values are preserved, new vars added</td>
 					</tr>
 					<tr>
-						<td><code>proxyRoutes</code></td>
+						<td>
+							<code>proxyRoutes</code>
+						</td>
 						<td>ProxyRoute[]</td>
 						<td>Full set of proxy routes for the updated stack</td>
 					</tr>
 					<tr>
-						<td><code>imagesToPull</code></td>
+						<td>
+							<code>imagesToPull</code>
+						</td>
 						<td>string[]</td>
 						<td>Docker images that need to be pulled for added services</td>
 					</tr>
 					<tr>
-						<td><code>metadata</code></td>
+						<td>
+							<code>metadata</code>
+						</td>
 						<td>object</td>
 						<td>
-							Includes <code>added</code>, <code>removed</code>, and{" "}
-							<code>unchanged</code> service arrays
+							Includes <code>added</code>, <code>removed</code>, and <code>unchanged</code> service
+							arrays
 						</td>
 					</tr>
 				</tbody>
@@ -356,8 +416,8 @@ const result = generateAddonStack({
 
 			<h2 id="infrastructure-filtering">Infrastructure Filtering</h2>
 			<p>
-				The addon stack API automatically filters out infrastructure services that are expected
-				to be managed by the hosting platform:
+				The addon stack API automatically filters out infrastructure services that are expected to
+				be managed by the hosting platform:
 			</p>
 			<pre>
 				<code>{`// These service IDs are always excluded from addon output:
@@ -366,17 +426,17 @@ open-webui, caddy, traefik, postgres-setup,
 convex, convex-dashboard, mission-control`}</code>
 			</pre>
 			<p>
-				If a user requests an infrastructure service, it&apos;s silently removed and a warning
-				is added to the result. Services that <em>depend</em> on infrastructure (like n8n
-				needing PostgreSQL) automatically get a <code>postgres-setup</code> init container that
-				connects to the existing database.
+				If a user requests an infrastructure service, it&apos;s silently removed and a warning is
+				added to the result. Services that <em>depend</em> on infrastructure (like n8n needing
+				PostgreSQL) automatically get a <code>postgres-setup</code> init container that connects to
+				the existing database.
 			</p>
 
 			<h2 id="port-conflicts">Port Conflict Resolution</h2>
 			<p>
-				Pass your infrastructure&apos;s occupied ports via <code>reservedPorts</code>.
-				When an addon service&apos;s default port conflicts, it&apos;s automatically
-				reassigned to <code>port + 1000</code>. The actual assignments are reported in{" "}
+				Pass your infrastructure&apos;s occupied ports via <code>reservedPorts</code>. When an addon
+				service&apos;s default port conflicts, it&apos;s automatically reassigned to{" "}
+				<code>port + 1000</code>. The actual assignments are reported in{" "}
 				<code>metadata.portAssignments</code>.
 			</p>
 			<pre>
@@ -393,8 +453,8 @@ console.log(result.metadata.portAssignments);
 
 			<h2 id="proxy-routes">Proxy Routes</h2>
 			<p>
-				Each service with a <code>proxyPath</code> definition generates a proxy route. Use
-				these to configure your reverse proxy (Caddy, Traefik, nginx):
+				Each service with a <code>proxyPath</code> definition generates a proxy route. Use these to
+				configure your reverse proxy (Caddy, Traefik, nginx):
 			</p>
 			<pre>
 				<code>{`for (const route of result.proxyRoutes) {
@@ -415,16 +475,16 @@ console.log(result.metadata.portAssignments);
 			</p>
 			<ul>
 				<li>
-					<strong>empty_string_crashes</strong> &mdash; setting an env var to an empty string
-					causes the service to crash. The API sets a safe default value.
+					<strong>empty_string_crashes</strong> &mdash; setting an env var to an empty string causes
+					the service to crash. The API sets a safe default value.
 				</li>
 				<li>
-					<strong>min_length</strong> &mdash; the value must be at least N bytes. The API
-					generates appropriately-sized secrets.
+					<strong>min_length</strong> &mdash; the value must be at least N bytes. The API generates
+					appropriately-sized secrets.
 				</li>
 				<li>
-					<strong>must_sync</strong> &mdash; two env vars must have the same value. The API
-					syncs them automatically.
+					<strong>must_sync</strong> &mdash; two env vars must have the same value. The API syncs
+					them automatically.
 				</li>
 			</ul>
 
@@ -449,8 +509,7 @@ const result = generateAddonStack(parsed);`}</code>
 			</pre>
 
 			<p>
-				See also:{" "}
-				<Link href="/docs/api/endpoints">REST API Endpoints</Link> |{" "}
+				See also: <Link href="/docs/api/endpoints">REST API Endpoints</Link> |{" "}
 				<Link href="/docs/guides/hosting-integration">Hosting Provider Integration Guide</Link>
 			</p>
 		</>

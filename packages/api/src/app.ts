@@ -6,6 +6,7 @@ import { auth } from "./lib/auth.js";
 import { optionalApiKey } from "./middleware/api-key.js";
 import { generateRateLimiter, rateLimiter } from "./middleware/rate-limit.js";
 import { requestId } from "./middleware/request-id.js";
+import { analyticsRoute } from "./routes/analytics.js";
 import { authRoute } from "./routes/auth.js";
 import { deployRoute } from "./routes/deploy.js";
 import { favoritesRoute } from "./routes/favorites.js";
@@ -15,7 +16,6 @@ import { presetsRoute } from "./routes/presets.js";
 import { servicesRoute } from "./routes/services.js";
 import { skillsRoute } from "./routes/skills.js";
 import { stacksRoute } from "./routes/stacks.js";
-import { analyticsRoute } from "./routes/analytics.js";
 import { validateRoute } from "./routes/validate.js";
 
 const app = new OpenAPIHono<{

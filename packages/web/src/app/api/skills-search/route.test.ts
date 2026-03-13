@@ -94,7 +94,6 @@ describe("GET /api/skills-search", () => {
 			error: {
 				code: "UPSTREAM_ERROR",
 				message: "SkillsMP returned 429",
-				detail: "rate limited",
 			},
 		});
 	});

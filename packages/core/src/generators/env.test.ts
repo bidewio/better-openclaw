@@ -37,8 +37,8 @@ describe("generateEnvFiles (via generate)", () => {
 		const redisLine = env.split("\n").find((l) => l.startsWith("REDIS_PASSWORD="));
 		expect(redisLine).toBeDefined();
 		// Value should not be empty
-		const value = redisLine!.split("=")[1];
-		expect(value!.length).toBeGreaterThan(0);
+		const value = redisLine?.split("=")[1];
+		expect(value?.length).toBeGreaterThan(0);
 	});
 
 	it("env files contain service-specific variables", () => {

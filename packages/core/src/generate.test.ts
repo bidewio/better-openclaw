@@ -128,7 +128,7 @@ describe("generate (end-to-end)", () => {
 		});
 
 		expect(result.files).toHaveProperty("caddy/Caddyfile");
-		expect(result.files["caddy/Caddyfile"]!.length).toBeGreaterThan(0);
+		expect(result.files["caddy/Caddyfile"]?.length).toBeGreaterThan(0);
 	});
 
 	it("generates prometheus config when monitoring enabled", () => {
@@ -303,7 +303,7 @@ describe("generate (end-to-end)", () => {
 
 		for (const script of expectedScripts) {
 			expect(result.files).toHaveProperty(script);
-			expect(result.files[script]!.length).toBeGreaterThan(0);
+			expect(result.files[script]?.length).toBeGreaterThan(0);
 		}
 	});
 
@@ -326,7 +326,7 @@ describe("generate (end-to-end)", () => {
 		// Walk through lines: every non-empty, non-comment KEY=VALUE line should
 		// have a preceding comment line (starting with #).
 		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i]!.trim();
+			const line = lines[i]?.trim();
 			if (line === "" || line.startsWith("#")) continue;
 
 			// This line looks like KEY=VALUE
@@ -334,7 +334,7 @@ describe("generate (end-to-end)", () => {
 				// There must be a comment somewhere before it (look backwards for a # line)
 				let foundComment = false;
 				for (let j = i - 1; j >= 0; j--) {
-					const prev = lines[j]!.trim();
+					const prev = lines[j]?.trim();
 					if (prev === "") continue; // skip blank lines
 					if (prev.startsWith("#")) {
 						foundComment = true;

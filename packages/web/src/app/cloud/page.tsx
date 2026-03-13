@@ -47,14 +47,11 @@ function CloudComingSoon() {
 				</h1>
 
 				<p className="mt-8 max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed">
-					Clawexa Cloud is currently under development. The hosted version of
-					better-openclaw will let you deploy AI agent stacks without managing
-					servers, Docker, or infrastructure.
+					Clawexa Cloud is currently under development. The hosted version of better-openclaw will
+					let you deploy AI agent stacks without managing servers, Docker, or infrastructure.
 				</p>
 
-				<p className="mt-4 font-mono text-xs text-muted-foreground/60">
-					Stay tuned for updates.
-				</p>
+				<p className="mt-4 font-mono text-xs text-muted-foreground/60">Stay tuned for updates.</p>
 
 				<div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
 					<Link

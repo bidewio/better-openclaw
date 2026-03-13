@@ -251,8 +251,8 @@ describe("ServiceDefinitionSchema", () => {
 		const result = ServiceDefinitionSchema.parse(withNative);
 		expect(result.nativeSupported).toBe(true);
 		expect(result.nativeRecipes).toHaveLength(1);
-		expect(result.nativeRecipes![0].platform).toBe("linux");
-		expect(result.nativeRecipes![0].startCommand).toBe("systemctl start redis-server");
+		expect(result.nativeRecipes?.[0].platform).toBe("linux");
+		expect(result.nativeRecipes?.[0].startCommand).toBe("systemctl start redis-server");
 	});
 });
 

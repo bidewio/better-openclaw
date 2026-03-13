@@ -57,6 +57,23 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": ["packages/mission-control/**"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "warn",
+						"noArrayIndexKey": "warn",
+						"noImplicitAnyLet": "warn"
+					},
+					"a11y": {
+						"noStaticElementInteractions": "warn",
+						"useKeyWithClickEvents": "warn",
+						"noLabelWithoutControl": "warn"
+					}
+				}
+			}
 		}
 	]
 }

@@ -337,7 +337,9 @@ export const GenerationInputSchema = z.object({
 
 export const ResolvedServiceSchema = z.object({
 	definition: ServiceDefinitionSchema,
-	addedBy: z.enum(["user", "dependency", "skill-pack", "proxy", "monitoring", "mandatory"]).default("user"),
+	addedBy: z
+		.enum(["user", "dependency", "skill-pack", "proxy", "monitoring", "mandatory"])
+		.default("user"),
 });
 
 export const AddedDependencySchema = z.object({
@@ -441,7 +443,9 @@ export const AddonStackInputSchema = z.object({
 	/** User-provided credentials for services that need them. */
 	credentials: z.record(z.string(), z.record(z.string(), z.string())).default({}),
 	/** Port overrides for specific services. */
-	portOverrides: z.record(z.string(), z.record(z.string(), z.number().int().min(1).max(65535))).optional(),
+	portOverrides: z
+		.record(z.string(), z.record(z.string(), z.number().int().min(1).max(65535)))
+		.optional(),
 	/** Whether the host has GPU support. */
 	gpu: z.boolean().default(false),
 	/** AI providers configured on this instance. */
@@ -456,15 +460,19 @@ export const AddonStackResultSchema = z.object({
 	/** Complete .env file with all secrets generated. */
 	envFile: z.string(),
 	/** Structured env vars for UI display / credential management. */
-	envVars: z.array(z.object({
-		serviceName: z.string(),
-		vars: z.array(z.object({
-			key: z.string(),
-			description: z.string(),
-			value: z.string(),
-			secret: z.boolean(),
-		})),
-	})),
+	envVars: z.array(
+		z.object({
+			serviceName: z.string(),
+			vars: z.array(
+				z.object({
+					key: z.string(),
+					description: z.string(),
+					value: z.string(),
+					secret: z.boolean(),
+				}),
+			),
+		}),
+	),
 	/** SKILL.md files keyed by slug. */
 	skillFiles: z.record(z.string(), z.string()),
 	/** OpenClaw config additions (skills.entries to merge). */
@@ -487,10 +495,14 @@ export const AddonStackResultSchema = z.object({
 		generatedSecretKeys: z.array(z.string()),
 		portAssignments: z.record(z.string(), z.number()),
 		/** Docker images to pre-pull during cloud-init, grouped by priority. */
-		prePullImages: z.array(z.object({
-			image: z.string(),
-			priority: z.union([z.literal(1), z.literal(2), z.literal(3)]),
-		})).default([]),
+		prePullImages: z
+			.array(
+				z.object({
+					image: z.string(),
+					priority: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+				}),
+			)
+			.default([]),
 	}),
 	/** Warnings (non-fatal issues). */
 	warnings: z.array(z.string()),
@@ -511,11 +523,17 @@ export const AddonStackUpdateInputSchema = z.object({
 	/** User-provided credentials for new services. */
 	credentials: z.record(z.string(), z.record(z.string(), z.string())).default({}),
 	/** Port overrides for specific services. */
-	portOverrides: z.record(z.string(), z.record(z.string(), z.number().int().min(1).max(65535))).optional(),
+	portOverrides: z
+		.record(z.string(), z.record(z.string(), z.number().int().min(1).max(65535)))
+		.optional(),
+	/** Services already running on the instance (to detect conflicts). */
+	existingServices: z.array(z.string()).default([]),
 	/** Reserved ports. */
 	reservedPorts: z.array(z.number().int()).default([]),
 	platform: PlatformSchema.default("linux/amd64"),
 	openclawVersion: z.string().default("latest"),
+	/** Whether the host has GPU support. */
+	gpu: z.boolean().default(false),
 	aiProviders: z.array(AiProviderSchema).default([]),
 	prebuiltImages: z.record(z.string(), z.string()).default({}),
 });

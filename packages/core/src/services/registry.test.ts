@@ -15,8 +15,8 @@ describe("service registry", () => {
 	it("finds redis by ID", () => {
 		const redis = getServiceById("redis");
 		expect(redis).toBeDefined();
-		expect(redis!.id).toBe("redis");
-		expect(redis!.name).toBe("Redis");
+		expect(redis?.id).toBe("redis");
+		expect(redis?.name).toBe("Redis");
 	});
 
 	it("returns undefined for unknown ID", () => {
@@ -27,16 +27,16 @@ describe("service registry", () => {
 	it("finds tailscale and it is mandatory", () => {
 		const tailscale = getServiceById("tailscale");
 		expect(tailscale).toBeDefined();
-		expect(tailscale!.id).toBe("tailscale");
-		expect(tailscale!.mandatory).toBe(true);
+		expect(tailscale?.id).toBe("tailscale");
+		expect(tailscale?.mandatory).toBe(true);
 	});
 
 	it("finds mission-control and it is mandatory with gitSource", () => {
 		const mc = getServiceById("mission-control");
 		expect(mc).toBeDefined();
-		expect(mc!.mandatory).toBe(true);
-		expect(mc!.gitSource).toBeDefined();
-		expect(mc!.gitSource!.repoUrl).toContain("better-openclaw-mission-control");
+		expect(mc?.mandatory).toBe(true);
+		expect(mc?.gitSource).toBeDefined();
+		expect(mc?.gitSource?.repoUrl).toContain("better-openclaw-mission-control");
 	});
 
 	it("finds coolify, dokploy, livekit, and La Suite Meet services by ID", () => {

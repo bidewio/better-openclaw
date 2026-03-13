@@ -90,9 +90,7 @@ const navigation: NavSection[] = [
 	{
 		title: "Guides",
 		icon: <Code className="h-4 w-4" />,
-		items: [
-			{ title: "Hosting Integration", href: "/docs/guides/hosting-integration" },
-		],
+		items: [{ title: "Hosting Integration", href: "/docs/guides/hosting-integration" }],
 	},
 	{
 		title: "Community",

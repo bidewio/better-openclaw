@@ -93,8 +93,7 @@ export const convexDefinition: ServiceDefinition = {
 			key: "CONVEX_INSTANCE_SECRET",
 			defaultValue: "${INSTANCE_SECRET}",
 			secret: true,
-			description:
-				"Convex instance secret used by Mission Control (synced with INSTANCE_SECRET)",
+			description: "Convex instance secret used by Mission Control (synced with INSTANCE_SECRET)",
 			required: false,
 		},
 	],

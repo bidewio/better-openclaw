@@ -161,10 +161,7 @@ route.openapi(getStats, async (c: any) => {
 		db.select({ total: count() }).from(ae),
 
 		// Count by source
-		db
-			.select({ source: ae.source, total: count() })
-			.from(ae)
-			.groupBy(ae.source),
+		db.select({ source: ae.source, total: count() }).from(ae).groupBy(ae.source),
 
 		// Top services (unnest JSONB array, count each)
 		db.execute(sql`
@@ -249,7 +246,7 @@ route.openapi(getStats, async (c: any) => {
 	}
 
 	// Derive top service from raw result
-	const topServicesRows = (topServicesResult.rows ?? topServicesResult) as Array<{
+	const topServicesRows = ((topServicesResult as any).rows ?? topServicesResult) as Array<{
 		service: string;
 		count: number;
 	}>;
@@ -269,18 +266,18 @@ route.openapi(getStats, async (c: any) => {
 		.map(([category, cnt]) => ({ category, count: cnt }))
 		.sort((a, b) => b.count - a.count);
 
-	const featureRows = (featureResult.rows ?? featureResult) as Array<{
+	const featureRows = ((featureResult as any).rows ?? featureResult) as Array<{
 		gpu_percent: number;
 		monitoring_percent: number;
 		domain_percent: number;
 	}>;
 	const feat = featureRows[0] ?? { gpu_percent: 0, monitoring_percent: 0, domain_percent: 0 };
 
-	const dailyRows = (dailyResult.rows ?? dailyResult) as Array<{
+	const dailyRows = ((dailyResult as any).rows ?? dailyResult) as Array<{
 		date: string;
 		count: number;
 	}>;
-	const monthlyRows = (monthlyResult.rows ?? monthlyResult) as Array<{
+	const monthlyRows = ((monthlyResult as any).rows ?? monthlyResult) as Array<{
 		month: string;
 		count: number;
 	}>;
@@ -322,8 +319,7 @@ route.openapi(getStats, async (c: any) => {
 		features: {
 			sources: sourceResult.map((r) => ({ source: r.source, count: r.total })),
 			gpuPercent: Math.round((Number(feat.gpu_percent) + Number.EPSILON) * 10) / 10,
-			monitoringPercent:
-				Math.round((Number(feat.monitoring_percent) + Number.EPSILON) * 10) / 10,
+			monitoringPercent: Math.round((Number(feat.monitoring_percent) + Number.EPSILON) * 10) / 10,
 			domainPercent: Math.round((Number(feat.domain_percent) + Number.EPSILON) * 10) / 10,
 		},
 	});

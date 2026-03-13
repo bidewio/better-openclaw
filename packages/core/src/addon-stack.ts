@@ -1,7 +1,6 @@
 import { randomBytes } from "node:crypto";
-import { stringify } from "yaml";
-import { parse as parseYaml } from "yaml";
-import { buildCompanionService, buildPostgresSetup, quotedStr, YAML_OPTIONS } from "./composer.js";
+import { parse as parseYaml, stringify } from "yaml";
+import { buildCompanionService, quotedStr, YAML_OPTIONS } from "./composer.js";
 import { getDbRequirements } from "./generators/postgres-init.js";
 import { generateSkillFiles } from "./generators/skills.js";
 import { resolve } from "./resolver.js";
@@ -63,12 +62,14 @@ const CLAWEXA_MANAGED_ENV_KEYS = new Set([
 
 /** Sanitize instanceId into a valid Docker Compose project name. */
 function sanitizeProjectName(instanceId: string): string {
-	return instanceId
-		.toLowerCase()
-		.replace(/[^a-z0-9-]/g, "-")
-		.replace(/^-+|-+$/g, "")
-		.replace(/-{2,}/g, "-")
-		.slice(0, 64) || "addon";
+	return (
+		instanceId
+			.toLowerCase()
+			.replace(/[^a-z0-9-]/g, "-")
+			.replace(/^-+|-+$/g, "")
+			.replace(/-{2,}/g, "-")
+			.slice(0, 64) || "addon"
+	);
 }
 
 /** Generate a cryptographically secure hex secret of the given byte length. */
@@ -221,8 +222,8 @@ function resolvePortConflicts(
 			if (userOverride) {
 				usedPorts.add(userOverride);
 				assignments[`${def.id}:${port.container}`] = userOverride;
-				if (!overrides[def.id]) overrides[def.id] = {};
-				overrides[def.id][String(port.host)] = userOverride;
+				overrides[def.id] ??= {};
+				overrides[def.id]![String(port.host)] = userOverride;
 				continue;
 			}
 
@@ -233,8 +234,8 @@ function resolvePortConflicts(
 				while (usedPorts.has(assignedPort)) {
 					assignedPort++;
 				}
-				if (!overrides[def.id]) overrides[def.id] = {};
-				overrides[def.id][String(port.host)] = assignedPort;
+				overrides[def.id] ??= {};
+				overrides[def.id]![String(port.host)] = assignedPort;
 			}
 			usedPorts.add(assignedPort);
 			assignments[`${def.id}:${port.container}`] = assignedPort;
@@ -506,7 +507,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 						envVar.defaultValue?.endsWith("}")
 					) {
 						const refKey = envVar.defaultValue.slice(2, -1);
-						envValues.set(refKey, userCreds[envVar.key]);
+						envValues.set(refKey, userCreds[envVar.key]!);
 					}
 				}
 			}
@@ -516,7 +517,9 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 				reason: "resolution_error",
 				details: `Failed to build compose entry: ${err instanceof Error ? err.message : String(err)}`,
 			});
-			warnings.push(`Failed to process service "${def.name}": ${err instanceof Error ? err.message : String(err)}`);
+			warnings.push(
+				`Failed to process service "${def.name}": ${err instanceof Error ? err.message : String(err)}`,
+			);
 		}
 	}
 
@@ -592,14 +595,19 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 			const secretValue = input.generateSecrets ? generateHexSecret(24) : "";
 			envValues.set(req.passwordEnvVar, secretValue);
 			if (secretValue) generatedSecretKeys.push(req.passwordEnvVar);
-			envLines.push(`# PostgreSQL password for ${req.serviceName} (db: ${req.dbName}, user: ${req.dbUser})`);
+			envLines.push(
+				`# PostgreSQL password for ${req.serviceName} (db: ${req.dbName}, user: ${req.dbUser})`,
+			);
 			envLines.push(`${req.passwordEnvVar}=${secretValue}`);
 			envLines.push("");
 		}
 	}
 
 	// Per-service env vars
-	const seenKeys = new Set<string>([...CLAWEXA_MANAGED_ENV_KEYS, ...dbReqs.map((r) => r.passwordEnvVar)]);
+	const seenKeys = new Set<string>([
+		...CLAWEXA_MANAGED_ENV_KEYS,
+		...dbReqs.map((r) => r.passwordEnvVar),
+	]);
 	const envVarGroups: AddonStackResult["envVars"] = [];
 
 	for (const svc of deployableServices) {
@@ -729,7 +737,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 			'execd_image = "opensandbox/execd:v1.0.6"',
 			"",
 			"[docker]",
-			"network_mode = \"bridge\"",
+			'network_mode = "bridge"',
 			'drop_capabilities = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "MKNOD", "NET_RAW", "SYS_RAWIO"]',
 			"no_new_privileges = true",
 			"pids_limit = 512",
@@ -851,7 +859,6 @@ export function updateAddonStack(rawInput: AddonStackUpdateInput): AddonStackUpd
 	}
 
 	// 4. Compute desired service list
-	const addSet = new Set(input.addServices);
 	const removeSet = new Set(input.removeServices);
 	const desiredServiceIds = [
 		...currentServiceIds.filter((id) => !removeSet.has(id)),
@@ -865,10 +872,12 @@ export function updateAddonStack(rawInput: AddonStackUpdateInput): AddonStackUpd
 		skillPacks: [],
 		platform: input.platform,
 		openclawVersion: input.openclawVersion,
+		existingServices: input.existingServices,
 		reservedPorts: input.reservedPorts,
 		generateSecrets: input.generateSecrets,
 		credentials: input.credentials,
 		portOverrides: input.portOverrides,
+		gpu: input.gpu,
 		aiProviders: input.aiProviders,
 		prebuiltImages: input.prebuiltImages,
 	});
@@ -911,10 +920,10 @@ export function updateAddonStack(rawInput: AddonStackUpdateInput): AddonStackUpd
 		const def = getServiceById(id);
 		if (!def) continue;
 		for (const skill of def.skills) {
-			const skillPath = Object.keys(targetResult.skillFiles).find(
-				(path) => path.includes(skill.skillId),
+			const skillPath = Object.keys(targetResult.skillFiles).find((path) =>
+				path.includes(skill.skillId),
 			);
-			if (skillPath) {
+			if (skillPath && targetResult.skillFiles[skillPath]) {
 				newSkillFiles[skillPath] = targetResult.skillFiles[skillPath];
 			}
 		}

@@ -246,6 +246,7 @@ export function UseCaseCarousel() {
 					<div className="flex items-center justify-center gap-2 mt-8">
 						{useCases.map((useCase, index) => (
 							<button
+								type="button"
 								key={useCase.id}
 								onClick={() => setCurrentIndex(index)}
 								className={`h-2 transition-all ${

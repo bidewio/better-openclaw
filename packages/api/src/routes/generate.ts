@@ -1,5 +1,5 @@
 import { Writable } from "node:stream";
-import { GenerationInputSchema, buildAnalyticsPayload, generate } from "@better-openclaw/core";
+import { buildAnalyticsPayload, GenerationInputSchema, generate } from "@better-openclaw/core";
 import { analyticsEvent, db } from "@better-openclaw/db";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import archiver from "archiver";
@@ -132,7 +132,9 @@ route.openapi(generatePost, async (c: any) => {
 
 		// Fire-and-forget analytics tracking
 		const analyticsPayload = buildAnalyticsPayload(input, result.metadata, "api");
-		db.insert(analyticsEvent).values(analyticsPayload).catch(() => {});
+		db.insert(analyticsEvent)
+			.values(analyticsPayload)
+			.catch(() => {});
 
 		const accept = c.req.header("Accept") ?? "";
 		const { format } = c.req.valid("query");
@@ -178,7 +180,10 @@ route.openapi(generatePost, async (c: any) => {
 			return c.json({ error: { code: "CONFLICT_ERROR" as const, message } }, 409);
 		}
 		console.error("Generation error:", err);
-		return c.json({ error: { code: "GENERATION_ERROR" as const, message: "Generation failed" } }, 500);
+		return c.json(
+			{ error: { code: "GENERATION_ERROR" as const, message: "Generation failed" } },
+			500,
+		);
 	}
 });
 

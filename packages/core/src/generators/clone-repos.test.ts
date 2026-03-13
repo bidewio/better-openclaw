@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { generateCloneScripts } from "./clone-repos.js";
 import type { ResolverOutput } from "../types.js";
+import { generateCloneScripts } from "./clone-repos.js";
 
 /** Minimal resolved output with no services */
 function emptyResolved(): ResolverOutput {

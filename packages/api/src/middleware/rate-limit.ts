@@ -39,7 +39,7 @@ function createRateLimiter(
 ): MiddlewareHandler {
 	const config = { ...getConfig(keyPrefix), ...configOverrides };
 
-	return async (c, next): Promise<Response | void> => {
+	return async (c, next) => {
 		const apiKey = c.req.header("X-API-Key");
 		const limit = apiKey ? config.maxApiKey : config.maxAnon;
 
@@ -73,6 +73,7 @@ function createRateLimiter(
 		}
 
 		await next();
+		return undefined;
 	};
 }
 

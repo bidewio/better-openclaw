@@ -21,8 +21,14 @@ export function DemoVideo() {
 
 				<div className="mx-auto max-w-5xl">
 					{/* Supademo Interactive Demo */}
-					<div className="relative w-full rounded-2xl border border-border/50 bg-[#0a0a0a] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
-						style={{ boxSizing: "content-box", maxHeight: "80vh", aspectRatio: "1.93", padding: "40px 0" }}
+					<div
+						className="relative w-full rounded-2xl border border-border/50 bg-[#0a0a0a] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
+						style={{
+							boxSizing: "content-box",
+							maxHeight: "80vh",
+							aspectRatio: "1.93",
+							padding: "40px 0",
+						}}
 					>
 						<iframe
 							src="https://app.supademo.com/embed/cmmixxhcp1qkjzdh1mp8a1z4w?embed_v=2&utm_source=embed"

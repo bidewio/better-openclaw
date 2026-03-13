@@ -12,23 +12,21 @@ export default function HostingIntegrationPage() {
 			<h1>Hosting Provider Integration Guide</h1>
 			<p>
 				This guide walks you through integrating <code>@better-openclaw/core</code> into your
-				hosting platform to offer users a marketplace of 180+ self-hosted services. The addon
-				stack API handles Docker Compose generation, secret management, port allocation, and
-				skill configuration &mdash; your platform just needs to orchestrate the output.
+				hosting platform to offer users a marketplace of 180+ self-hosted services. The addon stack
+				API handles Docker Compose generation, secret management, port allocation, and skill
+				configuration &mdash; your platform just needs to orchestrate the output.
 			</p>
 
 			<h2>Architecture Overview</h2>
-			<p>
-				The integration follows a clean separation of concerns:
-			</p>
+			<p>The integration follows a clean separation of concerns:</p>
 			<ul>
 				<li>
-					<strong>Your platform</strong> manages infrastructure: servers, PostgreSQL, Redis,
-					reverse proxy, and the OpenClaw gateway.
+					<strong>Your platform</strong> manages infrastructure: servers, PostgreSQL, Redis, reverse
+					proxy, and the OpenClaw gateway.
 				</li>
 				<li>
-					<strong>@better-openclaw/core</strong> generates addon layers: Docker Compose
-					overlays, environment files, proxy routes, and skill definitions.
+					<strong>@better-openclaw/core</strong> generates addon layers: Docker Compose overlays,
+					environment files, proxy routes, and skill definitions.
 				</li>
 			</ul>
 			<pre>
@@ -63,14 +61,13 @@ export default function HostingIntegrationPage() {
 				<code>{`npm install @better-openclaw/core`}</code>
 			</pre>
 			<p>
-				The package is a pure TypeScript library with no native dependencies. It works in
-				Node.js, Deno, Bun, and edge runtimes.
+				The package is a pure TypeScript library with no native dependencies. It works in Node.js,
+				Deno, Bun, and edge runtimes.
 			</p>
 
 			<h2>Step 2: Generate the Initial Stack</h2>
 			<p>
-				When a user selects services from your marketplace, call{" "}
-				<code>generateAddonStack()</code>:
+				When a user selects services from your marketplace, call <code>generateAddonStack()</code>:
 			</p>
 			<pre>
 				<code>{`import { generateAddonStack } from "@better-openclaw/core";
@@ -213,9 +210,7 @@ function generateTraefikLabels(route: ProxyRoute): Record<string, string> {
 			</pre>
 
 			<h2>Step 5: Present the Service Catalog</h2>
-			<p>
-				Use the service registry to build your marketplace UI:
-			</p>
+			<p>Use the service registry to build your marketplace UI:</p>
 			<pre>
 				<code>{`import {
   getAllServices,
@@ -243,9 +238,7 @@ for (const cat of SERVICE_CATEGORIES) {
 			</pre>
 
 			<h2>Step 6: Offer Skill Packs</h2>
-			<p>
-				Skill packs bundle multiple services into task-focused capabilities:
-			</p>
+			<p>Skill packs bundle multiple services into task-focused capabilities:</p>
 			<pre>
 				<code>{`import {
   getAllSkillPacks,
@@ -271,16 +264,16 @@ const packs = getCompatibleSkillPacks(["n8n", "qdrant"]);
 					before passing user data to <code>generateAddonStack()</code>.
 				</li>
 				<li>
-					<strong>Never expose secrets</strong> &mdash; the <code>envFile</code> contains
-					generated passwords. Store it securely and never return it to the frontend.
+					<strong>Never expose secrets</strong> &mdash; the <code>envFile</code> contains generated
+					passwords. Store it securely and never return it to the frontend.
 				</li>
 				<li>
 					<strong>Use reserved ports</strong> to prevent addon services from claiming ports your
 					infrastructure needs.
 				</li>
 				<li>
-					<strong>Review skipped services</strong> &mdash; a <code>missing_credentials</code>{" "}
-					skip means the service needs user-provided API keys. Don&apos;t deploy it without them.
+					<strong>Review skipped services</strong> &mdash; a <code>missing_credentials</code> skip
+					means the service needs user-provided API keys. Don&apos;t deploy it without them.
 				</li>
 				<li>
 					<strong>Network isolation</strong> &mdash; the generated compose uses{" "}
@@ -308,8 +301,8 @@ const packs = getCompatibleSkillPacks(["n8n", "qdrant"]);
 
 			<h2>Monitoring Integration</h2>
 			<p>
-				Each service definition includes a <code>healthCheck</code> configuration. Use it to
-				set up monitoring:
+				Each service definition includes a <code>healthCheck</code> configuration. Use it to set up
+				monitoring:
 			</p>
 			<pre>
 				<code>{`import { getServiceById } from "@better-openclaw/core";
@@ -326,8 +319,7 @@ console.log(n8n?.healthCheck);
 			</pre>
 
 			<p>
-				See the{" "}
-				<Link href="/docs/api/addon-stack">Addon Stack API Reference</Link> for complete
+				See the <Link href="/docs/api/addon-stack">Addon Stack API Reference</Link> for complete
 				parameter and return type documentation.
 			</p>
 		</>

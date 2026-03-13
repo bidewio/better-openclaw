@@ -54,8 +54,8 @@ export default async function AnalyticsPage() {
 							Analytics
 						</h1>
 						<p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-							Anonymous usage metrics from better-openclaw stack generations across CLI, web,
-							API, and MCP.
+							Anonymous usage metrics from better-openclaw stack generations across CLI, web, API,
+							and MCP.
 						</p>
 					</div>
 
@@ -63,9 +63,7 @@ export default async function AnalyticsPage() {
 						<AnalyticsDashboard stats={stats} />
 					) : (
 						<div className="flex flex-col items-center justify-center py-24 text-center">
-							<span className="font-mono text-sm text-muted-foreground">
-								NO_DATA_AVAILABLE
-							</span>
+							<span className="font-mono text-sm text-muted-foreground">NO_DATA_AVAILABLE</span>
 							<p className="mt-2 text-muted-foreground">
 								Analytics data will appear here once stacks are generated.
 							</p>

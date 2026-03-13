@@ -196,8 +196,7 @@ async function installService(tenantId: string, rawInput: unknown) {
 
   if (currentUsage + estimatedNew &gt; quota.maxMemoryMB) {
     throw new Error(
-      \`Memory quota exceeded. Current: \${currentUsage}MB, ` +
-      \`Requested: \${estimatedNew}MB, Limit: \${quota.maxMemoryMB}MB\`
+      \`Memory quota exceeded. Current: \${currentUsage}MB, Requested: \${estimatedNew}MB, Limit: \${quota.maxMemoryMB}MB\`
     );
   }
 

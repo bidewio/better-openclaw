@@ -50,7 +50,8 @@ export const hindsightDefinition: ServiceDefinition = {
 			key: "HINDSIGHT_API_LLM_MODEL",
 			defaultValue: "o3-mini",
 			secret: false,
-			description: "LLM model to use for memory operations (e.g., o3-mini, claude-sonnet-4-20250514)",
+			description:
+				"LLM model to use for memory operations (e.g., o3-mini, claude-sonnet-4-20250514)",
 			required: true,
 		},
 		{

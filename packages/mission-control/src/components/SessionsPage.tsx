@@ -155,27 +155,13 @@ export default function SessionsPage() {
 					<table className="w-full text-sm">
 						<thead>
 							<tr className="border-b border-border bg-secondary/30">
-								<th className="text-left px-4 py-3 font-medium text-muted-foreground">
-									Status
-								</th>
-								<th className="text-left px-4 py-3 font-medium text-muted-foreground">
-									Project
-								</th>
-								<th className="text-left px-4 py-3 font-medium text-muted-foreground">
-									Model
-								</th>
-								<th className="text-left px-4 py-3 font-medium text-muted-foreground">
-									Branch
-								</th>
-								<th className="text-right px-4 py-3 font-medium text-muted-foreground">
-									Messages
-								</th>
-								<th className="text-right px-4 py-3 font-medium text-muted-foreground">
-									Tokens
-								</th>
-								<th className="text-right px-4 py-3 font-medium text-muted-foreground">
-									Cost
-								</th>
+								<th className="text-left px-4 py-3 font-medium text-muted-foreground">Status</th>
+								<th className="text-left px-4 py-3 font-medium text-muted-foreground">Project</th>
+								<th className="text-left px-4 py-3 font-medium text-muted-foreground">Model</th>
+								<th className="text-left px-4 py-3 font-medium text-muted-foreground">Branch</th>
+								<th className="text-right px-4 py-3 font-medium text-muted-foreground">Messages</th>
+								<th className="text-right px-4 py-3 font-medium text-muted-foreground">Tokens</th>
+								<th className="text-right px-4 py-3 font-medium text-muted-foreground">Cost</th>
 								<th className="text-right px-4 py-3 font-medium text-muted-foreground">
 									Last Active
 								</th>
@@ -193,8 +179,7 @@ export default function SessionsPage() {
 							{sessions && sessions.length === 0 && (
 								<tr>
 									<td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">
-										No sessions found. Click "Scan Now" to discover local Claude Code
-										sessions.
+										No sessions found. Click "Scan Now" to discover local Claude Code sessions.
 									</td>
 								</tr>
 							)}
@@ -268,7 +253,12 @@ function MetricCard({
 	value,
 	icon,
 	accent,
-}: { label: string; value: string; icon: React.ReactNode; accent: string }) {
+}: {
+	label: string;
+	value: string;
+	icon: React.ReactNode;
+	accent: string;
+}) {
 	return (
 		<div className="bg-card rounded-lg border border-border p-4">
 			<div className="flex items-center justify-between mb-2">

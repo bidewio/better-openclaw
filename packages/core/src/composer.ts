@@ -235,7 +235,8 @@ export function buildCompanionService(
 	if (def.gitSource && def.buildContext) {
 		const subdir = def.gitSource.subdirectory || ".";
 		const ctxPath = def.buildContext.context || ".";
-		const contextFull = subdir === "." ? `./repos/${def.id}/${ctxPath}` : `./repos/${def.id}/${subdir}/${ctxPath}`;
+		const contextFull =
+			subdir === "." ? `./repos/${def.id}/${ctxPath}` : `./repos/${def.id}/${subdir}/${ctxPath}`;
 		const buildBlock: Record<string, unknown> = { context: contextFull };
 		if (def.buildContext.dockerfile) {
 			buildBlock.dockerfile = def.buildContext.dockerfile;
@@ -633,7 +634,7 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 			if (!profileFileMap[mapping.file]) {
 				profileFileMap[mapping.file] = { profile: mapping.profile, services: [] };
 			}
-			profileFileMap[mapping.file]!.services.push(info);
+			profileFileMap[mapping.file]?.services.push(info);
 		} else {
 			baseServiceIds.add(info.id);
 		}

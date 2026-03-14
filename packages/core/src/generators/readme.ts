@@ -1,3 +1,4 @@
+import { getFrameworkById } from "../frameworks/index.js";
 import type { ResolverOutput } from "../types.js";
 
 /**
@@ -13,6 +14,8 @@ export interface ReadmeOptions {
 	hasNativeServices?: boolean;
 	/** How OpenClaw itself is installed: docker (container) or direct (host). */
 	openclawInstallMethod?: "docker" | "direct";
+	/** Primary agent framework (defaults to "openclaw"). */
+	primaryFramework?: string;
 }
 
 /**
@@ -22,19 +25,22 @@ export interface ReadmeOptions {
  * service URLs, skill packs, and scripts documentation.
  */
 export function generateReadme(resolved: ResolverOutput, options: ReadmeOptions): string {
-	const { projectName, domain, proxy, deploymentType, hasNativeServices, openclawInstallMethod } =
+	const { projectName, domain, proxy, deploymentType, hasNativeServices, openclawInstallMethod, primaryFramework } =
 		options;
 	const isDirectInstall = openclawInstallMethod === "direct";
+	const framework = getFrameworkById(primaryFramework ?? "openclaw");
+	const frameworkName = framework?.name ?? "OpenClaw";
+	const isOpenClaw = (primaryFramework ?? "openclaw") === "openclaw";
 	const sections: string[] = [];
 
 	// ── Title & Description ─────────────────────────────────────────────────
 
 	sections.push(`# ${projectName}
 
-> Self-hosted AI agent infrastructure powered by [OpenClaw](https://openclaw.dev).
+> Self-hosted AI agent infrastructure powered by **${frameworkName}**${isOpenClaw ? " — [openclaw.dev](https://openclaw.dev)" : ""}.
 
-This project provides a fully configured Docker Compose stack with ${resolved.services.length} services, ready to deploy on any server.${isDirectInstall ? " OpenClaw itself runs directly on the host (not in Docker)." : ""}
-${deploymentType === "bare-metal" && hasNativeServices ? "\n\n**Bare-metal (native + Docker):** Some services run natively on the host; the rest (including the OpenClaw gateway) run in Docker. Use the top-level `install.sh` or `install.ps1` to install/start native services first, then start the Docker stack." : ""}
+This project provides a fully configured Docker Compose stack with ${resolved.services.length} services, ready to deploy on any server.${isDirectInstall ? ` ${frameworkName} itself runs directly on the host (not in Docker).` : ""}
+${deploymentType === "bare-metal" && hasNativeServices ? `\n\n**Bare-metal (native + Docker):** Some services run natively on the host; the rest (including the ${frameworkName} gateway) run in Docker. Use the top-level \`install.sh\` or \`install.ps1\` to install/start native services first, then start the Docker stack.` : ""}
 
 ---`);
 
@@ -131,7 +137,7 @@ docker compose ps
 ### 5. View Logs
 
 \`\`\`bash
-docker compose logs -f openclaw-gateway
+docker compose logs -f ${primaryFramework ?? "openclaw"}-gateway
 \`\`\`
 `
 }
@@ -219,9 +225,9 @@ Skills are located in \`openclaw/workspace/skills/\`. Each skill provides a \`SK
 	}
 
 	// ── Onboarding & Channels ──────────────────────────────────────────────
-	// Based on openclaw_docker-setup.sh post-deploy instructions
+	// Only show OpenClaw-specific onboarding instructions for OpenClaw stacks
 
-	if (isDirectInstall) {
+	if (isOpenClaw && isDirectInstall) {
 		sections.push(`## OpenClaw Setup
 
 OpenClaw is installed directly on the host (not in Docker). After running the install script:\n
@@ -253,7 +259,7 @@ openclaw channels add --channel discord --token <BOT_TOKEN>
 
 See [Channel Docs](https://docs.openclaw.ai/channels) for more providers.
 `);
-	} else {
+	} else if (isOpenClaw) {
 		sections.push(`## Onboarding & Channel Setup
 
 After starting the stack, complete the gateway onboarding:

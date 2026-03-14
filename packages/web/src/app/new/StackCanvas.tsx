@@ -2,6 +2,7 @@
 
 import { type AiProvider, type GsdRuntime, SERVICE_CATEGORIES } from "@better-openclaw/core";
 import { Search, X } from "lucide-react";
+import { FrameworkSelector } from "@/components/stack-builder/FrameworkSelector";
 import { ServiceGrid } from "@/components/stack-builder/ServiceGrid";
 import { cn } from "@/lib/utils";
 import { useStackBuilder } from "./StackBuilderProvider";
@@ -24,6 +25,10 @@ export function StackCanvas() {
 		setSelectedAiProviders,
 		selectedGsdRuntimes,
 		setSelectedGsdRuntimes,
+		selectedPrimaryFramework,
+		setSelectedPrimaryFramework,
+		selectedCompanionFrameworks,
+		setSelectedCompanionFrameworks,
 		resolvedServiceIds,
 		resolverOutput,
 		handleToggle,
@@ -77,6 +82,16 @@ export function StackCanvas() {
 						{preset.name}
 					</button>
 				))}
+			</div>
+
+			{/* Agent Framework Selection */}
+			<div className="mb-6">
+				<FrameworkSelector
+					selectedPrimary={selectedPrimaryFramework}
+					onPrimaryChange={setSelectedPrimaryFramework}
+					selectedCompanions={selectedCompanionFrameworks}
+					onCompanionsChange={setSelectedCompanionFrameworks}
+				/>
 			</div>
 
 			{/* Advanced Skill Selection */}

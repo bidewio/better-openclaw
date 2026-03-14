@@ -7,7 +7,7 @@ import { runWizard } from "./wizard.js";
 const program = new Command()
 	.name("create-better-openclaw")
 	.description("Scaffold production-ready OpenClaw stacks with Docker Compose")
-	.version("1.0.26");
+	.version("1.0.30");
 
 // ─── Global option for JSON output ──────────────────────────────────────────
 program.option("--json", "Output results as JSON (for programmatic use)");

@@ -307,6 +307,57 @@ describe("generate (end-to-end)", () => {
 		}
 	});
 
+	it("generates a stack with zeroclaw as primary framework", () => {
+		const result = generate({
+			projectName: "zeroclaw-stack",
+			services: ["redis"],
+			skillPacks: [],
+			proxy: "none",
+			gpu: false,
+			platform: "linux/amd64",
+			deployment: "local",
+			generateSecrets: true,
+			openclawVersion: "latest",
+			primaryFramework: "zeroclaw",
+		});
+
+		const composed = parse(result.files["docker-compose.yml"]!);
+
+		// Should have zeroclaw-gateway, not openclaw-gateway
+		expect(composed.services).toHaveProperty("zeroclaw-gateway");
+		expect(composed.services).not.toHaveProperty("openclaw-gateway");
+
+		// Should NOT have convex/mission-control/tailscale
+		expect(composed.services).not.toHaveProperty("convex");
+		expect(composed.services).not.toHaveProperty("mission-control");
+		expect(composed.services).not.toHaveProperty("tailscale");
+
+		// Network should be zeroclaw-network
+		expect(composed.networks).toHaveProperty("zeroclaw-network");
+	});
+
+	it("generates a stack with companion frameworks", () => {
+		const result = generate({
+			projectName: "multi-fw-stack",
+			services: ["redis"],
+			skillPacks: [],
+			proxy: "none",
+			gpu: false,
+			platform: "linux/amd64",
+			deployment: "local",
+			generateSecrets: true,
+			openclawVersion: "latest",
+			companionFrameworks: ["claude-code"],
+		});
+
+		const composed = parse(result.files["docker-compose.yml"]!);
+
+		// Primary OpenClaw gateway should be present
+		expect(composed.services).toHaveProperty("openclaw-gateway");
+		// Companion Claude Code should be present
+		expect(composed.services).toHaveProperty("claude-code-companion");
+	});
+
 	it("all generated .env.example vars have comments", () => {
 		const result = generate({
 			projectName: "env-comments-stack",

@@ -5,6 +5,7 @@ import type {
 	AddonStackResultSchema,
 	AddonStackUpdateInputSchema,
 	AddonStackUpdateResultSchema,
+	AgentFrameworkSchema,
 	AiProviderSchema,
 	ApiErrorSchema,
 	BuildContextSchema,
@@ -49,6 +50,7 @@ import type {
 
 // ─── Inferred Types ─────────────────────────────────────────────────────────
 
+export type AgentFramework = z.infer<typeof AgentFrameworkSchema>;
 export type AiProvider = z.infer<typeof AiProviderSchema>;
 export type GsdRuntime = z.infer<typeof GsdRuntimeSchema>;
 export type ServiceCategory = z.infer<typeof ServiceCategorySchema>;
@@ -111,6 +113,7 @@ export interface ResolverInput {
 	skillPacks: string[];
 	aiProviders?: AiProvider[];
 	gsdRuntimes?: GsdRuntime[];
+	primaryFramework?: AgentFramework;
 	proxy?: ProxyType;
 	gpu?: boolean;
 	platform?: Platform;
@@ -146,6 +149,13 @@ export interface CategoryInfo {
 }
 
 export const SERVICE_CATEGORIES: CategoryInfo[] = [
+	{
+		id: "agent-framework",
+		name: "Agent Frameworks",
+		description: "AI agent orchestrators that can serve as primary or companion runtimes",
+		label: "Agent Frameworks",
+		icon: "🤖",
+	},
 	{
 		id: "coding-agent",
 		name: "AI Coding Agents",

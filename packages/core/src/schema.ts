@@ -39,6 +39,7 @@ export const ServiceCategorySchema = z.enum([
 	"dns-networking",
 	"iot",
 	"saas-boilerplate",
+	"agent-framework",
 ]);
 
 export const MaturitySchema = z.enum(["stable", "beta", "experimental"]);
@@ -87,6 +88,17 @@ export const AiProviderSchema = z.enum([
 ]);
 
 export const GsdRuntimeSchema = z.enum(["claude", "opencode", "gemini", "codex"]);
+
+export const AgentFrameworkSchema = z.enum([
+	"openclaw",
+	"copaw",
+	"nanoclaw",
+	"nanobot",
+	"zeroclaw",
+	"memu",
+	"claude-code",
+	"codex",
+]);
 
 // ─── Sub-Schemas ────────────────────────────────────────────────────────────
 
@@ -228,10 +240,12 @@ export const ServiceDefinitionSchema = z.object({
 	labels: z.record(z.string(), z.string()).optional(),
 	deploy: DeploySchema.optional(),
 
-	// OpenClaw Integration
+	// Framework Integration (gatewayEnvVars/gatewayVolumeMounts are framework-agnostic aliases)
 	skills: z.array(SkillBindingSchema).default([]),
 	openclawEnvVars: z.array(EnvVariableSchema).default([]),
 	openclawVolumeMounts: z.array(VolumeMappingSchema).optional(),
+	gatewayEnvVars: z.array(EnvVariableSchema).optional(),
+	gatewayVolumeMounts: z.array(VolumeMappingSchema).optional(),
 
 	// Metadata
 	docsUrl: z.string().url(),
@@ -309,6 +323,8 @@ export const GenerationInputSchema = z.object({
 			message:
 				"Project name must be lowercase alphanumeric with hyphens, cannot start or end with hyphen",
 		}),
+	primaryFramework: AgentFrameworkSchema.optional(),
+	companionFrameworks: z.array(AgentFrameworkSchema).optional(),
 	services: z.array(z.string()).default([]),
 	skillPacks: z.array(z.string()).default([]),
 	aiProviders: z.array(AiProviderSchema).default([]),
@@ -369,12 +385,15 @@ export const ResolverOutputSchema = z.object({
 	estimatedMemoryMB: z.number().int().min(0),
 	aiProviders: z.array(AiProviderSchema).default([]),
 	gsdRuntimes: z.array(GsdRuntimeSchema).default([]),
+	primaryFramework: AgentFrameworkSchema.optional(),
 });
 
 // ─── Compose Options ────────────────────────────────────────────────────────
 
 export const ComposeOptionsSchema = z.object({
 	projectName: z.string(),
+	primaryFramework: AgentFrameworkSchema.optional(),
+	companionFrameworks: z.array(AgentFrameworkSchema).optional(),
 	proxy: ProxyTypeSchema.default("none"),
 	proxyHttpPort: z.number().int().min(1).max(65535).optional(),
 	proxyHttpsPort: z.number().int().min(1).max(65535).optional(),

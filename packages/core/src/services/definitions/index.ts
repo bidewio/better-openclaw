@@ -31,6 +31,7 @@ export { codexDefinition } from "./codex.js";
 export { comfyuiDefinition } from "./comfyui.js";
 export { convexDefinition } from "./convex.js";
 export { convexDashboardDefinition } from "./convex-dashboard.js";
+export { copawDefinition } from "./copaw.js";
 export { coolifyDefinition } from "./coolify.js";
 export { crowdsecDefinition } from "./crowdsec.js";
 export { dagsterDefinition } from "./dagster.js";
@@ -100,6 +101,7 @@ export { mattermostDefinition } from "./mattermost.js";
 export { mauticDefinition } from "./mautic.js";
 export { medusaDefinition } from "./medusa.js";
 export { meilisearchDefinition } from "./meilisearch.js";
+export { memuDefinition } from "./memu.js";
 export { metabaseDefinition } from "./metabase.js";
 export { milvusDefinition } from "./milvus.js";
 export { minioDefinition } from "./minio.js";
@@ -109,6 +111,8 @@ export { mosquittoDefinition } from "./mosquitto.js";
 export { motionCanvasDefinition } from "./motion-canvas.js";
 export { mysqlDefinition } from "./mysql.js";
 export { n8nDefinition } from "./n8n.js";
+export { nanobotDefinition } from "./nanobot.js";
+export { nanoclawDefinition } from "./nanoclaw.js";
 export { navidromeDefinition } from "./navidrome.js";
 export { neo4jDefinition } from "./neo4j.js";
 export { nextcloudDefinition } from "./nextcloud.js";
@@ -187,6 +191,7 @@ export { whisperDefinition } from "./whisper.js";
 export { wireguardDefinition } from "./wireguard.js";
 export { woodpeckerCiDefinition } from "./woodpecker-ci.js";
 export { xyopsDefinition } from "./xyops.js";
+export { zeroclawDefinition } from "./zeroclaw.js";
 export { zulipDefinition } from "./zulip.js";
 
 import type { ServiceDefinition } from "../../types.js";
@@ -223,6 +228,7 @@ import { codexDefinition } from "./codex.js";
 import { comfyuiDefinition } from "./comfyui.js";
 import { convexDefinition } from "./convex.js";
 import { convexDashboardDefinition } from "./convex-dashboard.js";
+import { copawDefinition } from "./copaw.js";
 import { coolifyDefinition } from "./coolify.js";
 import { crowdsecDefinition } from "./crowdsec.js";
 import { dagsterDefinition } from "./dagster.js";
@@ -292,6 +298,7 @@ import { mattermostDefinition } from "./mattermost.js";
 import { mauticDefinition } from "./mautic.js";
 import { medusaDefinition } from "./medusa.js";
 import { meilisearchDefinition } from "./meilisearch.js";
+import { memuDefinition } from "./memu.js";
 import { metabaseDefinition } from "./metabase.js";
 import { milvusDefinition } from "./milvus.js";
 import { minioDefinition } from "./minio.js";
@@ -301,6 +308,8 @@ import { mosquittoDefinition } from "./mosquitto.js";
 import { motionCanvasDefinition } from "./motion-canvas.js";
 import { mysqlDefinition } from "./mysql.js";
 import { n8nDefinition } from "./n8n.js";
+import { nanobotDefinition } from "./nanobot.js";
+import { nanoclawDefinition } from "./nanoclaw.js";
 import { navidromeDefinition } from "./navidrome.js";
 import { neo4jDefinition } from "./neo4j.js";
 import { nextcloudDefinition } from "./nextcloud.js";
@@ -379,6 +388,7 @@ import { whisperDefinition } from "./whisper.js";
 import { wireguardDefinition } from "./wireguard.js";
 import { woodpeckerCiDefinition } from "./woodpecker-ci.js";
 import { xyopsDefinition } from "./xyops.js";
+import { zeroclawDefinition } from "./zeroclaw.js";
 import { zulipDefinition } from "./zulip.js";
 
 export const allServiceDefinitions: ServiceDefinition[] = [
@@ -463,6 +473,11 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	claudeCodeDefinition,
 	opencodeDefinition,
 	codexDefinition,
+	copawDefinition,
+	nanoclawDefinition,
+	nanobotDefinition,
+	zeroclawDefinition,
+	memuDefinition,
 	geminiCliDefinition,
 	kimiDefinition,
 	postizDefinition,

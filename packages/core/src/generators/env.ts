@@ -1,4 +1,6 @@
 import { randomBytes } from "node:crypto";
+import { getFrameworkById } from "../frameworks/index.js";
+import type { AgentFrameworkId } from "../frameworks/types.js";
 import type { ResolverOutput } from "../types.js";
 import { getDbRequirements } from "./postgres-init.js";
 
@@ -17,6 +19,8 @@ export interface EnvGeneratorOptions {
 	composeProfiles?: string[];
 	/** OpenClaw image variant (official, coolify, alpine). */
 	openclawImage?: "official" | "coolify" | "alpine";
+	/** Primary agent framework (defaults to "openclaw"). */
+	primaryFramework?: AgentFrameworkId;
 }
 
 /**
@@ -69,191 +73,32 @@ export function generateEnvFiles(
 		});
 	}
 
-	// ── Base OpenClaw Variables ──────────────────────────────────────────────
+	// ── Framework-Specific Base Variables ────────────────────────────────────
 
-	lines.push({
-		comment: formatComment("OpenClaw version to deploy", "OpenClaw Core", true, false),
-		key: "OPENCLAW_VERSION",
-		exampleValue: version,
-		actualValue: version,
-	});
+	const framework = getFrameworkById(options.primaryFramework ?? "openclaw");
+	if (framework) {
+		const sectionName = framework.getEnvSectionName();
+		const fwEnvVars = framework.getBaseEnvVars({
+			generateSecrets: options.generateSecrets,
+			domain: options.domain,
+			frameworkVersion: version,
+			frameworkImageVariant: options.openclawImage ?? "official",
+		});
 
-	const gatewayToken = options.generateSecrets ? randomBytes(24).toString("hex") : "";
-
-	lines.push({
-		comment: formatComment(
-			"Authentication token for the OpenClaw gateway API",
-			"OpenClaw Core",
-			true,
-			true,
-		),
-		key: "OPENCLAW_GATEWAY_TOKEN",
-		exampleValue: "your_gateway_token_here",
-		actualValue: gatewayToken,
-	});
-
-	lines.push({
-		comment: formatComment("Port the OpenClaw gateway listens on", "OpenClaw Core", true, false),
-		key: "OPENCLAW_GATEWAY_PORT",
-		exampleValue: "18789",
-		actualValue: "18789",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Port for the OpenClaw ACP bridge (WebSocket)",
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_BRIDGE_PORT",
-		exampleValue: "18790",
-		actualValue: "18790",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Gateway network bind mode: 'lan' (all interfaces, required for Docker). Use 'loopback' only for native (non-Docker) installs with Tailscale serve/funnel",
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_GATEWAY_BIND",
-		exampleValue: "lan",
-		actualValue: "lan",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Host path to OpenClaw configuration directory",
-			"OpenClaw Core",
-			true,
-			false,
-		),
-		key: "OPENCLAW_CONFIG_DIR",
-		exampleValue: "./openclaw/config",
-		actualValue: "./openclaw/config",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Host path to OpenClaw workspace directory",
-			"OpenClaw Core",
-			true,
-			false,
-		),
-		key: "OPENCLAW_WORKSPACE_DIR",
-		exampleValue: "./openclaw/workspace",
-		actualValue: "./openclaw/workspace",
-	});
-
-	// Set OPENCLAW_IMAGE based on variant (empty = use compose default)
-	const imageVariantMap: Record<string, string> = {
-		official: "", // use compose default (ghcr.io/openclaw/openclaw:VERSION)
-		coolify: "coollabsio/openclaw:latest",
-		alpine: "alpine/openclaw:latest",
-	};
-	const imageValue = imageVariantMap[options.openclawImage ?? "official"] ?? "";
-
-	lines.push({
-		comment: formatComment(
-			`OpenClaw Docker image variant: ${options.openclawImage ?? "official"} (official, coolify, alpine)`,
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_IMAGE",
-		exampleValue: "",
-		actualValue: imageValue,
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Extra bind mounts for gateway and CLI containers (comma-separated, format: source:target[:options])",
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_EXTRA_MOUNTS",
-		exampleValue: "",
-		actualValue: "",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Named volume or host path for /home/node persistence across container restarts",
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_HOME_VOLUME",
-		exampleValue: "",
-		actualValue: "",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Extra apt packages to install during Docker image build (space-separated)",
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_DOCKER_APT_PACKAGES",
-		exampleValue: "",
-		actualValue: "",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Alternative auth: gateway password (use token OR password, not both)",
-			"OpenClaw Core",
-			false,
-			true,
-		),
-		key: "OPENCLAW_GATEWAY_PASSWORD",
-		exampleValue: "",
-		actualValue: "",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Override state directory path (default: ~/.openclaw)",
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_STATE_DIR",
-		exampleValue: "",
-		actualValue: "",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Override config file path (default: ~/.openclaw/openclaw.json)",
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_CONFIG_PATH",
-		exampleValue: "",
-		actualValue: "",
-	});
-
-	lines.push({
-		comment: formatComment(
-			"Import missing keys from login shell profile (set to 1 to enable)",
-			"OpenClaw Core",
-			false,
-			false,
-		),
-		key: "OPENCLAW_LOAD_SHELL_ENV",
-		exampleValue: "",
-		actualValue: "",
-	});
+		for (const envLine of fwEnvVars) {
+			lines.push({
+				comment: formatComment(envLine.comment, sectionName, false, envLine.key.includes("TOKEN") || envLine.key.includes("PASSWORD")),
+				key: envLine.key,
+				exampleValue: envLine.exampleValue,
+				actualValue: envLine.actualValue,
+			});
+		}
+	}
 
 	if (options.domain) {
+		const sectionName = framework?.getEnvSectionName() ?? "Core";
 		lines.push({
-			comment: formatComment("Primary domain for service routing", "OpenClaw Core", false, false),
+			comment: formatComment("Primary domain for service routing", sectionName, false, false),
 			key: "OPENCLAW_DOMAIN",
 			exampleValue: "example.com",
 			actualValue: options.domain,

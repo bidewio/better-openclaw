@@ -1,6 +1,19 @@
 // ─── Addon Stack (Clawexa) ──────────────────────────────────────────────────
 export { generateAddonStack, updateAddonStack } from "./addon-stack.js";
 
+// ─── Agent Frameworks ───────────────────────────────────────────────────────
+export type {
+	AgentFrameworkDefinition,
+	AgentFrameworkId,
+} from "./frameworks/index.js";
+export {
+	getAllFrameworks,
+	getCompanionFrameworks,
+	getFrameworkById,
+	getPrimaryFrameworks,
+	registerFramework,
+} from "./frameworks/index.js";
+
 // ─── Core Engines ───────────────────────────────────────────────────────────
 export {
 	partitionBareMetal,
@@ -76,6 +89,7 @@ export {
 } from "./presets/registry.js";
 export { resolve } from "./resolver.js";
 export {
+	AgentFrameworkSchema,
 	AddedDependencySchema,
 	AddonStackInputSchema,
 	AddonStackResultSchema,
@@ -149,6 +163,7 @@ export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 export type {
 	AddedDependency,
 	AddonStackInput,
+	AgentFramework,
 	AddonStackResult,
 	AddonStackUpdateInput,
 	AddonStackUpdateResult,

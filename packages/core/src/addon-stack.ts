@@ -1,6 +1,8 @@
 import { randomBytes } from "node:crypto";
 import { parse as parseYaml, stringify } from "yaml";
 import { buildCompanionService, quotedStr, YAML_OPTIONS } from "./composer.js";
+import { getFrameworkById } from "./frameworks/index.js";
+import type { AgentFrameworkDefinition } from "./frameworks/types.js";
 import { getDbRequirements } from "./generators/postgres-init.js";
 import { generateSkillFiles } from "./generators/skills.js";
 import { resolve } from "./resolver.js";
@@ -21,33 +23,30 @@ import type {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-/** Services that Clawexa's cloud-init already provisions (or are mandatory platform services). */
-const INFRA_SERVICE_IDS = new Set([
-	"openclaw-gateway",
-	"openclaw-cli",
+/** Base infrastructure service IDs that Clawexa's cloud-init provisions. */
+const BASE_INFRA_SERVICE_IDS = [
 	"redis",
 	"postgresql",
 	"open-webui",
 	"caddy",
 	"traefik",
 	"postgres-setup",
-	// Mandatory platform services provisioned by Clawexa cloud-init
-	"convex",
-	"convex-dashboard",
-	"mission-control",
-]);
+];
+
+/** Build the full set of infra IDs for a given framework. */
+function getInfraServiceIds(framework: AgentFrameworkDefinition): Set<string> {
+	return new Set([
+		`${framework.id}-gateway`,
+		`${framework.id}-cli`,
+		...BASE_INFRA_SERVICE_IDS,
+		...framework.getMandatoryServices(),
+	]);
+}
 
 /** Env keys managed by Clawexa's cloud-init — never include in addon env output. */
 const CLAWEXA_MANAGED_ENV_KEYS = new Set([
 	"COMPOSE_FILE",
 	"COMPOSE_PROFILES",
-	"OPENCLAW_VERSION",
-	"OPENCLAW_GATEWAY_TOKEN",
-	"OPENCLAW_GATEWAY_PORT",
-	"OPENCLAW_BRIDGE_PORT",
-	"OPENCLAW_GATEWAY_BIND",
-	"OPENCLAW_CONFIG_DIR",
-	"OPENCLAW_WORKSPACE_DIR",
 	"REDIS_PASSWORD",
 	"REDIS_HOST",
 	"REDIS_PORT",
@@ -57,6 +56,15 @@ const CLAWEXA_MANAGED_ENV_KEYS = new Set([
 	"POSTGRES_HOST",
 	"POSTGRES_PORT",
 ]);
+
+/** Build the full set of managed env keys for a given framework. */
+function getManagedEnvKeys(framework: AgentFrameworkDefinition): Set<string> {
+	const keys = new Set(CLAWEXA_MANAGED_ENV_KEYS);
+	for (const envLine of framework.getBaseEnvVars({ generateSecrets: false, frameworkVersion: "latest", frameworkImageVariant: "official" })) {
+		keys.add(envLine.key);
+	}
+	return keys;
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -271,9 +279,14 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 
 	const projectName = sanitizeProjectName(input.instanceId);
 
+	// Resolve framework for this addon stack (defaults to openclaw)
+	const framework = getFrameworkById("openclaw")!;
+	const infraIds = getInfraServiceIds(framework);
+	const managedKeys = getManagedEnvKeys(framework);
+
 	// 2. Filter out infrastructure service IDs from request
 	const addonServiceIds = input.services.filter((id) => {
-		if (INFRA_SERVICE_IDS.has(id)) {
+		if (infraIds.has(id)) {
 			warnings.push(`Service "${id}" is managed by Clawexa infrastructure and was excluded.`);
 			return false;
 		}
@@ -341,7 +354,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 	// 5. Filter resolved services: keep only addon services (not infra)
 	const addonResolved: ResolvedService[] = [];
 	for (const svc of resolved.services) {
-		if (INFRA_SERVICE_IDS.has(svc.definition.id)) continue;
+		if (infraIds.has(svc.definition.id)) continue;
 		addonResolved.push(svc);
 	}
 
@@ -479,7 +492,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 			if (entry.depends_on) {
 				const deps = entry.depends_on as Record<string, { condition: string }>;
 				for (const depId of Object.keys(deps)) {
-					if (INFRA_SERVICE_IDS.has(depId)) {
+					if (infraIds.has(depId)) {
 						delete deps[depId];
 					}
 				}
@@ -564,7 +577,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 			entrypoint: ["/bin/sh", "-c"],
 			command: [scriptLines.join("\n")],
 			restart: quotedStr("no"),
-			networks: ["openclaw-network"],
+			networks: [framework.networkName],
 		};
 
 		// Update addon services that need DB to depend on postgres-setup
@@ -605,7 +618,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 
 	// Per-service env vars
 	const seenKeys = new Set<string>([
-		...CLAWEXA_MANAGED_ENV_KEYS,
+		...managedKeys,
 		...dbReqs.map((r) => r.passwordEnvVar),
 	]);
 	const envVarGroups: AddonStackResult["envVars"] = [];
@@ -696,7 +709,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 	}
 	// Append any new keys introduced by quirks (e.g., must_sync creating a new key)
 	for (const [key, value] of envValues) {
-		if (!quirkedKeys.has(key) && !seenKeys.has(key) && !CLAWEXA_MANAGED_ENV_KEYS.has(key)) {
+		if (!quirkedKeys.has(key) && !seenKeys.has(key) && !managedKeys.has(key)) {
 			finalEnvLines.push(`# Synced by env quirk`);
 			finalEnvLines.push(`${key}=${value}`);
 			finalEnvLines.push("");
@@ -781,7 +794,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 	}
 
 	composeDoc.networks = {
-		"openclaw-network": {
+		[framework.networkName]: {
 			external: true,
 		},
 	};

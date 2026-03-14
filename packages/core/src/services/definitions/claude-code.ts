@@ -5,7 +5,7 @@ export const claudeCodeDefinition: ServiceDefinition = {
 	name: "Claude Code",
 	description:
 		"Anthropic's agentic coding assistant that runs in the terminal. Claude Code understands your entire codebase, executes commands, and helps with complex multi-file edits.",
-	category: "coding-agent",
+	category: "agent-framework",
 	icon: "🟣",
 
 	image: "ghcr.io/zeeno-atl/claude-code",

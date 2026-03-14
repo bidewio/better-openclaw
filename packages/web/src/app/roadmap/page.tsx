@@ -47,6 +47,18 @@ const ROADMAP: { quarter: string; items: RoadmapItem[] }[] = [
 				],
 			},
 			{
+				title: "Multi-Agent Framework Support",
+				description:
+					"Users can choose from 8 agent frameworks as their primary orchestrator, with optional companion frameworks for hybrid stacks.",
+				status: "completed",
+				features: [
+					"8 pluggable frameworks (OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex)",
+					"Companion framework multi-select for hybrid stacks",
+					"Framework-aware CLI wizard, Web UI, MCP tools, and API",
+					"Per-framework gateway containers, configs, env vars, and network names",
+				],
+			},
+			{
 				title: "Sandboxed AI Code Execution",
 				description:
 					"Enabling AI agents to execute code safely in isolated containers with OpenSandbox integration, supporting multi-language runtimes and VNC desktop preview.",

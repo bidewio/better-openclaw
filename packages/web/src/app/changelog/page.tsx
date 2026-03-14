@@ -22,6 +22,53 @@ interface Release {
 
 const RELEASES: Release[] = [
 	{
+		version: "v1.3.0",
+		date: "March 2026",
+		title: "Multi-Agent Framework Support",
+		changes: [
+			{
+				type: "feature",
+				description:
+					"Choose from 8 agent frameworks as primary orchestrator: OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex.",
+			},
+			{
+				type: "feature",
+				description:
+					"Companion framework support — run multiple agent frameworks side-by-side in hybrid stacks.",
+			},
+			{
+				type: "feature",
+				description:
+					"Framework-aware CLI wizard with primary/companion selection steps.",
+			},
+			{
+				type: "feature",
+				description:
+					"FrameworkSelector component in the web builder for visual framework selection.",
+			},
+			{
+				type: "feature",
+				description:
+					"MCP generate-stack tool now accepts primaryFramework and companionFrameworks parameters.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Resolver honors framework-specific mandatory services. Non-OpenClaw frameworks skip Convex/Mission-Control/Tailscale.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Composer generates framework-specific gateway containers, CLI services, and network names.",
+			},
+			{
+				type: "improvement",
+				description:
+					"README generator produces framework-aware documentation tailored to the selected primary framework.",
+			},
+		],
+	},
+	{
 		version: "v1.0.26",
 		date: "March 2026",
 		title: "OpenSandbox: Secure AI Code Execution",

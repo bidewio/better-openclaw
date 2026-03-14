@@ -20,11 +20,11 @@ const fontMono = JetBrains_Mono({
 export const metadata: Metadata = {
 	metadataBase: new URL("https://better-openclaw.dev"),
 	title: {
-		default: "better-openclaw — Build your OpenClaw superstack",
+		default: "better-openclaw — Build your AI agent superstack",
 		template: "%s | better-openclaw",
 	},
 	description:
-		"CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks with Docker Compose. 58+ services, 10 skill packs, one command. Or deploy instantly with Clawexa Cloud.",
+		"CLI tool, REST API, and web UI for scaffolding production-ready AI agent stacks with Docker Compose. 94+ services, 8 agent frameworks, 10 skill packs, one command. Or deploy instantly with Clawexa Cloud.",
 	keywords: [
 		"OpenClaw",
 		"docker-compose",
@@ -35,23 +35,28 @@ export const metadata: Metadata = {
 		"Clawexa",
 		"Clawexa cloud",
 		"hosted OpenClaw",
+		"multi-agent",
+		"agent framework",
+		"CoPaw",
+		"NanoClaw",
+		"ZeroClaw",
 		"n8n",
 		"qdrant",
 		"ollama",
 	],
 	openGraph: {
-		title: "better-openclaw — Build your OpenClaw superstack",
+		title: "better-openclaw — Build your AI agent superstack",
 		description:
-			"Generate Docker Compose stacks with 58+ companion services pre-wired with OpenClaw skills",
+			"Generate Docker Compose stacks with 94+ services, 8 agent frameworks, pre-wired with AI agent skills",
 		type: "website",
 		siteName: "better-openclaw",
 		images: [{ url: "/og/og-image.svg", width: 1200, height: 630 }],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "better-openclaw — Build your OpenClaw superstack",
+		title: "better-openclaw — Build your AI agent superstack",
 		description:
-			"Generate Docker Compose stacks with 58+ companion services pre-wired with OpenClaw skills",
+			"Generate Docker Compose stacks with 94+ services, 8 agent frameworks, pre-wired with AI agent skills",
 		images: ["/og/og-image.svg"],
 	},
 	alternates: {

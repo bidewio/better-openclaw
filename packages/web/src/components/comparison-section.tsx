@@ -29,6 +29,11 @@ const comparisonData = [
 		selfHosted: { label: "None (Hardware Limited)", check: true },
 		managed: { label: "API Quotas", check: false },
 	},
+	{
+		feature: "Agent Framework Choice",
+		selfHosted: { label: "8 Frameworks", check: true },
+		managed: { label: "Vendor Lock-in", check: false },
+	},
 ];
 
 export function ComparisonSection() {

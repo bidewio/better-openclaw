@@ -1,6 +1,6 @@
 # @better-openclaw/api
 
-A scalable, rate-limited REST API bridging web clients, agents, and CLIs to the OpenClaw core generation engine. It enables external applications to programmatically scaffold and download production-ready OpenClaw Docker Compose stacks.
+A scalable, rate-limited REST API bridging web clients, agents, and CLIs to the core generation engine. It enables external applications to programmatically scaffold and download production-ready AI agent Docker Compose stacks with support for 8 agent frameworks.
 
 ## Available Endpoints
 
@@ -12,8 +12,8 @@ The API is mounted at `/api/v1`.
 | `GET`  | `/services` | List all available Docker services. Extensible with `?category=` or `?maturity=` filters. |
 | `GET`  | `/skills` | List all AI skill packs (`SKILL.md` collections). Filter using `?services=id1,id2`. |
 | `GET`  | `/presets` | List predefined configurations (minimal, creator, devops, researcher, etc.) |
-| `POST` | `/validate` | Validates an incoming stack generation payload. |
-| `POST` | `/generate` | Core endpoint to generate the stack. Expects `GenerationInput` matching the core specifications. |
+| `POST` | `/validate` | Validates an incoming stack generation payload. Accepts optional `primaryFramework` and `companionFrameworks`. |
+| `POST` | `/generate` | Core endpoint to generate the stack. Expects `GenerationInput` matching the core specifications. Accepts `primaryFramework` (one of 8 frameworks) and `companionFrameworks` (array). |
 | `POST` | `/deploy/test` | Test connection to a PaaS instance (Dokploy/Coolify). |
 | `POST` | `/deploy` | Deploy a compose stack to a PaaS provider (relay). |
 | `GET`  | `/deploy/providers` | List available PaaS deployment providers. |

@@ -598,6 +598,8 @@ export const ValidateRequestSchema = z.object({
 	skillPacks: z.array(z.string()).default([]),
 	aiProviders: z.array(AiProviderSchema).default([]),
 	gsdRuntimes: z.array(GsdRuntimeSchema).default([]),
+	primaryFramework: AgentFrameworkSchema.optional(),
+	companionFrameworks: z.array(AgentFrameworkSchema).optional(),
 	proxy: ProxyTypeSchema.default("none"),
 	domain: z.string().optional(),
 	gpu: z.boolean().default(false),

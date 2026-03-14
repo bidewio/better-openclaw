@@ -3,7 +3,7 @@ import Link from "next/link";
 export const metadata = {
 	title: "Quick Start — better-openclaw Docs",
 	description:
-		"Get up and running with better-openclaw in under 5 minutes. Install, configure, and launch your first OpenClaw stack.",
+		"Get up and running with better-openclaw in under 5 minutes. Install, configure, and launch your first AI agent stack.",
 };
 
 export default function QuickStartPage() {
@@ -11,8 +11,9 @@ export default function QuickStartPage() {
 		<>
 			<h1>Quick Start</h1>
 			<p>
-				Build a production-ready OpenClaw stack in under 5 minutes. This guide walks you through
-				installing the CLI, generating your first project, and starting your services.
+				Build a production-ready AI agent stack in under 5 minutes. Choose from 8 agent frameworks
+				(OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex), pick your services,
+				and get a fully wired Docker Compose stack.
 			</p>
 
 			<h2>Prerequisites</h2>
@@ -146,6 +147,24 @@ npx create-better-openclaw my-stack --preset full --yes`}</code>
 				</tbody>
 			</table>
 
+			<h2>Choosing a Framework</h2>
+			<p>
+				By default, stacks use OpenClaw as the agent framework. You can choose a different primary
+				framework with <code>--primary-framework</code>, or add companion frameworks for hybrid stacks:
+			</p>
+			<pre>
+				<code>{`# Use ZeroClaw instead of OpenClaw
+npx create-better-openclaw my-stack --preset researcher --primary-framework zeroclaw --yes
+
+# Run multiple frameworks side-by-side
+npx create-better-openclaw my-stack --services postgresql,redis --primary-framework memu --companion-frameworks copaw --yes`}</code>
+			</pre>
+			<p>
+				Available frameworks: <code>openclaw</code>, <code>copaw</code>, <code>nanoclaw</code>,{" "}
+				<code>nanobot</code>, <code>zeroclaw</code>, <code>memu</code>, <code>claude-code</code>,{" "}
+				<code>codex</code>. Non-OpenClaw frameworks skip Convex, Mission Control, and Tailscale automatically.
+			</p>
+
 			<h2>Start Your Stack</h2>
 			<pre>
 				<code>{`cd my-stack
@@ -215,7 +234,7 @@ open http://localhost:3000`}</code>
 					<Link href="/docs/cli">CLI reference</Link> — all flags and options
 				</li>
 				<li>
-					<Link href="/docs/services">Service catalog</Link> — browse all 58+ services
+					<Link href="/docs/services">Service catalog</Link> — browse all 94+ services
 				</li>
 				<li>
 					<Link href="/docs/skill-packs">Skill packs</Link> — curated bundles for common tasks

@@ -1,7 +1,9 @@
 # @better-openclaw/mission-control
 
-The centralized oversight system and orchestration dashboard for Better OpenClaw. Built entirely upon extremely modern standards: Vite, React, Convex (real-time backend), and Tailwind v4. 
-It enables humans to interact with, manage, and assign goals to autonomous agent deployments running within constructed OpenClaw clusters.
+The centralized oversight system and orchestration dashboard for Better OpenClaw. Built entirely upon extremely modern standards: Vite, React, Convex (real-time backend), and Tailwind v4.
+It enables humans to interact with, manage, and assign goals to autonomous agent deployments running within constructed agent clusters.
+
+> **Note:** Mission Control is included automatically when using the OpenClaw framework but is **optional** for other frameworks (CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex). Non-OpenClaw stacks skip Convex and Mission Control by default.
 
 ## Features
 

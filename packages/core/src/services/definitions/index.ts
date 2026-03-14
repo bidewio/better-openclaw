@@ -150,6 +150,9 @@ export { qdrantDefinition } from "./qdrant.js";
 export { rabbitmqDefinition } from "./rabbitmq.js";
 export { ragflowDefinition } from "./ragflow.js";
 export { redisDefinition } from "./redis.js";
+export { relaticleDefinition } from "./relaticle.js";
+export { relaticleHorizonDefinition } from "./relaticle-horizon.js";
+export { relaticleSchedulerDefinition } from "./relaticle-scheduler.js";
 export { remotionDefinition } from "./remotion.js";
 export { resticDefinition } from "./restic.js";
 export { revoltDefinition } from "./revolt.js";
@@ -177,6 +180,7 @@ export { textGenWebuiDefinition } from "./text-gen-webui.js";
 export { timescaledbDefinition } from "./timescaledb.js";
 export { traefikDefinition } from "./traefik.js";
 export { twentyDefinition } from "./twenty.js";
+export { twentyWorkerDefinition } from "./twenty-worker.js";
 export { umamiDefinition } from "./umami.js";
 export { uptimeKumaDefinition } from "./uptime-kuma.js";
 export { usesendDefinition } from "./usesend.js";
@@ -347,6 +351,9 @@ import { qdrantDefinition } from "./qdrant.js";
 import { rabbitmqDefinition } from "./rabbitmq.js";
 import { ragflowDefinition } from "./ragflow.js";
 import { redisDefinition } from "./redis.js";
+import { relaticleDefinition } from "./relaticle.js";
+import { relaticleHorizonDefinition } from "./relaticle-horizon.js";
+import { relaticleSchedulerDefinition } from "./relaticle-scheduler.js";
 import { remotionDefinition } from "./remotion.js";
 import { resticDefinition } from "./restic.js";
 import { revoltDefinition } from "./revolt.js";
@@ -374,6 +381,7 @@ import { textGenWebuiDefinition } from "./text-gen-webui.js";
 import { timescaledbDefinition } from "./timescaledb.js";
 import { traefikDefinition } from "./traefik.js";
 import { twentyDefinition } from "./twenty.js";
+import { twentyWorkerDefinition } from "./twenty-worker.js";
 import { umamiDefinition } from "./umami.js";
 import { uptimeKumaDefinition } from "./uptime-kuma.js";
 import { usesendDefinition } from "./usesend.js";
@@ -520,6 +528,7 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	dagsterDefinition,
 	lagoDefinition,
 	twentyDefinition,
+	twentyWorkerDefinition,
 	mauticDefinition,
 	formbricksDefinition,
 	heyformDefinition,
@@ -580,6 +589,10 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	vikunjaDefinition,
 	wireguardDefinition,
 	woodpeckerCiDefinition,
+	// ── CRM ────────────────────────────────────────────────────────────────
+	relaticleDefinition,
+	relaticleHorizonDefinition,
+	relaticleSchedulerDefinition,
 	// ── New Integrations ────────────────────────────────────────────────────
 	hindsightDefinition,
 	burnlinkDefinition,

@@ -318,6 +318,26 @@ export default function EndpointsPage() {
 							Proxy type: <code>caddy</code>, <code>traefik</code>, <code>nginx</code>
 						</td>
 					</tr>
+					<tr>
+						<td>
+							<code>primaryFramework</code>
+						</td>
+						<td>string</td>
+						<td>No</td>
+						<td>
+							Primary agent framework: <code>openclaw</code>, <code>copaw</code>,{" "}
+							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>,{" "}
+							<code>memu</code>, <code>claude-code</code>, <code>codex</code>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>companionFrameworks</code>
+						</td>
+						<td>string[]</td>
+						<td>No</td>
+						<td>Companion frameworks to run alongside the primary</td>
+					</tr>
 				</tbody>
 			</table>
 			<h3>Request</h3>
@@ -327,7 +347,8 @@ export default function EndpointsPage() {
   -H "Content-Type: application/json" \\
   -d '{
     "services": ["qdrant", "redis", "milvus"],
-    "skills": ["researcher"]
+    "skills": ["researcher"],
+    "primaryFramework": "zeroclaw"
   }'`}</code>
 			</pre>
 			<h3>
@@ -454,6 +475,26 @@ export default function EndpointsPage() {
 						<td>
 							Target platform (e.g. <code>linux/arm64</code>)
 						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>primaryFramework</code>
+						</td>
+						<td>string</td>
+						<td>No</td>
+						<td>
+							Primary agent framework: <code>openclaw</code> (default), <code>copaw</code>,{" "}
+							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>,{" "}
+							<code>memu</code>, <code>claude-code</code>, <code>codex</code>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>companionFrameworks</code>
+						</td>
+						<td>string[]</td>
+						<td>No</td>
+						<td>Companion frameworks to run alongside the primary</td>
 					</tr>
 					<tr>
 						<td>

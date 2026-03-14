@@ -1,11 +1,12 @@
 # @better-openclaw/core
 
-The core engine responsible for parsing configurations, resolving dependencies, formatting outputs, and generating production-ready OpenClaw Docker Compose stacks.
+The core engine responsible for parsing configurations, resolving dependencies, formatting outputs, and generating production-ready AI agent Docker Compose stacks with support for 8 agent frameworks.
 
 ## Features
 
-- **Service Registry:** A unified, expandable catalog of pre-configured Docker services (e.g., Traefik, PostgreSQL, Qdrant, Ollama, N8N, SearXNG, Scrapling, etc.) categorized by function (databases, models, scrapers, tools).
-- **Dependency Resolution Engine:** Automatically detects and resolves required services. If you select a Postgres-dependent service, Postgres is automatically injected into the generation plan.
+- **Multi-Agent Framework Registry:** Choose from 8 pluggable agent frameworks (OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex) as primary orchestrator, with optional companion frameworks for hybrid stacks. Framework definitions live in `src/frameworks/` and use a registry pattern.
+- **Service Registry:** A unified, expandable catalog of 94+ pre-configured Docker services (e.g., Traefik, PostgreSQL, Qdrant, Ollama, N8N, SearXNG, Scrapling, etc.) categorized by function (databases, models, scrapers, tools).
+- **Dependency Resolution Engine:** Automatically detects and resolves required services. Framework-specific mandatory services are injected automatically (e.g., MemU requires PostgreSQL, non-OpenClaw frameworks skip Convex/Mission-Control/Tailscale).
 - **Skill Injection (`SKILL.md`):** Deep integration with AI agent workflows. Packages specialized `SKILL.md` instructions into volume mounts for AI tools like the `browser` integration or `tinyfish`.
 - **Intelligent Networking & Proxies:** Fully integrated reverse proxy generation (Caddy and Traefik) and auto-SSL domain generation.
 - **Cross-Platform & Heterogeneous Topologies:** Supports generating stacks for `local` (Docker Desktop), `vps` (cloud), and `homelab` deployments. It explicitly supports a hybrid native-docker model via `deploymentType: "bare-metal"`.
@@ -19,9 +20,9 @@ You can use the generation engine programmatically within any Node.js or TypeScr
 import { generate, type GenerationInput } from "@better-openclaw/core";
 
 const input: GenerationInput = {
-	projectName: "my-openclaw-stack",
-	services: ["postgres-database", "ollama-local-llm", "n8n-workflow"],
-	skillPacks: ["ollama-local-llm", "n8n-workflows"],
+	projectName: "my-agent-stack",
+	services: ["postgresql", "ollama", "n8n"],
+	skillPacks: ["local-ai"],
 	proxy: "caddy",
 	domain: "my-ai.example.com",
 	gpu: true,
@@ -31,6 +32,8 @@ const input: GenerationInput = {
 	generateSecrets: true,
 	openclawVersion: "latest",
 	monitoring: true,
+	primaryFramework: "zeroclaw",       // Choose from 8 agent frameworks
+	companionFrameworks: ["copaw"],     // Optional companion frameworks
 };
 
 // Generates the Compose YAML, configs, skills, and .env securely.

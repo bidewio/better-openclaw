@@ -38,7 +38,7 @@ const features = [
 	{
 		colSpan: "lg:col-span-3",
 		icon: Package,
-		title: "58+ Production-Ready Services",
+		title: "94+ Production-Ready Services",
 		description:
 			"Databases (Postgres, Redis, Qdrant), Browsers (Steel, Browserless), Workflow Engines (n8n, Activepieces), Media (FFmpeg), and more. All wired together with correct networking and secrets.",
 		bg: "bg-surface border-primary/20",

@@ -36,6 +36,14 @@ export function registerGenerateStack(server: McpServer): void {
 					.boolean()
 					.optional()
 					.describe("Auto-generate secure passwords and keys (default: true)"),
+				primaryFramework: z
+					.enum(["openclaw", "copaw", "nanoclaw", "nanobot", "zeroclaw", "memu", "claude-code", "codex"])
+					.optional()
+					.describe("Primary agent framework (default: openclaw)"),
+				companionFrameworks: z
+					.array(z.enum(["openclaw", "copaw", "nanoclaw", "nanobot", "zeroclaw", "memu", "claude-code", "codex"]))
+					.optional()
+					.describe("Companion agent frameworks to run alongside the primary"),
 			},
 		},
 		async (params) => {
@@ -52,6 +60,8 @@ export function registerGenerateStack(server: McpServer): void {
 					platform: params.platform ?? "linux/amd64",
 					monitoring: params.monitoring ?? false,
 					generateSecrets: params.generateSecrets ?? true,
+					primaryFramework: params.primaryFramework,
+					companionFrameworks: params.companionFrameworks,
 					openclawVersion: "latest",
 					deployment: "local",
 					deploymentType: "docker",
@@ -74,6 +84,8 @@ export function registerGenerateStack(server: McpServer): void {
 						platform: params.platform ?? "linux/amd64",
 						monitoring: params.monitoring ?? false,
 						generateSecrets: params.generateSecrets ?? true,
+						primaryFramework: params.primaryFramework,
+						companionFrameworks: params.companionFrameworks,
 						openclawVersion: "latest",
 						deployment: "local",
 						deploymentType: "docker",

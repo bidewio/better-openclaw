@@ -54,7 +54,7 @@ The server exposes **10 tools** that AI agents can call:
 
 | Tool | Description |
 |------|-------------|
-| `list-services` | List all 70+ available Docker services, optionally filtered by `category` or `maturity` (stable/beta/experimental) |
+| `list-services` | List all 94+ available Docker services, optionally filtered by `category` or `maturity` (stable/beta/experimental) |
 | `get-service` | Get complete definition of a service by ID — image, ports, env vars, volumes, health check, resource limits |
 | `search-services` | Keyword search across the service catalog with relevance scoring |
 | `suggest-services` | Suggest services from a natural language description (e.g. *"I need a research stack with vector search and local LLM"*) |
@@ -97,6 +97,11 @@ The agent will call `suggest-services` → `resolve-dependencies` → `generate-
 
 The agent calls `get-preset` → `generate-stack` with proxy and monitoring options.
 
+**Choose a different framework:**
+> "Create a ZeroClaw stack with PostgreSQL and Redis"
+
+The agent calls `generate-stack` with `primaryFramework: "zeroclaw"` — the output uses a ZeroClaw gateway container and skips Convex/Mission-Control.
+
 **Explore services:**
 > "What database services are available?"
 
@@ -121,6 +126,8 @@ The primary tool for stack generation.
 | `platform` | string | no | Target platform (default: linux/amd64) |
 | `monitoring` | boolean | no | Include Grafana + Prometheus (default: false) |
 | `generateSecrets` | boolean | no | Auto-generate passwords and keys (default: true) |
+| `primaryFramework` | string | no | Primary agent framework: `openclaw` (default), `copaw`, `nanoclaw`, `nanobot`, `zeroclaw`, `memu`, `claude-code`, `codex` |
+| `companionFrameworks` | string[] | no | Companion agent frameworks to run alongside the primary |
 
 **Returns:** JSON with `files` (map of filename → content), `metadata` (service count, memory estimate), and `fileList`.
 
@@ -164,7 +171,7 @@ AI Agent (Claude, GPT, etc.)
 │             ▼             │
 │    @better-openclaw/core  │
 │  ┌──────────────────────┐ │
-│  │ 70+ service defs     │ │
+│  │ 94+ service defs     │ │
 │  │ Dependency resolver  │ │
 │  │ Docker Compose gen   │ │
 │  │ Validation engine    │ │
@@ -230,7 +237,7 @@ registerMyTool(server);
 
 ## Available Services
 
-The server provides access to **70+ self-hosted services** across categories:
+The server provides access to **94+ self-hosted services** across categories:
 
 - **Database** — PostgreSQL, Redis, MongoDB, Neo4j, SurrealDB, ClickHouse
 - **AI & ML** — Ollama, Qdrant, ChromaDB, Meilisearch, Weaviate

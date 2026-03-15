@@ -1,4 +1,3 @@
-import type { OperationsLogger } from "./logger/logger.js";
 import {
 	partitionBareMetal,
 	platformToNativePlatform,
@@ -18,7 +17,6 @@ import { generateHealthCheck } from "./generators/health-check.js";
 import { generateN8nWorkflows } from "./generators/n8n-workflows.js";
 import { generateNativeInstallScripts } from "./generators/native-services.js";
 import { generateOpenclawInstallScript } from "./generators/openclaw-install-script.js";
-
 import { generatePostgresInit } from "./generators/postgres-init.js";
 import { generatePrometheusConfig } from "./generators/prometheus.js";
 import { generateReadme } from "./generators/readme.js";
@@ -26,6 +24,7 @@ import { generateScripts } from "./generators/scripts.js";
 import { generateSkillFiles } from "./generators/skills.js";
 import { generateStackManifest } from "./generators/stack-manifest.js";
 import { generateTraefikConfig } from "./generators/traefik.js";
+import type { OperationsLogger } from "./logger/logger.js";
 import { migrateConfig } from "./migrations.js";
 import { resolve } from "./resolver.js";
 import type {

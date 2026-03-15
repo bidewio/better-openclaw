@@ -1,39 +1,5 @@
 // ─── Addon Stack (Clawexa) ──────────────────────────────────────────────────
 export { generateAddonStack, updateAddonStack } from "./addon-stack.js";
-
-// ─── Operations Logger ─────────────────────────────────────────────────────
-export {
-	CallbackSink,
-	ConsoleSink,
-	FileSink,
-	OperationsLogger,
-	StepTracker,
-} from "./logger/index.js";
-export type { FileSinkOptions } from "./logger/sinks/file-sink.js";
-export type {
-	LogLevel,
-	LogSink,
-	LogSource,
-	OperationCategory,
-	OperationOutcome,
-	OperationsLogEntry,
-	OperationsLoggerOptions,
-	OperationStep,
-} from "./logger/index.js";
-
-// ─── Agent Frameworks ───────────────────────────────────────────────────────
-export type {
-	AgentFrameworkDefinition,
-	AgentFrameworkId,
-} from "./frameworks/index.js";
-export {
-	getAllFrameworks,
-	getCompanionFrameworks,
-	getFrameworkById,
-	getPrimaryFrameworks,
-	registerFramework,
-} from "./frameworks/index.js";
-
 // ─── Core Engines ───────────────────────────────────────────────────────────
 export {
 	partitionBareMetal,
@@ -67,6 +33,18 @@ export {
 } from "./deployers/index.js";
 // ─── Errors ─────────────────────────────────────────────────────────────────
 export { StackConfigError, ValidationError } from "./errors.js";
+// ─── Agent Frameworks ───────────────────────────────────────────────────────
+export type {
+	AgentFrameworkDefinition,
+	AgentFrameworkId,
+} from "./frameworks/index.js";
+export {
+	getAllFrameworks,
+	getCompanionFrameworks,
+	getFrameworkById,
+	getPrimaryFrameworks,
+	registerFramework,
+} from "./frameworks/index.js";
 export { generate, generateServicesDoc } from "./generate.js";
 export { generateCaddyfile } from "./generators/caddy.js";
 export { generateCloneScripts } from "./generators/clone-repos.js";
@@ -92,6 +70,25 @@ export type {
 	StackManifestSkill,
 } from "./generators/stack-manifest.js";
 export { generateStackManifest } from "./generators/stack-manifest.js";
+export type {
+	LogLevel,
+	LogSink,
+	LogSource,
+	OperationCategory,
+	OperationOutcome,
+	OperationStep,
+	OperationsLogEntry,
+	OperationsLoggerOptions,
+} from "./logger/index.js";
+// ─── Operations Logger ─────────────────────────────────────────────────────
+export {
+	CallbackSink,
+	ConsoleSink,
+	FileSink,
+	OperationsLogger,
+	StepTracker,
+} from "./logger/index.js";
+export type { FileSinkOptions } from "./logger/sinks/file-sink.js";
 // ─── Config Migrations ──────────────────────────────────────────────────────
 export {
 	CURRENT_CONFIG_VERSION,
@@ -109,12 +106,12 @@ export {
 } from "./presets/registry.js";
 export { resolve } from "./resolver.js";
 export {
-	AgentFrameworkSchema,
 	AddedDependencySchema,
 	AddonStackInputSchema,
 	AddonStackResultSchema,
 	AddonStackUpdateInputSchema,
 	AddonStackUpdateResultSchema,
+	AgentFrameworkSchema,
 	ApiErrorSchema,
 	BuildContextSchema,
 	ComposeOptionsSchema,
@@ -183,10 +180,10 @@ export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 export type {
 	AddedDependency,
 	AddonStackInput,
-	AgentFramework,
 	AddonStackResult,
 	AddonStackUpdateInput,
 	AddonStackUpdateResult,
+	AgentFramework,
 	AiProvider,
 	ApiError,
 	BuildContext,

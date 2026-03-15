@@ -1,8 +1,8 @@
-import type { OperationsLogger } from "@better-openclaw/core";
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { chmod, mkdir, readdir, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
+import type { OperationsLogger } from "@better-openclaw/core";
 import pc from "picocolors";
 
 /**

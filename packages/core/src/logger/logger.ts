@@ -5,9 +5,9 @@ import type {
 	LogSource,
 	OperationCategory,
 	OperationOutcome,
+	OperationStep,
 	OperationsLogEntry,
 	OperationsLoggerOptions,
-	OperationStep,
 } from "./types.js";
 
 /** Keys that must never appear in logged context. */

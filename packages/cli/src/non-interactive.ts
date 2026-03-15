@@ -1,3 +1,5 @@
+import { homedir } from "node:os";
+import { join } from "node:path";
 import type {
 	DeploymentType,
 	GenerationInput,
@@ -23,8 +25,6 @@ import {
 	scanPortConflicts,
 	trackAnalytics,
 } from "@better-openclaw/core";
-import { homedir } from "node:os";
-import { join } from "node:path";
 import pc from "picocolors";
 import { writeProject } from "./writer.js";
 

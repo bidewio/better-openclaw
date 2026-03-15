@@ -8,7 +8,7 @@ export type {
 	LogSource,
 	OperationCategory,
 	OperationOutcome,
+	OperationStep,
 	OperationsLogEntry,
 	OperationsLoggerOptions,
-	OperationStep,
 } from "./types.js";

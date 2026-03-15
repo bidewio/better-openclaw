@@ -1,3 +1,5 @@
+import { homedir } from "node:os";
+import { join } from "node:path";
 import type {
 	AgentFramework,
 	GenerationInput,
@@ -21,8 +23,6 @@ import {
 	scanPortConflicts,
 	trackAnalytics,
 } from "@better-openclaw/core";
-import { homedir } from "node:os";
-import { join } from "node:path";
 import {
 	cancel,
 	confirm,

@@ -21,6 +21,7 @@ import type * as messages from "../messages.js";
 import type * as observability from "../observability.js";
 import type * as openclaw from "../openclaw.js";
 import type * as queries from "../queries.js";
+import type * as sandboxes from "../sandboxes.js";
 import type * as search from "../search.js";
 import type * as seed from "../seed.js";
 import type * as stacks from "../stacks.js";
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
 	observability: typeof observability;
 	openclaw: typeof openclaw;
 	queries: typeof queries;
+	sandboxes: typeof sandboxes;
 	search: typeof search;
 	seed: typeof seed;
 	stacks: typeof stacks;

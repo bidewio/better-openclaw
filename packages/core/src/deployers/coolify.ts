@@ -335,7 +335,12 @@ export class CoolifyDeployer implements PaasDeployer {
 				},
 				steps: steps.map((s) => ({
 					name: s.step,
-					status: s.status === "done" ? "success" as const : s.status === "error" ? "failure" as const : "in_progress" as const,
+					status:
+						s.status === "done"
+							? ("success" as const)
+							: s.status === "error"
+								? ("failure" as const)
+								: ("in_progress" as const),
 					detail: s.detail,
 					startedAt: new Date().toISOString(),
 				})),
@@ -352,10 +357,15 @@ export class CoolifyDeployer implements PaasDeployer {
 
 			result.error = err instanceof Error ? err.message : String(err);
 
-			input.logger?.error("deployment", `Deployment to Coolify failed`, err instanceof Error ? err : null, {
-				projectName: input.projectName,
-				failedStep: running?.step,
-			});
+			input.logger?.error(
+				"deployment",
+				`Deployment to Coolify failed`,
+				err instanceof Error ? err : null,
+				{
+					projectName: input.projectName,
+					failedStep: running?.step,
+				},
+			);
 
 			return result;
 		}

@@ -2,12 +2,7 @@
 export type LogLevel = "debug" | "info" | "warn" | "error";
 
 /** Outcome of an operation. */
-export type OperationOutcome =
-	| "success"
-	| "failure"
-	| "warning"
-	| "skipped"
-	| "in_progress";
+export type OperationOutcome = "success" | "failure" | "warning" | "skipped" | "in_progress";
 
 /** Source package that generated the log entry. */
 export type LogSource = "cli" | "api" | "mcp" | "web" | "core";

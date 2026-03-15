@@ -5,11 +5,7 @@ import type { LogSink, OperationsLogEntry } from "../types.js";
  * Useful for tests, Sentry breadcrumbs, WebSocket streaming, etc.
  */
 export class CallbackSink implements LogSink {
-	constructor(
-		private readonly onEntry: (
-			entry: OperationsLogEntry,
-		) => void | Promise<void>,
-	) {}
+	constructor(private readonly onEntry: (entry: OperationsLogEntry) => void | Promise<void>) {}
 
 	write(entry: OperationsLogEntry): void | Promise<void> {
 		return this.onEntry(entry);

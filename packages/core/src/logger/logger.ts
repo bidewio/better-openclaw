@@ -65,8 +65,7 @@ export class StepTracker {
 		if (this.currentStep && this.currentStep.status === "in_progress") {
 			this.currentStep.status = "success";
 			this.currentStep.completedAt = new Date().toISOString();
-			this.currentStep.durationMs =
-				Date.now() - new Date(this.currentStep.startedAt).getTime();
+			this.currentStep.durationMs = Date.now() - new Date(this.currentStep.startedAt).getTime();
 		}
 		this.currentStep = {
 			name,
@@ -86,8 +85,7 @@ export class StepTracker {
 		if (!this.currentStep) return;
 		this.currentStep.status = "success";
 		this.currentStep.completedAt = new Date().toISOString();
-		this.currentStep.durationMs =
-			Date.now() - new Date(this.currentStep.startedAt).getTime();
+		this.currentStep.durationMs = Date.now() - new Date(this.currentStep.startedAt).getTime();
 		if (detail) this.currentStep.detail = detail;
 	}
 
@@ -96,8 +94,7 @@ export class StepTracker {
 		if (!this.currentStep) return;
 		this.currentStep.status = "failure";
 		this.currentStep.completedAt = new Date().toISOString();
-		this.currentStep.durationMs =
-			Date.now() - new Date(this.currentStep.startedAt).getTime();
+		this.currentStep.durationMs = Date.now() - new Date(this.currentStep.startedAt).getTime();
 		this.currentStep.detail = error;
 	}
 
@@ -117,11 +114,9 @@ export class StepTracker {
 	finalize(outcome: OperationOutcome): OperationStep[] {
 		// Close any open step
 		if (this.currentStep && this.currentStep.status === "in_progress") {
-			this.currentStep.status =
-				outcome === "failure" ? "failure" : "success";
+			this.currentStep.status = outcome === "failure" ? "failure" : "success";
 			this.currentStep.completedAt = new Date().toISOString();
-			this.currentStep.durationMs =
-				Date.now() - new Date(this.currentStep.startedAt).getTime();
+			this.currentStep.durationMs = Date.now() - new Date(this.currentStep.startedAt).getTime();
 		}
 
 		this.logger.log({
@@ -175,10 +170,7 @@ export class OperationsLogger {
 
 	/** Log an operation with full context. Fire-and-forget to all sinks. */
 	log(
-		entry: Omit<
-			OperationsLogEntry,
-			"id" | "timestamp" | "source" | "correlationId" | "sessionId"
-		>,
+		entry: Omit<OperationsLogEntry, "id" | "timestamp" | "source" | "correlationId" | "sessionId">,
 	): void {
 		if (!this.shouldLog(entry.level)) return;
 
@@ -204,19 +196,11 @@ export class OperationsLogger {
 		}
 	}
 
-	info(
-		category: OperationCategory,
-		message: string,
-		context?: Record<string, unknown>,
-	): void {
+	info(category: OperationCategory, message: string, context?: Record<string, unknown>): void {
 		this.log({ level: "info", category, message, context });
 	}
 
-	warn(
-		category: OperationCategory,
-		message: string,
-		context?: Record<string, unknown>,
-	): void {
+	warn(category: OperationCategory, message: string, context?: Record<string, unknown>): void {
 		this.log({ level: "warn", category, message, context });
 	}
 
@@ -242,11 +226,7 @@ export class OperationsLogger {
 		});
 	}
 
-	debug(
-		category: OperationCategory,
-		message: string,
-		context?: Record<string, unknown>,
-	): void {
+	debug(category: OperationCategory, message: string, context?: Record<string, unknown>): void {
 		this.log({ level: "debug", category, message, context });
 	}
 
@@ -302,10 +282,7 @@ export class OperationsLogger {
 	}
 
 	/** Create a step tracker for multi-step operations (deploy, generate pipeline). */
-	createStepTracker(
-		category: OperationCategory,
-		operationName: string,
-	): StepTracker {
+	createStepTracker(category: OperationCategory, operationName: string): StepTracker {
 		return new StepTracker(this, category, operationName);
 	}
 

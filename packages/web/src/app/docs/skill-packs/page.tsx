@@ -143,10 +143,10 @@ export default function SkillPacksPage() {
 		<>
 			<h1>Skill Packs</h1>
 			<p>
-				Skill packs are curated bundles of agent skills that work together with specific
-				companion services. Each pack provides a coherent set of capabilities for a particular use
-				case. There are currently <strong>10 skill packs</strong> available. Skill packs work across
-				all 8 supported agent frameworks.
+				Skill packs are curated bundles of agent skills that work together with specific companion
+				services. Each pack provides a coherent set of capabilities for a particular use case. There
+				are currently <strong>10 skill packs</strong> available. Skill packs work across all 8
+				supported agent frameworks.
 			</p>
 
 			<h2>How Skill Packs Work</h2>

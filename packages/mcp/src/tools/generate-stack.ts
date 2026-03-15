@@ -38,11 +38,31 @@ export function registerGenerateStack(server: McpServer, logger?: OperationsLogg
 					.optional()
 					.describe("Auto-generate secure passwords and keys (default: true)"),
 				primaryFramework: z
-					.enum(["openclaw", "copaw", "nanoclaw", "nanobot", "zeroclaw", "memu", "claude-code", "codex"])
+					.enum([
+						"openclaw",
+						"copaw",
+						"nanoclaw",
+						"nanobot",
+						"zeroclaw",
+						"memu",
+						"claude-code",
+						"codex",
+					])
 					.optional()
 					.describe("Primary agent framework (default: openclaw)"),
 				companionFrameworks: z
-					.array(z.enum(["openclaw", "copaw", "nanoclaw", "nanobot", "zeroclaw", "memu", "claude-code", "codex"]))
+					.array(
+						z.enum([
+							"openclaw",
+							"copaw",
+							"nanoclaw",
+							"nanobot",
+							"zeroclaw",
+							"memu",
+							"claude-code",
+							"codex",
+						]),
+					)
 					.optional()
 					.describe("Companion agent frameworks to run alongside the primary"),
 			},

@@ -2,11 +2,7 @@ import { Scalar, stringify } from "yaml";
 import { getFrameworkById } from "./frameworks/index.js";
 import type { AgentFrameworkDefinition, FrameworkComposeOptions } from "./frameworks/types.js";
 import { getDbRequirements } from "./generators/postgres-init.js";
-import type {
-	ComposeOptions,
-	ResolverOutput,
-	ServiceCategory,
-} from "./types.js";
+import type { ComposeOptions, ResolverOutput, ServiceCategory } from "./types.js";
 
 /** Creates a YAML scalar that is always quoted — avoids YAML 1.1 bare `no` → false. */
 export function quotedStr(value: string): Scalar {
@@ -322,7 +318,10 @@ export function buildCompanionService(
  *
  * Returns null when no setup is needed (no PostgreSQL or no DB requirements).
  */
-export function buildPostgresSetup(resolved: ResolverOutput, networkName = "openclaw-network"): Record<string, unknown> | null {
+export function buildPostgresSetup(
+	resolved: ResolverOutput,
+	networkName = "openclaw-network",
+): Record<string, unknown> | null {
 	const hasPostgres = resolved.services.some((s) => s.definition.id === "postgresql");
 	if (!hasPostgres) return null;
 
@@ -419,7 +418,13 @@ export function compose(resolved: ResolverOutput, options: ComposeOptions): stri
 		const dbServiceIds = new Set(dbReqs.map((r) => r.serviceId));
 
 		for (const { definition: def } of resolved.services) {
-			const { entry } = buildCompanionService(def, resolved, options, allVolumes, framework.networkName);
+			const { entry } = buildCompanionService(
+				def,
+				resolved,
+				options,
+				allVolumes,
+				framework.networkName,
+			);
 			if (dbServiceIds.has(def.id) && entry.depends_on) {
 				const deps = entry.depends_on as Record<string, { condition: string }>;
 				if (deps.postgresql) {
@@ -463,7 +468,13 @@ export function compose(resolved: ResolverOutput, options: ComposeOptions): stri
 		const dbServiceIds = new Set(dbReqs.map((r) => r.serviceId));
 
 		for (const { definition: def } of resolved.services) {
-			const { entry } = buildCompanionService(def, resolved, options, allVolumes, framework.networkName);
+			const { entry } = buildCompanionService(
+				def,
+				resolved,
+				options,
+				allVolumes,
+				framework.networkName,
+			);
 			if (dbServiceIds.has(def.id) && entry.depends_on) {
 				const deps = entry.depends_on as Record<string, { condition: string }>;
 				if (deps.postgresql) {
@@ -514,7 +525,13 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 	const dbServiceIds = new Set(dbReqs.map((r) => r.serviceId));
 
 	for (const { definition: def } of resolved.services) {
-		const { entry, volumeNames } = buildCompanionService(def, resolved, options, allVolumes, framework.networkName);
+		const { entry, volumeNames } = buildCompanionService(
+			def,
+			resolved,
+			options,
+			allVolumes,
+			framework.networkName,
+		);
 		// Redirect DB-dependent services to depend on postgres-setup
 		if (dbServiceIds.has(def.id) && entry.depends_on) {
 			const deps = entry.depends_on as Record<string, { condition: string }>;

@@ -1,4 +1,10 @@
-import type { AgentFramework, GenerationInput, Preset, ServiceDefinition, SkillPack } from "@better-openclaw/core";
+import type {
+	AgentFramework,
+	GenerationInput,
+	Preset,
+	ServiceDefinition,
+	SkillPack,
+} from "@better-openclaw/core";
 import {
 	buildAnalyticsPayload,
 	FileSink,

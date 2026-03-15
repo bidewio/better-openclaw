@@ -1,11 +1,4 @@
-import {
-	appendFileSync,
-	existsSync,
-	mkdirSync,
-	renameSync,
-	statSync,
-	unlinkSync,
-} from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, renameSync, statSync, unlinkSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import type { LogSink, OperationsLogEntry } from "../types.js";
@@ -25,10 +18,7 @@ const DEFAULT_MAX_SIZE = 10 * 1024 * 1024; // 10 MB
 const DEFAULT_MAX_FILES = 5;
 
 function defaultLogDir(): string {
-	return (
-		process.env.OPENCLAW_LOG_DIR ??
-		join(homedir(), ".better-openclaw", "logs")
-	);
+	return process.env.OPENCLAW_LOG_DIR ?? join(homedir(), ".better-openclaw", "logs");
 }
 
 /**
@@ -95,10 +85,7 @@ export class FileSink implements LogSink {
 
 	private rotate(): void {
 		// Delete the oldest file if it exists
-		const oldest = join(
-			this.logDir,
-			`${this.filename}.${this.maxFiles}.log`,
-		);
+		const oldest = join(this.logDir, `${this.filename}.${this.maxFiles}.log`);
 		if (existsSync(oldest)) {
 			try {
 				unlinkSync(oldest);
@@ -123,10 +110,7 @@ export class FileSink implements LogSink {
 		// Rename current log to .1.log
 		if (existsSync(this.logPath)) {
 			try {
-				renameSync(
-					this.logPath,
-					join(this.logDir, `${this.filename}.1.log`),
-				);
+				renameSync(this.logPath, join(this.logDir, `${this.filename}.1.log`));
 			} catch {
 				// Ignore
 			}

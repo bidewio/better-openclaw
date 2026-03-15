@@ -19,10 +19,7 @@ function getMemuImage(_variant: string, version: string): string {
 	return `${base}:${tag}`;
 }
 
-const PROVIDER_ENV_KEYS = [
-	"OPENAI_API_KEY",
-	"OPENROUTER_API_KEY",
-];
+const PROVIDER_ENV_KEYS = ["OPENAI_API_KEY", "OPENROUTER_API_KEY"];
 
 export const memuFramework: AgentFrameworkDefinition = {
 	id: "memu",

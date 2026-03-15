@@ -270,7 +270,12 @@ export default defineSchema({
 		fromUser: v.optional(v.string()), // for human/system messages
 		toAgentId: v.optional(v.id("agents")),
 		content: v.string(),
-		messageType: v.union(v.literal("text"), v.literal("system"), v.literal("handoff"), v.literal("command")),
+		messageType: v.union(
+			v.literal("text"),
+			v.literal("system"),
+			v.literal("handoff"),
+			v.literal("command"),
+		),
 		readAt: v.optional(v.number()),
 		metadata: v.optional(v.string()), // JSON blob
 		tenantId: v.optional(v.string()),

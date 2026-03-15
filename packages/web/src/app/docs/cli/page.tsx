@@ -12,8 +12,9 @@ export default function CliReferencePage() {
 			<h1>CLI Reference</h1>
 			<p>
 				The <code>create-better-openclaw</code> CLI is the primary way to generate AI agent stacks.
-				Choose from 8 agent frameworks, use an <Link href="/docs/cli/wizard">interactive wizard</Link>, or
-				run fully non-interactive for CI/CD pipelines.
+				Choose from 8 agent frameworks, use an{" "}
+				<Link href="/docs/cli/wizard">interactive wizard</Link>, or run fully non-interactive for
+				CI/CD pipelines.
 			</p>
 
 			<h2>Basic Usage</h2>
@@ -95,8 +96,8 @@ export default function CliReferencePage() {
 						</td>
 						<td>
 							Primary agent framework: <code>openclaw</code>, <code>copaw</code>,{" "}
-							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>,{" "}
-							<code>memu</code>, <code>claude-code</code>, <code>codex</code>
+							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>, <code>memu</code>,{" "}
+							<code>claude-code</code>, <code>codex</code>
 						</td>
 					</tr>
 					<tr>

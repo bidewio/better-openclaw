@@ -87,7 +87,12 @@ export function generateEnvFiles(
 
 		for (const envLine of fwEnvVars) {
 			lines.push({
-				comment: formatComment(envLine.comment, sectionName, false, envLine.key.includes("TOKEN") || envLine.key.includes("PASSWORD")),
+				comment: formatComment(
+					envLine.comment,
+					sectionName,
+					false,
+					envLine.key.includes("TOKEN") || envLine.key.includes("PASSWORD"),
+				),
 				key: envLine.key,
 				exampleValue: envLine.exampleValue,
 				actualValue: envLine.actualValue,

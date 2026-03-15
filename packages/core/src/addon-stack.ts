@@ -60,7 +60,11 @@ const CLAWEXA_MANAGED_ENV_KEYS = new Set([
 /** Build the full set of managed env keys for a given framework. */
 function getManagedEnvKeys(framework: AgentFrameworkDefinition): Set<string> {
 	const keys = new Set(CLAWEXA_MANAGED_ENV_KEYS);
-	for (const envLine of framework.getBaseEnvVars({ generateSecrets: false, frameworkVersion: "latest", frameworkImageVariant: "official" })) {
+	for (const envLine of framework.getBaseEnvVars({
+		generateSecrets: false,
+		frameworkVersion: "latest",
+		frameworkImageVariant: "official",
+	})) {
 		keys.add(envLine.key);
 	}
 	return keys;
@@ -617,10 +621,7 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 	}
 
 	// Per-service env vars
-	const seenKeys = new Set<string>([
-		...managedKeys,
-		...dbReqs.map((r) => r.passwordEnvVar),
-	]);
+	const seenKeys = new Set<string>([...managedKeys, ...dbReqs.map((r) => r.passwordEnvVar)]);
 	const envVarGroups: AddonStackResult["envVars"] = [];
 
 	for (const svc of deployableServices) {

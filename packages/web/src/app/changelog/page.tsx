@@ -80,8 +80,7 @@ const RELEASES: Release[] = [
 			},
 			{
 				type: "feature",
-				description:
-					"Framework-aware CLI wizard with primary/companion selection steps.",
+				description: "Framework-aware CLI wizard with primary/companion selection steps.",
 			},
 			{
 				type: "feature",

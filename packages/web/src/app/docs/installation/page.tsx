@@ -117,8 +117,8 @@ npm install -g create-better-openclaw@latest`}</code>
 			<h2 id="direct-install">Option 3: Direct Install (OpenClaw on Host)</h2>
 			<blockquote>
 				<p>
-					<strong>Note:</strong> Direct install is currently specific to the OpenClaw framework. Other
-					frameworks (CoPaw, NanoClaw, ZeroClaw, etc.) use Docker-only deployment.
+					<strong>Note:</strong> Direct install is currently specific to the OpenClaw framework.
+					Other frameworks (CoPaw, NanoClaw, ZeroClaw, etc.) use Docker-only deployment.
 				</p>
 			</blockquote>
 			<p>

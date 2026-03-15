@@ -35,8 +35,7 @@ export class ConsoleSink implements LogSink {
 							: step.status === "skipped"
 								? "-"
 								: "~";
-				const stepDuration =
-					step.durationMs != null ? ` [${step.durationMs}ms]` : "";
+				const stepDuration = step.durationMs != null ? ` [${step.durationMs}ms]` : "";
 				const detail = step.detail ? ` (${step.detail})` : "";
 				console.log(`  ${icon} ${step.name}${detail}${stepDuration}`);
 			}

@@ -52,9 +52,10 @@ export default function McpToolsPage() {
 						<td>
 							Service IDs (e.g.{" "}
 							<code>
-								[&quot;postgresql&quot;, &quot;redis&quot;, &quot;n8n&quot;, &quot;opensandbox&quot;]
+								[&quot;postgresql&quot;, &quot;redis&quot;, &quot;n8n&quot;,
+								&quot;opensandbox&quot;]
 							</code>
-						)
+							)
 						</td>
 					</tr>
 					<tr>

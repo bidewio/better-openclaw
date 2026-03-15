@@ -9,9 +9,7 @@ export {
 	OperationsLogger,
 	StepTracker,
 } from "./logger/index.js";
-export type {
-	FileSinkOptions,
-} from "./logger/sinks/file-sink.js";
+export type { FileSinkOptions } from "./logger/sinks/file-sink.js";
 export type {
 	LogLevel,
 	LogSink,

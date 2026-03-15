@@ -15,8 +15,7 @@ export const operationsLoggerMiddleware = (): MiddlewareHandler => {
 	});
 
 	return async (c, next) => {
-		const correlationId =
-			(c.get("requestId" as never) as string | undefined) ?? randomUUID();
+		const correlationId = (c.get("requestId" as never) as string | undefined) ?? randomUUID();
 
 		const logger = new OperationsLogger({
 			source: "api",

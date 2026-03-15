@@ -137,8 +137,11 @@ export function StackBuilderProvider({ children }: { children: ReactNode }) {
 		new Set(["openai"]),
 	);
 	const [selectedGsdRuntimes, setSelectedGsdRuntimes] = useState<Set<GsdRuntime>>(new Set());
-	const [selectedPrimaryFramework, setSelectedPrimaryFramework] = useState<AgentFramework>("openclaw");
-	const [selectedCompanionFrameworks, setSelectedCompanionFrameworks] = useState<Set<AgentFramework>>(new Set());
+	const [selectedPrimaryFramework, setSelectedPrimaryFramework] =
+		useState<AgentFramework>("openclaw");
+	const [selectedCompanionFrameworks, setSelectedCompanionFrameworks] = useState<
+		Set<AgentFramework>
+	>(new Set());
 	const [resolverError, setResolverError] = useState<string | null>(null);
 	const [showSkillModal, setShowSkillModal] = useState(false);
 	const [showDeployToServerModal, setShowDeployToServerModal] = useState(false);
@@ -252,7 +255,13 @@ export function StackBuilderProvider({ children }: { children: ReactNode }) {
 			setResolverError(err instanceof Error ? err.message : "Resolution failed");
 			return null;
 		}
-	}, [selectedServices, selectedSkillPacks, selectedAiProviders, selectedGsdRuntimes, selectedPrimaryFramework]);
+	}, [
+		selectedServices,
+		selectedSkillPacks,
+		selectedAiProviders,
+		selectedGsdRuntimes,
+		selectedPrimaryFramework,
+	]);
 
 	// Build a set of all resolved service IDs
 	const resolvedServiceIds = useMemo(() => {
@@ -425,7 +434,15 @@ export function StackBuilderProvider({ children }: { children: ReactNode }) {
 				setIsGenerating(false);
 			}
 		},
-		[selectedServices, projectName, selectedSkillPacks, selectedAiProviders, selectedGsdRuntimes, selectedPrimaryFramework, selectedCompanionFrameworks],
+		[
+			selectedServices,
+			projectName,
+			selectedSkillPacks,
+			selectedAiProviders,
+			selectedGsdRuntimes,
+			selectedPrimaryFramework,
+			selectedCompanionFrameworks,
+		],
 	);
 
 	const value = {

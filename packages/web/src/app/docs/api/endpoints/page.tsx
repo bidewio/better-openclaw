@@ -326,8 +326,8 @@ export default function EndpointsPage() {
 						<td>No</td>
 						<td>
 							Primary agent framework: <code>openclaw</code>, <code>copaw</code>,{" "}
-							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>,{" "}
-							<code>memu</code>, <code>claude-code</code>, <code>codex</code>
+							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>, <code>memu</code>,{" "}
+							<code>claude-code</code>, <code>codex</code>
 						</td>
 					</tr>
 					<tr>
@@ -484,8 +484,8 @@ export default function EndpointsPage() {
 						<td>No</td>
 						<td>
 							Primary agent framework: <code>openclaw</code> (default), <code>copaw</code>,{" "}
-							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>,{" "}
-							<code>memu</code>, <code>claude-code</code>, <code>codex</code>
+							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>, <code>memu</code>,{" "}
+							<code>claude-code</code>, <code>codex</code>
 						</td>
 					</tr>
 					<tr>

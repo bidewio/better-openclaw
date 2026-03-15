@@ -25,8 +25,15 @@ export interface ReadmeOptions {
  * service URLs, skill packs, and scripts documentation.
  */
 export function generateReadme(resolved: ResolverOutput, options: ReadmeOptions): string {
-	const { projectName, domain, proxy, deploymentType, hasNativeServices, openclawInstallMethod, primaryFramework } =
-		options;
+	const {
+		projectName,
+		domain,
+		proxy,
+		deploymentType,
+		hasNativeServices,
+		openclawInstallMethod,
+		primaryFramework,
+	} = options;
 	const isDirectInstall = openclawInstallMethod === "direct";
 	const framework = getFrameworkById(primaryFramework ?? "openclaw");
 	const frameworkName = framework?.name ?? "OpenClaw";
@@ -244,7 +251,10 @@ This stack includes integrated AI memory services. The ${frameworkName} agent fr
 
 		if (memoryServices.length > 0) {
 			const memList = memoryServices
-				.map(({ definition }) => `- ${definition.icon} **${definition.name}** — ${definition.description.split(".")[0]}`)
+				.map(
+					({ definition }) =>
+						`- ${definition.icon} **${definition.name}** — ${definition.description.split(".")[0]}`,
+				)
 				.join("\n");
 			memSection += `
 ### Memory Services
@@ -255,7 +265,10 @@ ${memList}
 
 		if (vectorDbs.length > 0) {
 			const vecList = vectorDbs
-				.map(({ definition }) => `- ${definition.icon} **${definition.name}** — ${definition.description.split(".")[0]}`)
+				.map(
+					({ definition }) =>
+						`- ${definition.icon} **${definition.name}** — ${definition.description.split(".")[0]}`,
+				)
 				.join("\n");
 			memSection += `
 ### Vector Databases

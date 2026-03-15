@@ -12,8 +12,8 @@ export default function SandboxesPage() {
 
 	const allItems = allSessions ?? [];
 	const selectedSession = selectedSessionId
-		? allItems.find((s) => s._id === selectedSessionId) ?? null
-		: activeSessions?.[0] ?? null;
+		? (allItems.find((s) => s._id === selectedSessionId) ?? null)
+		: (activeSessions?.[0] ?? null);
 
 	return (
 		<div className="p-6 space-y-6 overflow-y-auto h-full">
@@ -73,8 +73,8 @@ export default function SandboxesPage() {
 						))}
 						{allItems.length === 0 && (
 							<div className="px-4 py-8 text-center text-xs text-muted-foreground">
-								No sandbox sessions yet. Create a desktop sandbox using the
-								code-sandbox skill's <code>create_desktop</code> action.
+								No sandbox sessions yet. Create a desktop sandbox using the code-sandbox skill's{" "}
+								<code>create_desktop</code> action.
 							</div>
 						)}
 					</div>
@@ -87,10 +87,7 @@ export default function SandboxesPage() {
 					) : (
 						<div className="bg-card rounded-lg border border-border h-[500px] flex items-center justify-center">
 							<div className="text-center">
-								<IconDeviceDesktop
-									size={32}
-									className="text-muted-foreground mx-auto mb-2"
-								/>
+								<IconDeviceDesktop size={32} className="text-muted-foreground mx-auto mb-2" />
 								<p className="text-sm text-muted-foreground">
 									{allItems.length > 0
 										? "Select a sandbox session to view"

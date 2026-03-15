@@ -151,7 +151,7 @@ export const agentBrowserDefinition: ServiceDefinition = {
 		{
 			platform: "linux",
 			installSteps: [
-				'command -v agent-browser >/dev/null 2>&1 || (npm install -g agent-browser && agent-browser install --yes)',
+				"command -v agent-browser >/dev/null 2>&1 || (npm install -g agent-browser && agent-browser install --yes)",
 			],
 			startCommand: "agent-browser daemon --port 9222 &",
 			stopCommand: "pkill -f 'agent-browser daemon' 2>/dev/null",
@@ -159,7 +159,7 @@ export const agentBrowserDefinition: ServiceDefinition = {
 		{
 			platform: "macos",
 			installSteps: [
-				'command -v agent-browser >/dev/null 2>&1 || (brew install agent-browser 2>/dev/null || npm install -g agent-browser) && agent-browser install --yes',
+				"command -v agent-browser >/dev/null 2>&1 || (brew install agent-browser 2>/dev/null || npm install -g agent-browser) && agent-browser install --yes",
 			],
 			startCommand: "agent-browser daemon --port 9222 &",
 			stopCommand: "pkill -f 'agent-browser daemon' 2>/dev/null",
@@ -169,7 +169,8 @@ export const agentBrowserDefinition: ServiceDefinition = {
 			installSteps: [
 				"if (-not (Get-Command agent-browser -ErrorAction SilentlyContinue)) { npm install -g agent-browser; agent-browser install --yes }",
 			],
-			startCommand: "Start-Process -NoNewWindow agent-browser -ArgumentList 'daemon','--port','9222'",
+			startCommand:
+				"Start-Process -NoNewWindow agent-browser -ArgumentList 'daemon','--port','9222'",
 			stopCommand: "Stop-Process -Name agent-browser -Force -ErrorAction SilentlyContinue",
 		},
 	],

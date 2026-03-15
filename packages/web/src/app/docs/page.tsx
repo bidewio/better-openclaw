@@ -12,8 +12,8 @@ export default function QuickStartPage() {
 			<h1>Quick Start</h1>
 			<p>
 				Build a production-ready AI agent stack in under 5 minutes. Choose from 8 agent frameworks
-				(OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex), pick your services,
-				and get a fully wired Docker Compose stack.
+				(OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex), pick your
+				services, and get a fully wired Docker Compose stack.
 			</p>
 
 			<h2>Prerequisites</h2>
@@ -150,7 +150,8 @@ npx create-better-openclaw my-stack --preset full --yes`}</code>
 			<h2>Choosing a Framework</h2>
 			<p>
 				By default, stacks use OpenClaw as the agent framework. You can choose a different primary
-				framework with <code>--primary-framework</code>, or add companion frameworks for hybrid stacks:
+				framework with <code>--primary-framework</code>, or add companion frameworks for hybrid
+				stacks:
 			</p>
 			<pre>
 				<code>{`# Use ZeroClaw instead of OpenClaw
@@ -162,7 +163,8 @@ npx create-better-openclaw my-stack --services postgresql,redis --primary-framew
 			<p>
 				Available frameworks: <code>openclaw</code>, <code>copaw</code>, <code>nanoclaw</code>,{" "}
 				<code>nanobot</code>, <code>zeroclaw</code>, <code>memu</code>, <code>claude-code</code>,{" "}
-				<code>codex</code>. Non-OpenClaw frameworks skip Convex, Mission Control, and Tailscale automatically.
+				<code>codex</code>. Non-OpenClaw frameworks skip Convex, Mission Control, and Tailscale
+				automatically.
 			</p>
 
 			<h2>Start Your Stack</h2>

@@ -113,9 +113,7 @@ export default function SandboxViewer({ session, compact = false }: SandboxViewe
 								type="button"
 								onClick={() => setActiveTab("vnc")}
 								className={`px-2 py-0.5 text-[10px] rounded ${
-									activeTab === "vnc"
-										? "bg-background text-foreground"
-										: "text-muted-foreground"
+									activeTab === "vnc" ? "bg-background text-foreground" : "text-muted-foreground"
 								}`}
 							>
 								Desktop
@@ -195,7 +193,7 @@ export default function SandboxViewer({ session, compact = false }: SandboxViewe
 						<IconCircleX size={32} className="text-muted-foreground mx-auto mb-2" />
 						<p className="text-sm text-muted-foreground">
 							{session.status === "error"
-								? session.errorMessage ?? "Sandbox error"
+								? (session.errorMessage ?? "Sandbox error")
 								: "Sandbox terminated"}
 						</p>
 					</div>

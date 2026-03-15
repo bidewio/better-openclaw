@@ -71,9 +71,9 @@ export default function WizardPage() {
   ○ codex      — OpenAI's CLI agent for code generation`}</code>
 			</pre>
 			<p>
-				Choose your primary agent orchestrator. OpenClaw is the default. Non-OpenClaw
-				frameworks skip Convex, Mission Control, and Tailscale. You can optionally add
-				companion frameworks to run side-by-side.
+				Choose your primary agent orchestrator. OpenClaw is the default. Non-OpenClaw frameworks
+				skip Convex, Mission Control, and Tailscale. You can optionally add companion frameworks to
+				run side-by-side.
 			</p>
 
 			<h2>Step 3: Select Services (Custom Only)</h2>

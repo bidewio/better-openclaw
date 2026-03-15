@@ -23,9 +23,7 @@ export const listAll = query({
 		if (args.taskId) {
 			return await ctx.db
 				.query("sandboxSessions")
-				.withIndex("by_tenant_task", (q) =>
-					q.eq("tenantId", tenantId).eq("taskId", args.taskId),
-				)
+				.withIndex("by_tenant_task", (q) => q.eq("tenantId", tenantId).eq("taskId", args.taskId))
 				.collect();
 		}
 
@@ -55,9 +53,7 @@ export const getBySandboxId = query({
 		const tenantId = await getTenantId(ctx);
 		return await ctx.db
 			.query("sandboxSessions")
-			.withIndex("by_sandbox", (q) =>
-				q.eq("tenantId", tenantId).eq("sandboxId", args.sandboxId),
-			)
+			.withIndex("by_sandbox", (q) => q.eq("tenantId", tenantId).eq("sandboxId", args.sandboxId))
 			.first();
 	},
 });

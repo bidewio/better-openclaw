@@ -29,7 +29,9 @@ export default function ObservabilityPage() {
 	const [eventTypeFilter, setEventTypeFilter] = useState<string | undefined>(undefined);
 	const [showAddAlert, setShowAddAlert] = useState(false);
 
-	const metrics = useQuery(api.observability.getAgentMetrics, { timeRangeHours: timeRange });
+	const metrics = useQuery(api.observability.getAgentMetrics, {
+		timeRangeHours: timeRange,
+	});
 	const events = useQuery(api.observability.listAgentEvents, {
 		eventType: eventTypeFilter,
 		limit: 50,
@@ -53,6 +55,7 @@ export default function ObservabilityPage() {
 					Agent Observability
 				</h2>
 				<select
+					title="Time Range"
 					className="bg-secondary/50 text-sm rounded-lg px-3 py-1.5 text-foreground border border-border/50"
 					value={timeRange}
 					onChange={(e) => setTimeRange(Number(e.target.value))}
@@ -99,7 +102,9 @@ export default function ObservabilityPage() {
 								<div key={d.date} className="flex-1 flex flex-col items-center gap-1">
 									<div
 										className="w-full bg-primary/60 rounded-t min-h-[2px] transition-all"
-										style={{ height: `${(d.costCents / (maxDayCost || 1)) * 100}%` }}
+										style={{
+											height: `${(d.costCents / (maxDayCost || 1)) * 100}%`,
+										}}
 										title={`$${(d.costCents / 100).toFixed(2)}`}
 									/>
 									<span className="text-[10px] text-muted-foreground">{d.date.slice(5)}</span>
@@ -242,6 +247,7 @@ export default function ObservabilityPage() {
 								<span className="text-xs text-muted-foreground">threshold: {rule.threshold}</span>
 								<span className="text-xs text-muted-foreground">{rule.windowMinutes}m window</span>
 								<button
+									title="Delete Alert"
 									type="button"
 									onClick={() => deleteAlert({ id: rule._id })}
 									className="p-1 hover:bg-red-500/20 rounded text-muted-foreground hover:text-red-400"
@@ -295,7 +301,13 @@ function AddAlertModal({ onClose }: { onClose: () => void }) {
 
 	const handleSubmit = async () => {
 		if (!name.trim()) return;
-		await upsertAlert({ name, condition, threshold, windowMinutes, enabled: true });
+		await upsertAlert({
+			name,
+			condition,
+			threshold,
+			windowMinutes,
+			enabled: true,
+		});
 		onClose();
 	};
 
@@ -322,6 +334,7 @@ function AddAlertModal({ onClose }: { onClose: () => void }) {
 					<div>
 						<label className="text-xs text-muted-foreground block mb-1">Condition</label>
 						<select
+							title="Condition"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={condition}
 							onChange={(e) => setCondition(e.target.value)}
@@ -336,6 +349,7 @@ function AddAlertModal({ onClose }: { onClose: () => void }) {
 						<div>
 							<label className="text-xs text-muted-foreground block mb-1">Threshold</label>
 							<input
+								title="Threshold"
 								type="number"
 								className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 								value={threshold}
@@ -345,6 +359,7 @@ function AddAlertModal({ onClose }: { onClose: () => void }) {
 						<div>
 							<label className="text-xs text-muted-foreground block mb-1">Window (min)</label>
 							<input
+								title="Window"
 								type="number"
 								className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 								value={windowMinutes}

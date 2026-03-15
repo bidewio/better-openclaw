@@ -116,13 +116,9 @@ describe("OperationsLogger", () => {
 			sinks: [new CallbackSink((e) => entries.push(e))],
 		});
 
-		const result = await logger.timed(
-			"generation",
-			"generate stack",
-			async () => {
-				return 42;
-			},
-		);
+		const result = await logger.timed("generation", "generate stack", async () => {
+			return 42;
+		});
 
 		expect(result).toBe(42);
 		expect(entries).toHaveLength(2);
@@ -218,9 +214,7 @@ describe("StepTracker", () => {
 		expect(steps[3].status).toBe("success");
 
 		// Summary entry should be logged
-		const summary = entries.find(
-			(e) => e.message === "Deploy to Dokploy success",
-		);
+		const summary = entries.find((e) => e.message === "Deploy to Dokploy success");
 		expect(summary).toBeTruthy();
 		expect(summary!.outcome).toBe("success");
 		expect(summary!.steps).toHaveLength(4);
@@ -287,9 +281,7 @@ describe("ConsoleSink", () => {
 	});
 
 	it("uses console.error for error level", () => {
-		const errorSpy = vi
-			.spyOn(console, "error")
-			.mockImplementation(() => {});
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 		const sink = new ConsoleSink();
 
 		sink.write({

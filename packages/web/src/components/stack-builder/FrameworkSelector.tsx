@@ -30,7 +30,10 @@ function FrameworkCard({
 	onClick: () => void;
 	showCheck: boolean;
 }) {
-	const badge = runtimeBadge[fw.runtime] ?? { label: fw.runtime, className: "bg-muted text-muted-foreground" };
+	const badge = runtimeBadge[fw.runtime] ?? {
+		label: fw.runtime,
+		className: "bg-muted text-muted-foreground",
+	};
 
 	return (
 		<button
@@ -53,7 +56,9 @@ function FrameworkCard({
 				<span className="text-sm font-semibold text-foreground">{fw.name}</span>
 			</div>
 			<p className="text-xs text-muted-foreground line-clamp-2">{fw.description}</p>
-			<span className={cn("mt-auto rounded-full px-2 py-0.5 text-[10px] font-medium", badge.className)}>
+			<span
+				className={cn("mt-auto rounded-full px-2 py-0.5 text-[10px] font-medium", badge.className)}
+			>
 				{badge.label}
 			</span>
 		</button>
@@ -67,7 +72,10 @@ export function FrameworkSelector({
 	onCompanionsChange,
 }: FrameworkSelectorProps) {
 	const allFrameworks = useMemo(() => getAllFrameworks(), []);
-	const primaryFrameworks = useMemo(() => allFrameworks.filter((fw) => fw.canBePrimary), [allFrameworks]);
+	const primaryFrameworks = useMemo(
+		() => allFrameworks.filter((fw) => fw.canBePrimary),
+		[allFrameworks],
+	);
 	const companionFrameworks = useMemo(
 		() => allFrameworks.filter((fw) => fw.canBeCompanion && fw.id !== selectedPrimary),
 		[allFrameworks, selectedPrimary],
@@ -88,9 +96,7 @@ export function FrameworkSelector({
 			{/* Primary Framework */}
 			<div>
 				<h3 className="text-sm font-semibold text-foreground">Primary Agent Framework</h3>
-				<p className="mt-0.5 text-xs text-muted-foreground">
-					The main orchestrator for your stack
-				</p>
+				<p className="mt-0.5 text-xs text-muted-foreground">The main orchestrator for your stack</p>
 				<div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
 					{primaryFrameworks.map((fw) => (
 						<FrameworkCard
@@ -109,7 +115,8 @@ export function FrameworkSelector({
 				<div>
 					<h3 className="text-sm font-semibold text-foreground">Companion Frameworks</h3>
 					<p className="mt-0.5 text-xs text-muted-foreground">
-						Optional — run additional agents alongside {primaryFrameworks.find((fw) => fw.id === selectedPrimary)?.name ?? "your primary"}
+						Optional — run additional agents alongside{" "}
+						{primaryFrameworks.find((fw) => fw.id === selectedPrimary)?.name ?? "your primary"}
 					</p>
 					<div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
 						{companionFrameworks.map((fw) => (

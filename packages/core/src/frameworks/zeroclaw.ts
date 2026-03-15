@@ -19,12 +19,7 @@ function getZeroclawImage(_variant: string, version: string): string {
 	return `${base}:${tag}`;
 }
 
-const PROVIDER_ENV_KEYS = [
-	"API_KEY",
-	"OPENAI_API_KEY",
-	"ANTHROPIC_API_KEY",
-	"OPENROUTER_API_KEY",
-];
+const PROVIDER_ENV_KEYS = ["API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "OPENROUTER_API_KEY"];
 
 export const zeroclawFramework: AgentFrameworkDefinition = {
 	id: "zeroclaw",

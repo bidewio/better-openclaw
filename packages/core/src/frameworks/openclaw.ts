@@ -188,10 +188,7 @@ export const openclawFramework: AgentFrameworkDefinition = {
 		return { gatewayService: gateway, cliService, allVolumes };
 	},
 
-	generateConfig(
-		resolved: ResolverOutput,
-		options: FrameworkConfigOptions,
-	): FrameworkConfigResult {
+	generateConfig(resolved: ResolverOutput, options: FrameworkConfigOptions): FrameworkConfigResult {
 		const content = generateOpenClawConfig(resolved, {
 			deploymentType: options.deploymentType as any,
 			gatewayPort: options.gatewayPort,

@@ -19,6 +19,7 @@ import ServicesPage from "./components/ServicesPage";
 import SessionsPage from "./components/SessionsPage";
 import SignInForm from "./components/SignIn";
 import SkillsPage from "./components/SkillsPage";
+import SandboxesPage from "./components/SandboxesPage";
 import StandupPanel from "./components/StandupPanel";
 import TaskDetailPanel from "./components/TaskDetailPanel";
 import TokenDashboard from "./components/TokenDashboard";
@@ -281,6 +282,13 @@ export default function App() {
 					{activeView === "standup" && (
 						<div style={{ gridArea: "main" }}>
 							<StandupPanel />
+						</div>
+					)}
+
+					{/* Sandboxes view */}
+					{activeView === "sandboxes" && (
+						<div style={{ gridArea: "main" }}>
+							<SandboxesPage />
 						</div>
 					)}
 				</main>

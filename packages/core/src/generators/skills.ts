@@ -8,6 +8,78 @@ import type { ResolverOutput } from "../types.js";
  * service's `openclawEnvVars` array at generation time.
  */
 const skillTemplates: Record<string, string> = {
+	"agent-browse": `---
+name: agent-browse
+description: "AI-optimized browser automation with snapshot + ref workflow for deterministic element targeting"
+metadata:
+  openclaw:
+    emoji: "🌍"
+---
+
+# Agent Browser
+
+AI-optimized headless browser available at \`{{AGENT_BROWSER_HOST}}\` with CDP on port \`{{AGENT_BROWSER_CDP_PORT}}\` and live viewport streaming on port \`{{AGENT_BROWSER_STREAM_PORT}}\`.
+
+## Core Workflow: Snapshot → Reason → Act
+
+Agent Browser uses a **ref-based workflow** designed for LLMs. Each interactive element gets a deterministic ref like \`@e1\`, \`@e2\` that you can target directly — no CSS selectors needed.
+
+1. **Navigate:** \`agent-browser open https://example.com\`
+2. **Snapshot:** \`agent-browser snapshot\` → returns accessibility tree with refs
+3. **Reason:** Identify the target element by its ref (e.g. \`@e5\` is the search input)
+4. **Act:** \`agent-browser click @e5\` or \`agent-browser type @e5 "search query"\`
+5. **Verify:** \`agent-browser screenshot\` to capture the result
+
+## Key Commands
+
+| Command | Description |
+|---------|-------------|
+| \`agent-browser open <url>\` | Navigate to a URL |
+| \`agent-browser snapshot\` | Get accessibility tree with @refs |
+| \`agent-browser click @ref\` | Click an element by ref |
+| \`agent-browser type @ref "text"\` | Type text into an input |
+| \`agent-browser select @ref "value"\` | Select a dropdown option |
+| \`agent-browser screenshot [--path file.png]\` | Capture viewport screenshot |
+| \`agent-browser scroll down\\|up\` | Scroll the viewport |
+| \`agent-browser wait <selector\\|ms>\` | Wait for element or time |
+| \`agent-browser extract\` | Extract page content as clean text |
+| \`agent-browser pdf [--path file.pdf]\` | Save page as PDF |
+
+## Snapshot Output Example
+
+\`\`\`
+@e1 heading "Welcome to Example"
+@e2 link "Sign In" [href="/login"]
+@e3 input[text] "Search..." [placeholder]
+@e4 button "Search"
+@e5 link "Learn More" [href="/docs"]
+\`\`\`
+
+Each \`@ref\` is stable within a page state — use it directly: \`agent-browser click @e2\`
+
+## Content Boundaries
+
+Output is wrapped in boundary markers (\`---CONTENT_START---\` / \`---CONTENT_END---\`) to prevent prompt injection from page content. This is enabled by default.
+
+## Session Persistence
+
+\`\`\`bash
+# Save/restore login state across sessions
+agent-browser --session-name my-app open https://app.example.com
+agent-browser --session-name my-app snapshot
+\`\`\`
+
+## Live Viewport Streaming
+
+WebSocket stream at \`ws://{{AGENT_BROWSER_HOST}}:{{AGENT_BROWSER_STREAM_PORT}}\` for real-time viewport watching (pair browsing). Receives JPEG frames with metadata.
+
+## Security
+
+- **Domain allowlist:** Set \`AGENT_BROWSER_ALLOWED_DOMAINS\` to restrict navigation
+- **Action policies:** JSON policy files to require confirmation for specific action categories
+- **Content boundaries:** Prevent LLM prompt injection from page content
+`,
+
 	"redis-cache": `---
 name: redis-cache
 description: "Cache data and manage key-value state using Redis"
@@ -677,6 +749,250 @@ curl -X POST http://{{OPENSANDBOX_HOST}}:{{OPENSANDBOX_PORT}}/v1/sandboxes/{id}/
 - No outbound network access by default (egress blocked)
 - Max 512 PIDs per sandbox (fork bomb protection)
 - Memory capped per sandbox (default 512MB)
+`,
+
+	"mem0-memory": `---
+name: mem0-memory
+description: "Store and retrieve long-term memories for AI agents using Mem0"
+metadata:
+  openclaw:
+    emoji: "🧠"
+---
+
+# Mem0 AI Memory
+
+Use Mem0 as a long-term memory layer for AI agents. Mem0 automatically extracts, stores, and retrieves memories across conversations using pgvector embeddings and Neo4j knowledge graphs.
+
+## Connection Details
+
+- **Host:** \`{{MEM0_HOST}}\`
+- **Port:** \`{{MEM0_PORT}}\`
+
+## Example API Calls
+
+### Add a memory
+\`\`\`bash
+curl -X POST "http://{{MEM0_HOST}}:{{MEM0_PORT}}/v1/memories/" \\
+  -H "Content-Type: application/json" \\
+  -d '{"messages": [{"role": "user", "content": "I prefer dark mode in all applications"}], "user_id": "agent-1"}'
+\`\`\`
+
+### Search memories
+\`\`\`bash
+curl -X POST "http://{{MEM0_HOST}}:{{MEM0_PORT}}/v1/memories/search/" \\
+  -H "Content-Type: application/json" \\
+  -d '{"query": "What are the user preferences?", "user_id": "agent-1"}'
+\`\`\`
+
+### Get all memories for a user
+\`\`\`bash
+curl "http://{{MEM0_HOST}}:{{MEM0_PORT}}/v1/memories/?user_id=agent-1"
+\`\`\`
+
+### Delete a memory
+\`\`\`bash
+curl -X DELETE "http://{{MEM0_HOST}}:{{MEM0_PORT}}/v1/memories/<memory_id>/"
+\`\`\`
+
+## Usage Notes
+
+- Mem0 automatically extracts facts and preferences from conversation messages.
+- Memories are stored as vector embeddings in pgvector and as entity relationships in Neo4j.
+- Use \`user_id\` to isolate memories per agent or per conversation context.
+- Mem0 handles deduplication and conflict resolution automatically.
+`,
+
+	"memu-memory": `---
+name: memu-memory
+description: "Persistent memory framework for proactive AI agents using MemU"
+metadata:
+  openclaw:
+    emoji: "🧠"
+---
+
+# MemU Persistent Memory
+
+Use MemU as a persistent memory framework for 24/7 proactive AI agents. MemU extracts structured memory from multimodal inputs and organizes it into a hierarchical knowledge graph.
+
+## Connection Details
+
+- **Host:** \`{{MEMU_HOST}}\`
+- **Port:** \`{{MEMU_PORT}}\`
+
+## Example API Calls
+
+### Store a memory
+\`\`\`bash
+curl -X POST "http://{{MEMU_HOST}}:{{MEMU_PORT}}/api/v1/memories" \\
+  -H "Content-Type: application/json" \\
+  -d '{"content": "User prefers TypeScript over JavaScript", "agent_id": "agent-1", "type": "preference"}'
+\`\`\`
+
+### Recall memories
+\`\`\`bash
+curl -X POST "http://{{MEMU_HOST}}:{{MEMU_PORT}}/api/v1/recall" \\
+  -H "Content-Type: application/json" \\
+  -d '{"query": "What programming languages does the user prefer?", "agent_id": "agent-1"}'
+\`\`\`
+
+### Get memory graph
+\`\`\`bash
+curl "http://{{MEMU_HOST}}:{{MEMU_PORT}}/api/v1/graph?agent_id=agent-1"
+\`\`\`
+
+## Usage Notes
+
+- MemU organizes memories into a hierarchical knowledge graph backed by pgvector.
+- Supports multimodal inputs (text, images, structured data).
+- Use \`agent_id\` to partition memories across different agents.
+`,
+
+	"hindsight-memory": `---
+name: hindsight-memory
+description: "Agent memory with Retain/Recall/Reflect operations using Hindsight"
+metadata:
+  openclaw:
+    emoji: "🧠"
+---
+
+# Hindsight Agent Memory
+
+Use Hindsight for agent memory with three core operations: Retain (store), Recall (retrieve), and Reflect (synthesize). Supports multi-strategy retrieval including semantic, keyword, graph, and temporal search.
+
+## Connection Details
+
+- **Host:** \`{{HINDSIGHT_HOST}}\`
+- **Port:** \`{{HINDSIGHT_API_PORT}}\`
+
+## Example API Calls
+
+### Retain (store a memory)
+\`\`\`bash
+curl -X POST "http://{{HINDSIGHT_HOST}}:{{HINDSIGHT_API_PORT}}/api/v1/retain" \\
+  -H "Content-Type: application/json" \\
+  -d '{"namespace": "agent-1", "content": "The deployment uses Kubernetes on AWS EKS", "metadata": {"source": "conversation"}}'
+\`\`\`
+
+### Recall (retrieve memories)
+\`\`\`bash
+curl -X POST "http://{{HINDSIGHT_HOST}}:{{HINDSIGHT_API_PORT}}/api/v1/recall" \\
+  -H "Content-Type: application/json" \\
+  -d '{"namespace": "agent-1", "query": "What infrastructure is used?", "strategies": ["semantic", "keyword"], "limit": 5}'
+\`\`\`
+
+### Reflect (synthesize memories)
+\`\`\`bash
+curl -X POST "http://{{HINDSIGHT_HOST}}:{{HINDSIGHT_API_PORT}}/api/v1/reflect" \\
+  -H "Content-Type: application/json" \\
+  -d '{"namespace": "agent-1", "query": "Summarize all infrastructure decisions"}'
+\`\`\`
+
+## MCP Integration
+
+Hindsight also exposes an MCP server. Configure your agent to connect via:
+\`\`\`
+http://{{HINDSIGHT_HOST}}:{{HINDSIGHT_API_PORT}}/mcp
+\`\`\`
+
+## Usage Notes
+
+- Use namespaces to isolate memories per agent, project, or session.
+- Retrieval strategies: semantic (embedding similarity), keyword (BM25), graph (entity relationships), temporal (time-based).
+- The Reflect operation uses LLM-powered synthesis to generate insights from stored memories.
+`,
+
+	"chromadb-memory": `---
+name: chromadb-memory
+description: "Store and retrieve vector embeddings using ChromaDB"
+metadata:
+  openclaw:
+    emoji: "🎨"
+---
+
+# ChromaDB Vector Memory
+
+Use ChromaDB as a vector database for storing embeddings, enabling semantic search and retrieval-augmented generation (RAG).
+
+## Connection Details
+
+- **Host:** \`{{CHROMADB_HOST}}\`
+- **Port:** \`{{CHROMADB_PORT}}\`
+
+## Example API Calls
+
+### Create a collection
+\`\`\`bash
+curl -X POST "http://{{CHROMADB_HOST}}:{{CHROMADB_PORT}}/api/v1/collections" \\
+  -H "Content-Type: application/json" \\
+  -d '{"name": "my_collection", "metadata": {"hnsw:space": "cosine"}}'
+\`\`\`
+
+### Add documents
+\`\`\`bash
+curl -X POST "http://{{CHROMADB_HOST}}:{{CHROMADB_PORT}}/api/v1/collections/<collection_id>/add" \\
+  -H "Content-Type: application/json" \\
+  -d '{"ids": ["doc1"], "documents": ["Hello world"], "metadatas": [{"source": "test"}]}'
+\`\`\`
+
+### Query similar documents
+\`\`\`bash
+curl -X POST "http://{{CHROMADB_HOST}}:{{CHROMADB_PORT}}/api/v1/collections/<collection_id>/query" \\
+  -H "Content-Type: application/json" \\
+  -d '{"query_texts": ["greeting"], "n_results": 5}'
+\`\`\`
+
+## Usage Notes
+
+- ChromaDB can auto-generate embeddings from documents if configured with an embedding function.
+- Supports metadata filtering on queries for precise retrieval.
+- Collections are isolated namespaces for different data domains.
+`,
+
+	"weaviate-memory": `---
+name: weaviate-memory
+description: "Store and search vectors with hybrid search using Weaviate"
+metadata:
+  openclaw:
+    emoji: "🔷"
+---
+
+# Weaviate Vector Memory
+
+Use Weaviate for vector storage with built-in hybrid search (combining vector similarity and keyword/BM25 search) and a GraphQL API.
+
+## Connection Details
+
+- **Host:** \`{{WEAVIATE_HOST}}\`
+- **Port:** \`{{WEAVIATE_PORT}}\`
+
+## Example API Calls
+
+### Create a class (schema)
+\`\`\`bash
+curl -X POST "http://{{WEAVIATE_HOST}}:{{WEAVIATE_PORT}}/v1/schema" \\
+  -H "Content-Type: application/json" \\
+  -d '{"class": "Document", "vectorizer": "none", "properties": [{"name": "content", "dataType": ["text"]}]}'
+\`\`\`
+
+### Add an object with vector
+\`\`\`bash
+curl -X POST "http://{{WEAVIATE_HOST}}:{{WEAVIATE_PORT}}/v1/objects" \\
+  -H "Content-Type: application/json" \\
+  -d '{"class": "Document", "properties": {"content": "Hello world"}, "vector": [0.1, 0.2, 0.3]}'
+\`\`\`
+
+### Hybrid search (vector + keyword)
+\`\`\`bash
+curl -X POST "http://{{WEAVIATE_HOST}}:{{WEAVIATE_PORT}}/v1/graphql" \\
+  -H "Content-Type: application/json" \\
+  -d '{"query": "{ Get { Document(hybrid: { query: \\"hello\\" alpha: 0.5 }) { content _additional { score } } } }"}'
+\`\`\`
+
+## Usage Notes
+
+- Weaviate supports hybrid search combining BM25 keyword search with vector similarity.
+- Use the alpha parameter to balance between keyword (0.0) and vector (1.0) search.
+- GraphQL API provides flexible querying with filters, aggregations, and cross-references.
 `,
 };
 

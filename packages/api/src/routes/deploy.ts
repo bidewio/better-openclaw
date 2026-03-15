@@ -11,6 +11,7 @@
  *   GET  /deploy/providers — List available PaaS providers
  */
 
+import type { OperationsLogger } from "@better-openclaw/core";
 import { getAvailableDeployers, getDeployer } from "@better-openclaw/core";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 
@@ -245,6 +246,8 @@ route.openapi(deployPost, async (c: any) => {
 		);
 	}
 
+	const logger = c.get("logger" as never) as OperationsLogger | undefined;
+
 	const result = await deployer.deploy({
 		target: { instanceUrl, apiKey },
 		projectName,
@@ -252,6 +255,7 @@ route.openapi(deployPost, async (c: any) => {
 		envContent,
 		description,
 		serverId,
+		logger,
 	});
 
 	return c.json(result);

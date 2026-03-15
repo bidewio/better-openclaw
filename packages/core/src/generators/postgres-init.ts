@@ -60,6 +60,8 @@ const DB_REQUIREMENTS: Record<string, Omit<DbRequirement, "serviceId" | "service
 		passwordEnvVar: "RELATICLE_DB_PASSWORD",
 	},
 	// ── Agent Memory ────────────────────────────────────────────────────────
+	mem0: { dbName: "mem0", dbUser: "mem0", passwordEnvVar: "MEM0_DB_PASSWORD" },
+	memu: { dbName: "memu", dbUser: "memu", passwordEnvVar: "MEMU_DB_PASSWORD" },
 	hindsight: { dbName: "hindsight", dbUser: "hindsight", passwordEnvVar: "HINDSIGHT_DB_PASSWORD" },
 	// ── SaaS Boilerplates ────────────────────────────────────────────────────
 	"open-saas": { dbName: "opensaas", dbUser: "opensaas", passwordEnvVar: "OPENSAAS_DB_PASSWORD" },

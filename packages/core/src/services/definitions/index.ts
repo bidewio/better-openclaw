@@ -1,4 +1,5 @@
 export { adguardHomeDefinition } from "./adguard-home.js";
+export { agentBrowserDefinition } from "./agent-browser.js";
 export { airbyteDefinition } from "./airbyte.js";
 export { airflowDefinition } from "./airflow.js";
 export { anythingLlmDefinition } from "./anything-llm.js";
@@ -20,6 +21,7 @@ export { calibreWebDefinition } from "./calibre-web.js";
 export { chatwootDefinition } from "./chatwoot.js";
 export { chatwootWorkerDefinition } from "./chatwoot-worker.js";
 export { chromadbDefinition } from "./chromadb.js";
+export { clawrouterDefinition } from "./clawrouter.js";
 export { claudeCodeDefinition } from "./claude-code.js";
 export { clickhouseDefinition } from "./clickhouse.js";
 export { cloudflaredDefinition } from "./cloudflared.js";
@@ -101,6 +103,7 @@ export { mattermostDefinition } from "./mattermost.js";
 export { mauticDefinition } from "./mautic.js";
 export { medusaDefinition } from "./medusa.js";
 export { meilisearchDefinition } from "./meilisearch.js";
+export { mem0Definition } from "./mem0.js";
 export { memuDefinition } from "./memu.js";
 export { metabaseDefinition } from "./metabase.js";
 export { milvusDefinition } from "./milvus.js";
@@ -200,6 +203,7 @@ export { zulipDefinition } from "./zulip.js";
 
 import type { ServiceDefinition } from "../../types.js";
 import { adguardHomeDefinition } from "./adguard-home.js";
+import { agentBrowserDefinition } from "./agent-browser.js";
 import { airbyteDefinition } from "./airbyte.js";
 import { airflowDefinition } from "./airflow.js";
 import { anythingLlmDefinition } from "./anything-llm.js";
@@ -221,6 +225,7 @@ import { calibreWebDefinition } from "./calibre-web.js";
 import { chatwootDefinition } from "./chatwoot.js";
 import { chatwootWorkerDefinition } from "./chatwoot-worker.js";
 import { chromadbDefinition } from "./chromadb.js";
+import { clawrouterDefinition } from "./clawrouter.js";
 import { claudeCodeDefinition } from "./claude-code.js";
 import { clickhouseDefinition } from "./clickhouse.js";
 import { cloudflaredDefinition } from "./cloudflared.js";
@@ -302,6 +307,7 @@ import { mattermostDefinition } from "./mattermost.js";
 import { mauticDefinition } from "./mautic.js";
 import { medusaDefinition } from "./medusa.js";
 import { meilisearchDefinition } from "./meilisearch.js";
+import { mem0Definition } from "./mem0.js";
 import { memuDefinition } from "./memu.js";
 import { metabaseDefinition } from "./metabase.js";
 import { milvusDefinition } from "./milvus.js";
@@ -485,6 +491,7 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	nanoclawDefinition,
 	nanobotDefinition,
 	zeroclawDefinition,
+	mem0Definition,
 	memuDefinition,
 	geminiCliDefinition,
 	kimiDefinition,
@@ -593,10 +600,14 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	relaticleDefinition,
 	relaticleHorizonDefinition,
 	relaticleSchedulerDefinition,
+	// ── LLM Routing ────────────────────────────────────────────────────────
+	clawrouterDefinition,
 	// ── New Integrations ────────────────────────────────────────────────────
 	hindsightDefinition,
 	burnlinkDefinition,
 	opensandboxDefinition,
+	// ── AI-Native Browser ──────────────────────────────────────────────────
+	agentBrowserDefinition,
 	// ── SaaS Boilerplates ────────────────────────────────────────────────────
 	openSaasDefinition,
 	apptensionSaasDefinition,

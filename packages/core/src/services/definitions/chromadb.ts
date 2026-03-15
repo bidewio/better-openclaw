@@ -37,7 +37,7 @@ export const chromadbDefinition: ServiceDefinition = {
 	restartPolicy: "unless-stopped",
 	networks: ["openclaw-network"],
 
-	skills: [],
+	skills: [{ skillId: "chromadb-memory", autoInstall: true }],
 	openclawEnvVars: [
 		{
 			key: "CHROMADB_HOST",

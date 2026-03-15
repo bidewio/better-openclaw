@@ -97,6 +97,21 @@ describe("framework registry", () => {
 		}
 	});
 
+	it("openclaw and copaw recommend clawrouter", () => {
+		const openclaw = getFrameworkById("openclaw")!;
+		expect(openclaw.getRecommendedServices()).toContain("clawrouter");
+
+		const copaw = getFrameworkById("copaw")!;
+		expect(copaw.getRecommendedServices()).toContain("clawrouter");
+	});
+
+	it("other frameworks do not recommend clawrouter", () => {
+		for (const id of ["nanoclaw", "nanobot", "zeroclaw", "claude-code", "codex"]) {
+			const fw = getFrameworkById(id)!;
+			expect(fw.getRecommendedServices()).not.toContain("clawrouter");
+		}
+	});
+
 	it("each framework has a unique network name", () => {
 		const names = getAllFrameworks().map((fw) => fw.networkName);
 		expect(new Set(names).size).toBe(names.length);

@@ -139,6 +139,11 @@ export class DokployDeployer implements PaasDeployer {
 	}
 
 	async deploy(input: DeployInput): Promise<DeployResult> {
+		input.logger?.info("deployment", `Starting deployment to Dokploy`, {
+			projectName: input.projectName,
+			instanceUrl: input.target.instanceUrl,
+		});
+
 		const step1: DeployStep = {
 			step: "Find or create project",
 			status: "pending",
@@ -309,6 +314,24 @@ export class DokployDeployer implements PaasDeployer {
 
 			result.dashboardUrl = `${base}/dashboard/project/${project.projectId}/environment/${env.environmentId}/services/compose/${stack?.composeId}?tab=deployments`;
 
+			input.logger?.log({
+				level: "info",
+				category: "deployment",
+				message: `Deployment to Dokploy succeeded`,
+				outcome: "success",
+				context: {
+					projectId: project.projectId,
+					composeId: stack?.composeId,
+					dashboardUrl: result.dashboardUrl,
+				},
+				steps: steps.map((s) => ({
+					name: s.step,
+					status: s.status === "done" ? "success" as const : s.status === "error" ? "failure" as const : "in_progress" as const,
+					detail: s.detail,
+					startedAt: new Date().toISOString(),
+				})),
+			});
+
 			return result;
 		} catch (err) {
 			const running = steps.find((s) => s.status === "running");
@@ -320,6 +343,11 @@ export class DokployDeployer implements PaasDeployer {
 			}
 
 			result.error = err instanceof Error ? err.message : String(err);
+
+			input.logger?.error("deployment", `Deployment to Dokploy failed`, err instanceof Error ? err : null, {
+				projectName: input.projectName,
+				failedStep: running?.step,
+			});
 
 			return result;
 		}

@@ -315,7 +315,7 @@ export const openclawFramework: AgentFrameworkDefinition = {
 	},
 
 	getRecommendedServices(): string[] {
-		return [];
+		return ["clawrouter"];
 	},
 
 	getProviderEnvKeys(): string[] {

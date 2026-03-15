@@ -239,6 +239,30 @@ export default defineSchema({
 	})
 		.index("by_tenant", ["tenantId"])
 		.index("by_session", ["tenantId", "sessionId"]),
+	// ── Sandbox Desktop Sessions ─────────────────────────────────────────
+	sandboxSessions: defineTable({
+		sandboxId: v.string(),
+		novncUrl: v.string(),
+		vncEndpoint: v.optional(v.string()),
+		devtoolsUrl: v.optional(v.string()),
+		image: v.string(),
+		resolution: v.optional(v.string()),
+		status: v.union(
+			v.literal("creating"),
+			v.literal("running"),
+			v.literal("terminated"),
+			v.literal("error"),
+		),
+		taskId: v.optional(v.id("tasks")),
+		agentId: v.optional(v.id("agents")),
+		errorMessage: v.optional(v.string()),
+		tenantId: v.optional(v.string()),
+		terminatedAt: v.optional(v.number()),
+	})
+		.index("by_tenant", ["tenantId"])
+		.index("by_tenant_status", ["tenantId", "status"])
+		.index("by_tenant_task", ["tenantId", "taskId"])
+		.index("by_sandbox", ["tenantId", "sandboxId"]),
 	// ── Chat System ───────────────────────────────────────────────────────
 	chatMessages: defineTable({
 		conversationId: v.string(),

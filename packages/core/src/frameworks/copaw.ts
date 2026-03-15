@@ -141,7 +141,7 @@ export const copawFramework: AgentFrameworkDefinition = {
 	},
 
 	getRecommendedServices(): string[] {
-		return [];
+		return ["clawrouter"];
 	},
 
 	getProviderEnvKeys(): string[] {

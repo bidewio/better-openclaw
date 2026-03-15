@@ -3,6 +3,7 @@ import {
 	IconChartBar,
 	IconChefHat,
 	IconCoins,
+	IconDeviceDesktop,
 	IconLayoutSidebar,
 	IconMenu2,
 	IconMessageCircle,
@@ -29,7 +30,8 @@ export type ActiveView =
 	| "gateway"
 	| "chat"
 	| "tokens"
-	| "standup";
+	| "standup"
+	| "sandboxes";
 
 interface HeaderProps {
 	onOpenAgents: () => void;
@@ -52,6 +54,7 @@ const NAV_ITEMS: { view: ActiveView; label: string; icon: React.ReactNode }[] = 
 	{ view: "chat", label: "Chat", icon: <IconMessageCircle size={16} /> },
 	{ view: "tokens", label: "Tokens", icon: <IconCoins size={16} /> },
 	{ view: "standup", label: "Standup", icon: <IconReport size={16} /> },
+	{ view: "sandboxes", label: "Sandboxes", icon: <IconDeviceDesktop size={16} /> },
 ];
 
 export default function Header({

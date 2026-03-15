@@ -87,7 +87,7 @@ export const hindsightDefinition: ServiceDefinition = {
 	restartPolicy: "unless-stopped",
 	networks: ["openclaw-network"],
 
-	skills: [],
+	skills: [{ skillId: "hindsight-memory", autoInstall: true }],
 	openclawEnvVars: [
 		{
 			key: "HINDSIGHT_HOST",

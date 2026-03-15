@@ -155,6 +155,17 @@ Keyword search with weighted relevance scoring.
 | Tags | 2x |
 | Description | 1x |
 
+## Operations Logging
+
+The MCP server logs all tool invocations, outcomes, and errors as structured NDJSON to `~/.better-openclaw/logs/mcp-operations.log`. Each tool call is logged with its parameters, duration, result summary, and any errors.
+
+Override the log directory or level with environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `OPENCLAW_LOG_DIR` | `~/.better-openclaw/logs/` | Log directory path |
+| `OPENCLAW_LOG_LEVEL` | `info` | Minimum log level |
+
 ## Architecture
 
 ```
@@ -243,7 +254,7 @@ The server provides access to **94+ self-hosted services** across categories:
 - **AI & ML** — Ollama, Qdrant, ChromaDB, Meilisearch, Weaviate
 - **Automation** — n8n, Activepieces, Temporal
 - **Communication** — Ntfy, Apprise
-- **Development** — Gitea, Code Server, Browserless
+- **Development** — Gitea, Code Server, Browserless, OpenSandbox, Agent Browser (AI-native snapshot+ref browsing)
 - **Monitoring** — Grafana, Prometheus, Uptime Kuma, Loki
 - **Media** — Immich, Jellyfin, FFmpeg
 - **Networking** — Caddy, Traefik, WireGuard

@@ -53,4 +53,44 @@ describe("generateCaddyfile (via generate)", () => {
 		// Caddy auto-enables TLS, so should reference HTTPS or TLS
 		expect(caddyfile.length).toBeGreaterThan(50);
 	});
+
+	it("adds flush_interval -1 for WebSocket-enabled services (opensandbox)", () => {
+		const result = generate({
+			...baseInput,
+			services: ["opensandbox"],
+		});
+		const caddyfile = result.files["caddy/Caddyfile"]!;
+
+		expect(caddyfile).toContain("opensandbox");
+		expect(caddyfile).toContain("flush_interval -1");
+	});
+
+	it("adds flush_interval -1 for desktop-environment (KasmVNC)", () => {
+		const result = generate({
+			...baseInput,
+			services: ["desktop-environment"],
+		});
+		const caddyfile = result.files["caddy/Caddyfile"]!;
+
+		expect(caddyfile).toContain("desktop-environment");
+		expect(caddyfile).toContain("flush_interval -1");
+	});
+
+	it("adds flush_interval -1 for agent-browser viewport streaming port", () => {
+		const result = generate({
+			...baseInput,
+			services: ["agent-browser"],
+		});
+		const caddyfile = result.files["caddy/Caddyfile"]!;
+
+		expect(caddyfile).toContain("agent-browser");
+		expect(caddyfile).toContain("flush_interval -1");
+	});
+
+	it("does NOT add flush_interval for non-WebSocket services", () => {
+		const result = generate(baseInput);
+		const caddyfile = result.files["caddy/Caddyfile"]!;
+
+		expect(caddyfile).not.toContain("flush_interval");
+	});
 });

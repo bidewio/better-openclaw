@@ -16,6 +16,7 @@ export const opensandboxDefinition: ServiceDefinition = {
 			container: 8080,
 			description: "OpenSandbox Lifecycle API (FastAPI)",
 			exposed: true,
+			websocket: true,
 		},
 	],
 	volumes: [

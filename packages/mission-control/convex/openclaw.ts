@@ -285,6 +285,110 @@ export const receiveAgentEvent = mutation({
 					tenantId,
 				});
 			}
+		} else if (args.action === "sandbox" && args.document && agent) {
+			// Sandbox lifecycle event — document.type === "sandbox", content is JSON payload
+			if (args.document.type === "sandbox") {
+				let sandboxData: {
+					event: string;
+					sandbox_id: string;
+					novnc_url?: string;
+					vnc_endpoint?: string;
+					devtools_url?: string;
+					image?: string;
+					resolution?: string;
+					error?: string;
+				};
+				try {
+					sandboxData = JSON.parse(args.document.content);
+				} catch {
+					return; // Invalid payload
+				}
+
+				if (sandboxData.event === "created" || sandboxData.event === "running") {
+					// Upsert sandbox session
+					const existing = await ctx.db
+						.query("sandboxSessions")
+						.withIndex("by_sandbox", (q) =>
+							q.eq("tenantId", tenantId).eq("sandboxId", sandboxData.sandbox_id),
+						)
+						.first();
+
+					if (existing) {
+						await ctx.db.patch(existing._id, {
+							status: "running" as const,
+							novncUrl: sandboxData.novnc_url ?? existing.novncUrl,
+							devtoolsUrl: sandboxData.devtools_url ?? existing.devtoolsUrl,
+						});
+					} else {
+						await ctx.db.insert("sandboxSessions", {
+							sandboxId: sandboxData.sandbox_id,
+							novncUrl: sandboxData.novnc_url ?? "",
+							vncEndpoint: sandboxData.vnc_endpoint,
+							devtoolsUrl: sandboxData.devtools_url,
+							image: sandboxData.image ?? "opensandbox/desktop:latest",
+							resolution: sandboxData.resolution,
+							status: "running" as const,
+							taskId: task?._id,
+							agentId: agent._id,
+							tenantId,
+						});
+					}
+
+					if (task) {
+						await ctx.db.insert("messages", {
+							taskId: task._id,
+							fromAgentId: agent._id,
+							content: `🖥️ **Desktop sandbox created**\n\nImage: \`${sandboxData.image ?? "opensandbox/desktop"}\`\nSandbox: \`${sandboxData.sandbox_id}\``,
+							attachments: [],
+							tenantId,
+						});
+					}
+
+					await ctx.db.insert("activities", {
+						type: "sandbox_created",
+						agentId: agent._id,
+						message: `created desktop sandbox \`${sandboxData.sandbox_id.slice(0, 12)}\`${task ? ` for "${task.title}"` : ""}`,
+						targetId: task?._id,
+						tenantId,
+					});
+				} else if (sandboxData.event === "terminated") {
+					const existing = await ctx.db
+						.query("sandboxSessions")
+						.withIndex("by_sandbox", (q) =>
+							q.eq("tenantId", tenantId).eq("sandboxId", sandboxData.sandbox_id),
+						)
+						.first();
+					if (existing) {
+						await ctx.db.patch(existing._id, {
+							status: "terminated" as const,
+							terminatedAt: Date.now(),
+						});
+					}
+
+					if (task) {
+						await ctx.db.insert("messages", {
+							taskId: task._id,
+							fromAgentId: agent._id,
+							content: `🖥️ **Desktop sandbox terminated**\n\nSandbox: \`${sandboxData.sandbox_id}\``,
+							attachments: [],
+							tenantId,
+						});
+					}
+				} else if (sandboxData.event === "error") {
+					const existing = await ctx.db
+						.query("sandboxSessions")
+						.withIndex("by_sandbox", (q) =>
+							q.eq("tenantId", tenantId).eq("sandboxId", sandboxData.sandbox_id),
+						)
+						.first();
+					if (existing) {
+						await ctx.db.patch(existing._id, {
+							status: "error" as const,
+							errorMessage: sandboxData.error,
+						});
+					}
+				}
+			}
 		}
 	},
 });

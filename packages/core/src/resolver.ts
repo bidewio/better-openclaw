@@ -115,6 +115,17 @@ export function resolve(input: ResolverInput): ResolverOutput {
 		}
 	}
 
+	// Surface framework-level recommendations for services not selected
+	const frameworkRecommendedIds = new Set(framework?.getRecommendedServices() ?? []);
+	for (const recId of frameworkRecommendedIds) {
+		if (!serviceIds.has(recId) && getServiceById(recId)) {
+			warnings.push({
+				type: "recommendation",
+				message: `${framework?.name ?? "Framework"} recommends "${recId}" for smart LLM routing and cost optimization`,
+			});
+		}
+	}
+
 	// Validate all service IDs exist
 	const unknownIds: string[] = [];
 	for (const id of serviceIds) {

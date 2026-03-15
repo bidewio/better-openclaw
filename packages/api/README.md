@@ -67,6 +67,12 @@ pnpm build
 pnpm start
 ```
 
+## Operations Logging
+
+The API includes an operations logging middleware that automatically creates a per-request `OperationsLogger` using the existing `X-Request-Id` as correlation ID. Every API request is logged with method, path, status code, and duration. Generation and deployment routes pass the logger through to core for full pipeline tracing.
+
+Logs are written as NDJSON to `./logs/operations.log` (relative to the API working directory) by default. Override with `OPENCLAW_LOG_DIR`.
+
 ### Environment Configuration
 
 | Variable | Default Node | Importance |
@@ -75,3 +81,5 @@ pnpm start
 | `RATE_LIMIT_MAX_ANON` | 30 | Base API limit |
 | `RATE_LIMIT_GENERATE_MAX_ANON` | 5 | Generation limit |
 | `NEXT_PUBLIC_CLAWEXA_DEPLOY_URL` | none | Used by UI clients |
+| `OPENCLAW_LOG_DIR` | `./logs` | Operations log directory |
+| `OPENCLAW_LOG_LEVEL` | `info` | Minimum log level (debug/info/warn/error) |

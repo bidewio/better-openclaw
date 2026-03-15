@@ -1,8 +1,9 @@
+import type { OperationsLogger } from "@better-openclaw/core";
 import { buildAnalyticsPayload, generate, trackAnalytics } from "@better-openclaw/core";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-export function registerGenerateStack(server: McpServer): void {
+export function registerGenerateStack(server: McpServer, logger?: OperationsLogger): void {
 	server.registerTool(
 		"generate-stack",
 		{
@@ -48,7 +49,13 @@ export function registerGenerateStack(server: McpServer): void {
 		},
 		async (params) => {
 			try {
-				const result = generate({
+				logger?.info("mcp_tool_call", "generate-stack invoked", {
+					projectName: params.projectName,
+					services: params.services,
+					proxy: params.proxy,
+				});
+
+				const input = {
 					projectName: params.projectName,
 					services: params.services,
 					skillPacks: params.skillPacks ?? [],
@@ -68,35 +75,18 @@ export function registerGenerateStack(server: McpServer): void {
 					openclawImage: "official",
 					deployTarget: "local",
 					hardened: true,
-				});
+				} as const;
+
+				const result = generate(input, { logger });
 
 				// Fire-and-forget analytics tracking
-				const analyticsPayload = buildAnalyticsPayload(
-					{
-						projectName: params.projectName,
-						services: params.services,
-						skillPacks: params.skillPacks ?? [],
-						aiProviders: [],
-						gsdRuntimes: [],
-						proxy: params.proxy ?? "none",
-						domain: params.domain,
-						gpu: params.gpu ?? false,
-						platform: params.platform ?? "linux/amd64",
-						monitoring: params.monitoring ?? false,
-						generateSecrets: params.generateSecrets ?? true,
-						primaryFramework: params.primaryFramework,
-						companionFrameworks: params.companionFrameworks,
-						openclawVersion: "latest",
-						deployment: "local",
-						deploymentType: "docker",
-						openclawImage: "official",
-						deployTarget: "local",
-						hardened: true,
-					},
-					result.metadata,
-					"mcp",
-				);
+				const analyticsPayload = buildAnalyticsPayload(input, result.metadata, "mcp");
 				trackAnalytics(analyticsPayload);
+
+				logger?.info("mcp_tool_call", "generate-stack completed", {
+					fileCount: Object.keys(result.files).length,
+					serviceCount: result.metadata.serviceCount,
+				});
 
 				return {
 					content: [
@@ -117,6 +107,7 @@ export function registerGenerateStack(server: McpServer): void {
 			} catch (err) {
 				const message = err instanceof Error ? err.message : String(err);
 				const errName = err instanceof Error ? err.name : "UnknownError";
+				logger?.error("mcp_tool_call", "generate-stack failed", err instanceof Error ? err : null);
 				return {
 					content: [
 						{

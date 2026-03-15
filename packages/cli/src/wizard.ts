@@ -1,6 +1,7 @@
 import type { AgentFramework, GenerationInput, Preset, ServiceDefinition, SkillPack } from "@better-openclaw/core";
 import {
 	buildAnalyticsPayload,
+	FileSink,
 	formatPortConflicts,
 	generate,
 	getAllFrameworks,
@@ -8,11 +9,14 @@ import {
 	getAllServices,
 	getAllSkillPacks,
 	getCompatibleSkillPacks,
+	OperationsLogger,
 	resolve,
 	SERVICE_CATEGORIES,
 	scanPortConflicts,
 	trackAnalytics,
 } from "@better-openclaw/core";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import {
 	cancel,
 	confirm,
@@ -676,9 +680,19 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 		companionFrameworks: companionFrameworks.length > 0 ? companionFrameworks : undefined,
 	};
 
+	const logger = new OperationsLogger({
+		source: "cli",
+		sinks: [
+			new FileSink({
+				logDir: join(homedir(), ".better-openclaw", "logs"),
+			}),
+		],
+		minLevel: "info",
+	});
+
 	let result: ReturnType<typeof generate>;
 	try {
-		result = generate(input);
+		result = generate(input, { logger });
 	} catch (err) {
 		s.stop("Generation failed.");
 		console.error(pc.red(`\n${err instanceof Error ? err.message : String(err)}`));
@@ -691,6 +705,7 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 
 	await writeProject(String(projectDir), result.files, {
 		outputFormat: String(outputFormat),
+		logger,
 	});
 
 	s.stop("Stack generated successfully!");

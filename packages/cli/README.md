@@ -15,6 +15,9 @@ pnpx create-better-openclaw@latest --preset researcher --yes
 
 # Custom Advanced Scaffold
 pnpx create-better-openclaw@latest --services ollama,qdrant,n8n --skills ollama-local-llm,qdrant-memory
+
+# With sandboxed code execution and VNC desktop
+pnpx create-better-openclaw@latest --services opensandbox --skills code --proxy caddy --domain my-ai.dev
 ```
 
 ## Features
@@ -70,6 +73,20 @@ pnpx create-better-openclaw deploy \
 | `--dir <path>`     | Directory containing `docker-compose.yml` (default: `.`) |
 
 If any required flag is missing, the CLI falls back to the interactive wizard which guides you through provider selection, URL, and API key entry.
+
+## Operations Logging
+
+The CLI automatically writes detailed structured logs for every operation — generation pipelines, file writes, and PaaS deployments. Logs are written as NDJSON to `~/.better-openclaw/logs/operations.log`.
+
+Each log entry includes a correlation ID linking all operations within a single CLI run, timestamps, durations, outcomes, and step-by-step details for multi-step operations like deployments.
+
+Override the default log directory and level with environment variables:
+
+```bash
+OPENCLAW_LOG_DIR=/var/log/openclaw OPENCLAW_LOG_LEVEL=debug pnpx create-better-openclaw --preset researcher --yes
+```
+
+See the [@better-openclaw/core README](../core/README.md#operations-logger) for full configuration options.
 
 ## Package Development
 

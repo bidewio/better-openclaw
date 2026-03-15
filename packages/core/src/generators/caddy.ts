@@ -40,6 +40,8 @@ export function generateCaddyfile(resolved: ResolverOutput, domain: string): str
 		const primaryPort = exposedPorts[0]!;
 		const subdomain = `${definition.id}.${domain}`;
 
+		const needsWebSocket = primaryPort.websocket === true;
+
 		const block = [
 			`# ${definition.icon} ${definition.name}`,
 			`# ${definition.description}`,
@@ -49,8 +51,14 @@ export function generateCaddyfile(resolved: ResolverOutput, domain: string): str
 			`		header_up X-Real-IP {remote_host}`,
 			`		header_up X-Forwarded-For {remote_host}`,
 			`		header_up X-Forwarded-Proto {scheme}`,
-			`	}`,
 		];
+
+		// Disable response buffering for streaming WebSocket connections (noVNC, KasmVNC)
+		if (needsWebSocket) {
+			block.push(`		flush_interval -1`);
+		}
+
+		block.push(`	}`);
 
 		// Add health check if service has one
 		if (definition.healthcheck) {
@@ -74,7 +82,13 @@ export function generateCaddyfile(resolved: ResolverOutput, domain: string): str
 
 			block.push(`# ${definition.name} — ${port.description}`);
 			block.push(`${portSubdomain} {`);
-			block.push(`	reverse_proxy ${definition.id}:${port.container}`);
+			if (port.websocket) {
+				block.push(`	reverse_proxy ${definition.id}:${port.container} {`);
+				block.push(`		flush_interval -1`);
+				block.push(`	}`);
+			} else {
+				block.push(`	reverse_proxy ${definition.id}:${port.container}`);
+			}
 			block.push(`}`);
 			block.push("");
 		}

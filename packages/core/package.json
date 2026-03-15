@@ -12,7 +12,11 @@
   },
   "homepage": "https://better-openclaw.dev",
   "packageManager": "pnpm@10.30.3",
-  "sideEffects": false,
+  "sideEffects": [
+    "./src/frameworks/index.ts",
+    "./dist/index.mjs",
+    "./dist/index.cjs"
+  ],
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "type": "module",

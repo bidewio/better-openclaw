@@ -1,3 +1,4 @@
+import type { OperationsLogger } from "./logger/logger.js";
 import {
 	partitionBareMetal,
 	platformToNativePlatform,
@@ -46,11 +47,24 @@ function getComposePlatform(platform: Platform): "linux/amd64" | "linux/arm64" {
  * Main orchestration function: takes generation input, resolves dependencies,
  * generates all files, validates, and returns the complete file tree.
  */
-export function generate(rawInput: GenerationInput): GenerationResult {
+export function generate(
+	rawInput: GenerationInput,
+	options?: { logger?: OperationsLogger },
+): GenerationResult {
+	const logger = options?.logger;
+
 	// Apply config migrations if needed
 	const input = migrateConfig(rawInput as Record<string, unknown>) as GenerationInput;
 
 	const composePlatform = getComposePlatform(input.platform);
+
+	logger?.info("generation", "Starting stack generation", {
+		projectName: input.projectName,
+		services: input.services,
+		platform: input.platform,
+		proxy: input.proxy,
+		deploymentType: input.deploymentType,
+	});
 
 	// 1. Resolve dependencies
 	const resolverInput: ResolverInput = {
@@ -63,13 +77,21 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		platform: composePlatform,
 		monitoring: input.monitoring,
 	};
+	logger?.debug("resolution", "Resolving dependencies");
 	const resolved = resolve(resolverInput);
 
 	if (!resolved.isValid) {
-		throw new StackConfigError(
-			`Invalid stack configuration: ${resolved.errors.map((e) => e.message).join("; ")}`,
-		);
+		const errMsg = `Invalid stack configuration: ${resolved.errors.map((e) => e.message).join("; ")}`;
+		logger?.error("resolution", errMsg);
+		throw new StackConfigError(errMsg);
 	}
+
+	logger?.info("resolution", `Resolved ${resolved.services.length} services`, {
+		serviceCount: resolved.services.length,
+		addedDeps: resolved.addedDependencies.length,
+		warnings: resolved.warnings.length,
+		estimatedMemoryMB: resolved.estimatedMemoryMB,
+	});
 
 	const isBareMetal = input.deploymentType === "bare-metal";
 	let resolvedForCompose = resolved;
@@ -86,6 +108,8 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 			resolvedForCompose = resolvedWithOnlyServices(resolved, dockerOnlyServices);
 		}
 	}
+
+	logger?.debug("generation", "Generating Docker Compose YAML");
 
 	// 2. Generate Docker Compose YAML (multi-file)
 	// Compute Traefik labels before composing (labels get injected into docker-compose services)
@@ -114,6 +138,7 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		openclawInstallMethod: input.openclawInstallMethod ?? "docker",
 	};
 	const composeResult = composeMultiFile(resolvedForCompose, composeOptions);
+	logger?.info("generation", `Generated ${Object.keys(composeResult.files).length} compose files`);
 
 	// 3. Validate (using the base docker-compose.yml)
 	const validation = validate(resolvedForCompose, composeResult.files["docker-compose.yml"] ?? "", {
@@ -121,10 +146,11 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		generateSecrets: input.generateSecrets,
 	});
 	if (!validation.valid) {
-		throw new ValidationError(
-			`Validation failed: ${validation.errors.map((e) => e.message).join("; ")}`,
-		);
+		const errMsg = `Validation failed: ${validation.errors.map((e) => e.message).join("; ")}`;
+		logger?.error("validation", errMsg);
+		throw new ValidationError(errMsg);
 	}
+	logger?.debug("validation", "Stack validation passed");
 
 	// 4. Generate all files
 	const files: GeneratedFiles = {};
@@ -321,6 +347,22 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 
 	// 5. Calculate metadata
 	const skillCount = resolved.services.reduce((sum, s) => sum + s.definition.skills.length, 0);
+
+	const fileCount = Object.keys(files).length;
+
+	logger?.log({
+		level: "info",
+		category: "generation",
+		message: `Stack generation complete: ${fileCount} files, ${resolved.services.length} services`,
+		outcome: "success",
+		context: {
+			fileCount,
+			serviceCount: resolved.services.length,
+			skillCount,
+			estimatedMemoryMB: resolved.estimatedMemoryMB,
+		},
+		filesAffected: { created: Object.keys(files) },
+	});
 
 	return {
 		files,

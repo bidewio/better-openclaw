@@ -22,6 +22,48 @@ interface Release {
 
 const RELEASES: Release[] = [
 	{
+		version: "v1.4.0",
+		date: "March 2026",
+		title: "Centralized Operations Logger",
+		changes: [
+			{
+				type: "feature",
+				description:
+					"Unified OperationsLogger module in @better-openclaw/core — structured NDJSON logging for every significant action across CLI, API, and MCP packages.",
+			},
+			{
+				type: "feature",
+				description:
+					"Three pluggable log sinks: ConsoleSink (human-readable terminal output), FileSink (NDJSON with size-based rotation), and CallbackSink (custom handlers for tests, Sentry, WebSocket streaming).",
+			},
+			{
+				type: "feature",
+				description:
+					"StepTracker class for multi-step operations (deployments, generation pipelines) with per-step timing, status, and outcome tracking.",
+			},
+			{
+				type: "feature",
+				description:
+					"timed() helper wraps async operations with automatic start/end/duration/outcome logging — zero overhead on the happy path.",
+			},
+			{
+				type: "improvement",
+				description:
+					"API middleware creates per-request loggers using X-Request-Id as correlation ID, logging method/path/status/duration for every request.",
+			},
+			{
+				type: "improvement",
+				description:
+					"CLI, API, and MCP all pass loggers through to core's generate() and deployer.deploy() for full end-to-end tracing.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Automatic redaction of sensitive context keys (apiKey, password, token, secret, authorization, credentials, private_key) before writing to any sink.",
+			},
+		],
+	},
+	{
 		version: "v1.3.0",
 		date: "March 2026",
 		title: "Multi-Agent Framework Support",

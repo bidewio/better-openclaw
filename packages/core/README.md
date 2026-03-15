@@ -8,7 +8,7 @@ The core engine responsible for parsing configurations, resolving dependencies, 
 - **Service Registry:** A unified, expandable catalog of 94+ pre-configured Docker services (e.g., Traefik, PostgreSQL, Qdrant, Ollama, N8N, SearXNG, Scrapling, etc.) categorized by function (databases, models, scrapers, tools).
 - **Dependency Resolution Engine:** Automatically detects and resolves required services. Framework-specific mandatory services are injected automatically (e.g., MemU requires PostgreSQL, non-OpenClaw frameworks skip Convex/Mission-Control/Tailscale).
 - **Skill Injection (`SKILL.md`):** Deep integration with AI agent workflows. Packages specialized `SKILL.md` instructions into volume mounts for AI tools like the `browser` integration or `tinyfish`.
-- **Intelligent Networking & Proxies:** Fully integrated reverse proxy generation (Caddy and Traefik) and auto-SSL domain generation.
+- **Intelligent Networking & Proxies:** Fully integrated reverse proxy generation (Caddy and Traefik) with auto-SSL domain generation and WebSocket streaming support (`flush_interval -1`) for noVNC/KasmVNC desktop sandbox services.
 - **Cross-Platform & Heterogeneous Topologies:** Supports generating stacks for `local` (Docker Desktop), `vps` (cloud), and `homelab` deployments. It explicitly supports a hybrid native-docker model via `deploymentType: "bare-metal"`.
 - **GPU Passthrough Support:** Automatically injects NVIDIA or AMD runtime flags to AI services if the `gpuRequired` flag is detected on the requested service and enabled by the user.
 
@@ -90,6 +90,62 @@ const result = await deployer.deploy({
   envContent: "...",
 });
 ```
+
+## Operations Logger
+
+The core ships a centralized `OperationsLogger` used by all packages (CLI, API, MCP) to produce structured, NDJSON log files tracking every significant operation — generation pipelines, deployments, file writes, API requests, and MCP tool calls.
+
+### Programmatic Usage
+
+```typescript
+import { OperationsLogger, FileSink, ConsoleSink, CallbackSink } from "@better-openclaw/core";
+
+const logger = new OperationsLogger({
+  source: "cli",                // "cli" | "api" | "mcp" | "web" | "core"
+  sinks: [
+    new ConsoleSink(),          // Human-readable terminal output
+    new FileSink(),             // NDJSON file (~/.better-openclaw/logs/operations.log)
+  ],
+  minLevel: "info",             // "debug" | "info" | "warn" | "error"
+});
+
+// Basic logging
+logger.info("generation", "Starting stack generation", { projectName: "my-stack" });
+logger.warn("validation", "Port conflict detected", { port: 8080 });
+logger.error("deployment", "Deploy failed", new Error("timeout"), { provider: "dokploy" });
+
+// Timed operations (auto-logs duration + outcome)
+const result = await logger.timed("deployment", "Deploying to Dokploy", async () => {
+  return await deployer.deploy(input);
+});
+
+// Child loggers (inherit correlationId)
+const childLogger = logger.child({ source: "core" });
+
+// Pass to generate()
+const output = generate(input, { logger });
+```
+
+### Log File Location
+
+| Default | `~/.better-openclaw/logs/operations.log` |
+|---------|------------------------------------------|
+| Override | `OPENCLAW_LOG_DIR` env var |
+| Format | NDJSON (one JSON object per line, `jq`-friendly) |
+| Rotation | 10 MB per file, 5 rotated files (~60 MB total) |
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `OPENCLAW_LOG_DIR` | `~/.better-openclaw/logs/` | Log directory path |
+| `OPENCLAW_LOG_LEVEL` | `info` | Minimum log level |
+| `OPENCLAW_LOG_MAX_SIZE` | `10485760` (10 MB) | Max file size before rotation |
+| `OPENCLAW_LOG_MAX_FILES` | `5` | Number of rotated files to keep |
+
+### Sensitive Data
+
+The logger automatically redacts known sensitive keys (`apiKey`, `password`, `token`, `secret`, `authorization`, `credentials`, `private_key`) from context before writing to any sink.
 
 ## Development
 

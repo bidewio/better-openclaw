@@ -1,6 +1,28 @@
 // ─── Addon Stack (Clawexa) ──────────────────────────────────────────────────
 export { generateAddonStack, updateAddonStack } from "./addon-stack.js";
 
+// ─── Operations Logger ─────────────────────────────────────────────────────
+export {
+	CallbackSink,
+	ConsoleSink,
+	FileSink,
+	OperationsLogger,
+	StepTracker,
+} from "./logger/index.js";
+export type {
+	FileSinkOptions,
+} from "./logger/sinks/file-sink.js";
+export type {
+	LogLevel,
+	LogSink,
+	LogSource,
+	OperationCategory,
+	OperationOutcome,
+	OperationsLogEntry,
+	OperationsLoggerOptions,
+	OperationStep,
+} from "./logger/index.js";
+
 // ─── Agent Frameworks ───────────────────────────────────────────────────────
 export type {
 	AgentFrameworkDefinition,

@@ -351,6 +351,61 @@ const LOCAL_PROVIDER_PORTS: Record<string, number> = {
  * Generates a default `openclaw/config/openclaw.json` tailored
  * to the services installed in the stack.
  */
+/**
+ * Builds the memory configuration based on installed services.
+ * Priority: mem0 > memu > hindsight > builtin.
+ * Also detects vector databases and adds vectorStore config.
+ */
+function buildMemoryConfig(resolved: ResolverOutput): Record<string, unknown> {
+	const has = (id: string) => resolved.services.some((s) => s.definition.id === id);
+
+	// Detect vector databases (priority order)
+	const vectorStore = has("qdrant")
+		? { provider: "qdrant", host: "qdrant", port: 6333 }
+		: has("chromadb")
+			? { provider: "chromadb", host: "chromadb", port: 8000 }
+			: has("weaviate")
+				? { provider: "weaviate", host: "weaviate", port: 8080 }
+				: has("milvus")
+					? { provider: "milvus", uri: "http://milvus:19530" }
+					: null;
+
+	// Detect memory services (priority order)
+	if (has("mem0")) {
+		return {
+			backend: "mem0",
+			citations: "auto",
+			mem0: { host: "mem0", port: 8000, userId: "openclaw-agent" },
+			...(vectorStore ? { vectorStore } : {}),
+		};
+	}
+
+	if (has("memu")) {
+		return {
+			backend: "memu",
+			citations: "auto",
+			memu: { host: "memu", port: 8000, agentId: "openclaw-agent" },
+			...(vectorStore ? { vectorStore } : {}),
+		};
+	}
+
+	if (has("hindsight")) {
+		return {
+			backend: "hindsight",
+			citations: "auto",
+			hindsight: { host: "hindsight", port: 8888, namespace: "openclaw" },
+			...(vectorStore ? { vectorStore } : {}),
+		};
+	}
+
+	// No memory service — use builtin, optionally with a vector store
+	return {
+		backend: "builtin",
+		citations: "auto",
+		...(vectorStore ? { vectorStore } : {}),
+	};
+}
+
 export function generateOpenClawConfig(
 	resolved: ResolverOutput,
 	options: OpenClawConfigOptions,
@@ -667,11 +722,8 @@ export function generateOpenClawConfig(
 				maxPingPongTurns: 5,
 			},
 		},
-		// Memory — vector search over session history and markdown notes
-		memory: {
-			backend: "builtin",
-			citations: "auto",
-		},
+		// Memory — dynamically configured based on installed services
+		memory: buildMemoryConfig(resolved),
 		// UI customization
 		ui: {
 			assistant: {

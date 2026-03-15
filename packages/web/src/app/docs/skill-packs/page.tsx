@@ -13,7 +13,7 @@ const skillPacks = [
 		description:
 			"Web search, content extraction, and citation skills for knowledge gathering and RAG pipelines.",
 		requiredServices: ["searxng", "browserless"],
-		optionalServices: ["qdrant"],
+		optionalServices: ["qdrant", "agent-browser"],
 		skills: [
 			{ name: "web-search", desc: "Query SearXNG for web search results" },
 			{ name: "content-extract", desc: "Extract clean text from web pages via Browserless" },
@@ -62,13 +62,16 @@ const skillPacks = [
 	{
 		id: "code",
 		name: "Code Execution",
-		description: "Sandboxed code execution for Python, JavaScript, and shell scripts.",
-		requiredServices: ["code-sandbox"],
-		optionalServices: [],
+		description:
+			"Sandboxed code execution and GUI desktop environments via OpenSandbox. Run Python, JavaScript, Go, and Bash safely with resource limits, network isolation, and live VNC desktop preview.",
+		requiredServices: ["opensandbox"],
+		optionalServices: ["desktop-environment"],
 		skills: [
 			{ name: "code-run", desc: "Execute code in an isolated sandbox" },
 			{ name: "code-install", desc: "Install packages in the sandbox" },
 			{ name: "code-file", desc: "Read/write files in the sandbox filesystem" },
+			{ name: "create-desktop", desc: "Launch a VNC desktop sandbox with noVNC browser access" },
+			{ name: "get-preview-url", desc: "Get the noVNC preview URL for an active sandbox" },
 		],
 	},
 	{

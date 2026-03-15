@@ -111,6 +111,7 @@ npx create-better-openclaw \
 - **Monitoring dashboards** -- Grafana + Prometheus pre-wired with service exporters
 - **Environment files** -- secure `.env` generation with random secrets
 - **One-click deploy** -- deploy generated stacks to self-hosted Dokploy or Coolify directly from the web UI or CLI
+- **Centralized operations logging** -- structured NDJSON logs across all packages (CLI, API, MCP) with correlation IDs, step tracking, duration measurement, and automatic sensitive data redaction
 - **Validation engine** -- port conflicts, resource limits, and configuration checks
 - **Multi-platform support** -- linux/amd64 and linux/arm64
 - **Bare-metal deployment** -- hybrid native + Docker: run supported services natively on the host and use Docker only for the rest (see [Deployment](#deployment))

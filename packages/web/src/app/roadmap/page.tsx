@@ -70,6 +70,18 @@ const ROADMAP: { quarter: string; items: RoadmapItem[] }[] = [
 					"Pre-pull image system with 3-tier priority for optimized deployment",
 				],
 			},
+			{
+				title: "Centralized Operations Logger",
+				description:
+					"A unified structured logging system across all packages (CLI, API, MCP) for full observability into generation pipelines, deployments, and server interactions.",
+				status: "completed",
+				features: [
+					"OperationsLogger with pluggable sinks (Console, File/NDJSON, Callback)",
+					"Correlation IDs linking related operations across packages",
+					"StepTracker for multi-step operations with per-step timing and outcomes",
+					"Automatic sensitive data redaction and size-based log rotation",
+				],
+			},
 		],
 	},
 	{

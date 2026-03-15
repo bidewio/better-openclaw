@@ -1,4 +1,5 @@
 import { post as post42 } from "./posts/addon-stack-generation-hosting-guide";
+import { post as post47 } from "./posts/agent-browser-ai-native-browser-automation";
 import { post as post24 } from "./posts/ai-agent-memory-redis-persistent-context";
 import { post as post41 } from "./posts/ai-powerhouse-self-hosted-manus-alternative";
 import { post as post5 } from "./posts/ai-skill-packs-explained";
@@ -33,6 +34,7 @@ import { post as post2 } from "./posts/openclaw-vs-manual-docker-setup";
 import { post as post45 } from "./posts/multi-framework-agent-support";
 import { post as post44 } from "./posts/opensandbox-secure-ai-code-execution";
 import { post as post26 } from "./posts/postgresql-vs-supabase-self-hosted";
+import { post as post46 } from "./posts/vnc-gui-desktop-sandbox-integration";
 import { post as post8 } from "./posts/private-rag-pipeline-qdrant-searxng";
 import { post as post11 } from "./posts/proxmox-vs-truenas-homelab-os";
 import { post as post28 } from "./posts/redis-vs-valkey-caching-comparison";
@@ -91,6 +93,8 @@ export const blogPosts: BlogPost[] = [
 	post43,
 	post44,
 	post45,
+	post46,
+	post47,
 ];
 
 // Helper functions for accessing posts

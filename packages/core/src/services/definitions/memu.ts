@@ -65,7 +65,7 @@ export const memuDefinition: ServiceDefinition = {
 	restartPolicy: "unless-stopped",
 	networks: ["openclaw-network"],
 
-	skills: [],
+	skills: [{ skillId: "memu-memory", autoInstall: true }],
 	openclawEnvVars: [
 		{
 			key: "MEMU_HOST",

@@ -224,6 +224,53 @@ Skills are located in \`openclaw/workspace/skills/\`. Each skill provides a \`SK
 `);
 	}
 
+	// ── AI Memory Integration ──────────────────────────────────────────────
+
+	const memoryServiceIds = ["mem0", "memu", "hindsight"];
+	const vectorDbIds = ["qdrant", "chromadb", "weaviate", "milvus"];
+
+	const memoryServices = resolved.services.filter(({ definition }) =>
+		memoryServiceIds.includes(definition.id),
+	);
+	const vectorDbs = resolved.services.filter(({ definition }) =>
+		vectorDbIds.includes(definition.id),
+	);
+
+	if (memoryServices.length > 0 || vectorDbs.length > 0) {
+		let memSection = `## AI Memory Integration
+
+This stack includes integrated AI memory services. The ${frameworkName} agent framework is automatically configured to use them via \`openclaw/config/openclaw.json\`.
+`;
+
+		if (memoryServices.length > 0) {
+			const memList = memoryServices
+				.map(({ definition }) => `- ${definition.icon} **${definition.name}** — ${definition.description.split(".")[0]}`)
+				.join("\n");
+			memSection += `
+### Memory Services
+
+${memList}
+`;
+		}
+
+		if (vectorDbs.length > 0) {
+			const vecList = vectorDbs
+				.map(({ definition }) => `- ${definition.icon} **${definition.name}** — ${definition.description.split(".")[0]}`)
+				.join("\n");
+			memSection += `
+### Vector Databases
+
+${vecList}
+`;
+		}
+
+		memSection += `
+Skills for interacting with these services are in \`openclaw/workspace/skills/\`.
+`;
+
+		sections.push(memSection);
+	}
+
 	// ── Onboarding & Channels ──────────────────────────────────────────────
 	// Only show OpenClaw-specific onboarding instructions for OpenClaw stacks
 

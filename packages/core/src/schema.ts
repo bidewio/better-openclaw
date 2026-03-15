@@ -107,6 +107,8 @@ export const PortMappingSchema = z.object({
 	container: z.number().int().min(1).max(65535),
 	description: z.string(),
 	exposed: z.boolean().default(true),
+	/** When true, Caddy adds flush_interval -1 for streaming WebSocket support (noVNC, KasmVNC) */
+	websocket: z.boolean().default(false).optional(),
 });
 
 export const VolumeMappingSchema = z.object({

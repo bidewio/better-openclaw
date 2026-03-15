@@ -2,6 +2,16 @@ import type { SkillPack } from "../types.js";
 
 const skillPacks: SkillPack[] = [
 	{
+		id: "ai-memory",
+		name: "AI Memory",
+		description:
+			"Long-term AI agent memory with automatic extraction, storage, and retrieval across conversations backed by vector embeddings and knowledge graphs",
+		requiredServices: ["mem0", "postgresql", "neo4j"],
+		skills: ["mem0-memory"],
+		icon: "🧠",
+		tags: ["memory", "ai", "knowledge-graph", "embeddings", "long-term-memory"],
+	},
+	{
 		id: "video-creator",
 		name: "Video Creator",
 		description:

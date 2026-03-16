@@ -81,14 +81,15 @@ export type {
 	OperationsLoggerOptions,
 } from "./logger/index.js";
 // ─── Operations Logger ─────────────────────────────────────────────────────
+// Note: FileSink is excluded from the barrel export because it depends on
+// Node.js `fs` and breaks browser/edge bundlers (e.g. Next.js webpack).
+// Import it directly: import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink"
 export {
 	CallbackSink,
 	ConsoleSink,
-	FileSink,
 	OperationsLogger,
 	StepTracker,
 } from "./logger/index.js";
-export type { FileSinkOptions } from "./logger/sinks/file-sink.js";
 // ─── Config Migrations ──────────────────────────────────────────────────────
 export {
 	CURRENT_CONFIG_VERSION,

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { FileSink, OperationsLogger } from "@better-openclaw/core";
+import { OperationsLogger } from "@better-openclaw/core";
+import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink";
 import type { MiddlewareHandler } from "hono";
 
 /**

@@ -10,9 +10,9 @@ import type {
 	ServiceDefinition,
 	SkillPack,
 } from "@better-openclaw/core";
+import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink";
 import {
 	buildAnalyticsPayload,
-	FileSink,
 	formatPortConflicts,
 	generate,
 	getAllPresets,

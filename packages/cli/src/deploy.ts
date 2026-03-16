@@ -31,9 +31,10 @@ export interface DeployOptions {
  */
 export async function runDeploy(options: DeployOptions): Promise<void> {
 	const { existsSync, readFileSync } = await import("node:fs");
-	const { getDeployer, getAvailableDeployers, OperationsLogger, FileSink } = await import(
+	const { getDeployer, getAvailableDeployers, OperationsLogger } = await import(
 		"@better-openclaw/core"
 	);
+	const { FileSink } = await import("@better-openclaw/core/logger/sinks/file-sink");
 
 	const dir = resolve(options.dir);
 

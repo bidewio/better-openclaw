@@ -98,7 +98,8 @@ The core ships a centralized `OperationsLogger` used by all packages (CLI, API, 
 ### Programmatic Usage
 
 ```typescript
-import { OperationsLogger, FileSink, ConsoleSink, CallbackSink } from "@better-openclaw/core";
+import { OperationsLogger, ConsoleSink, CallbackSink } from "@better-openclaw/core";
+import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink";
 
 const logger = new OperationsLogger({
   source: "cli",                // "cli" | "api" | "mcp" | "web" | "core"

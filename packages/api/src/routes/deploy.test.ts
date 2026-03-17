@@ -47,6 +47,8 @@ describe("POST /api/v1/deploy/test — SSRF protection", () => {
 			body: JSON.stringify({ ...validPayload, instanceUrl: "https://[::1]" }),
 		});
 		expect(res.status).toBe(400);
+		const body = await res.json();
+		expect(body.error.code).toBe("INVALID_URL");
 	});
 
 	it("blocks 0.0.0.0", async () => {
@@ -107,19 +109,23 @@ describe("POST /api/v1/deploy/test — SSRF protection", () => {
 		expect(res.status).toBe(400);
 	});
 
-	it("allows 172.15.x.x (not private)", async () => {
-		// This should NOT be blocked (172.15 is outside 172.16-31 range)
+	it("allows 172.32.x.x (not in private 172.16-31 range)", async () => {
+		// 172.32 is outside the 172.16-31 private range.
+		// SSRF check should NOT reject it. We test only the SSRF validation
+		// by checking that the error (if any) is not INVALID_URL. We use an
+		// unknown provider to avoid a real network call.
 		const res = await app.request("/api/v1/deploy/test", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
-				...validPayload,
-				instanceUrl: "https://172.15.0.1",
+				provider: "nonexistent",
+				instanceUrl: "https://172.32.0.1",
+				apiKey: "test-key",
 			}),
 		});
-		// Should pass SSRF check (may fail for other reasons like connection refused)
 		const body = await res.json();
-		expect(body.error?.code).not.toBe("INVALID_URL");
+		// Should fail with INVALID_PROVIDER, not INVALID_URL
+		expect(body.error.code).toBe("INVALID_PROVIDER");
 	});
 
 	it("blocks 192.168.x.x (RFC 1918)", async () => {

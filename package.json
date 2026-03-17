@@ -47,12 +47,12 @@
     "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.6",
-    "@types/node": "^25.3.5",
+    "@biomejs/biome": "^2.4.7",
+    "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^3.2.0",
-    "knip": "^5.46.0",
+    "knip": "^5.87.0",
     "markdownlint-cli2": "^0.21.0",
-    "turbo": "^2.8.14",
+    "turbo": "^2.8.17",
     "typescript": "^5.8.0",
     "vitest": "^3.2.0"
   }

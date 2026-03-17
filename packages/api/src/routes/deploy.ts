@@ -42,9 +42,11 @@ function validateInstanceUrl(url: string): string | null {
 	const hostname = parsed.hostname.toLowerCase();
 
 	// Block localhost and loopback
+	// Note: URL.hostname wraps IPv6 addresses in brackets, e.g. "[::1]"
 	if (
 		hostname === "localhost" ||
 		hostname === "127.0.0.1" ||
+		hostname === "[::1]" ||
 		hostname === "::1" ||
 		hostname === "0.0.0.0" ||
 		hostname.endsWith(".localhost")

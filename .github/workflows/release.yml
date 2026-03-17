@@ -18,7 +18,7 @@ jobs:
   release:
     name: Release to NPM
     if: startsWith(github.event.head_commit.message, 'chore(release):')
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
     steps:
       - name: Checkout Code

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { generateN8nWorkflows } from "./n8n-workflows.js";
 import type { ResolverOutput } from "../types.js";
+import { generateN8nWorkflows } from "./n8n-workflows.js";
 
 function makeResolved(serviceIds: string[]): ResolverOutput {
 	return {

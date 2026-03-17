@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi, beforeEach } from "vitest";
 import { Hono } from "hono";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
  * Tests for the rate limiting middleware.

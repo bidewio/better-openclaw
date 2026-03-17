@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
  * Tests for Coolify deployer utility functions and deploy orchestration.
@@ -85,7 +85,9 @@ describe("parseEnvContent", () => {
 	});
 
 	it("handles values containing equals signs", () => {
-		const result = parseEnvContent("DATABASE_URL=postgres://user:pass@host:5432/db?sslmode=require");
+		const result = parseEnvContent(
+			"DATABASE_URL=postgres://user:pass@host:5432/db?sslmode=require",
+		);
 		expect(result).toHaveLength(1);
 		expect(result[0]!.key).toBe("DATABASE_URL");
 		expect(result[0]!.value).toBe("postgres://user:pass@host:5432/db?sslmode=require");
@@ -124,10 +126,7 @@ describe("CoolifyDeployer", () => {
 	});
 
 	it("testConnection returns error on network failure", async () => {
-		vi.stubGlobal(
-			"fetch",
-			vi.fn().mockRejectedValue(new Error("Connection refused")),
-		);
+		vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Connection refused")));
 		const { CoolifyDeployer } = await import("./coolify.js");
 		const deployer = new CoolifyDeployer();
 		const result = await deployer.testConnection({

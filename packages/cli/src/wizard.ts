@@ -7,7 +7,6 @@ import type {
 	ServiceDefinition,
 	SkillPack,
 } from "@better-openclaw/core";
-import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink";
 import {
 	buildAnalyticsPayload,
 	formatPortConflicts,
@@ -23,6 +22,7 @@ import {
 	scanPortConflicts,
 	trackAnalytics,
 } from "@better-openclaw/core";
+import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink";
 import {
 	cancel,
 	confirm,

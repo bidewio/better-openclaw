@@ -76,7 +76,9 @@ function makeService(
 
 describe("formatPortConflicts", () => {
 	it("returns empty array when no reassignments", () => {
-		const services = [makeService("redis", [{ host: 6379, container: 6379, exposed: true, description: "Redis" }])];
+		const services = [
+			makeService("redis", [{ host: 6379, container: 6379, exposed: true, description: "Redis" }]),
+		];
 		const reassignments = new Map();
 		const conflicts = formatPortConflicts(services, reassignments);
 		expect(conflicts).toEqual([]);

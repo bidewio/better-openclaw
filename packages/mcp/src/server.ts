@@ -32,7 +32,7 @@ export function createServer(): McpServer {
 	const server = Sentry.wrapMcpServerWithSentry(
 		new McpServer({
 			name: "better-openclaw",
-			version: "1.0.30",
+			version: "1.0.31",
 		}),
 	);
 

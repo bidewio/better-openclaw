@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("DokployDeployer", () => {
 	beforeEach(() => {
@@ -13,10 +13,7 @@ describe("DokployDeployer", () => {
 	});
 
 	it("testConnection returns error on network failure", async () => {
-		vi.stubGlobal(
-			"fetch",
-			vi.fn().mockRejectedValue(new Error("ECONNREFUSED")),
-		);
+		vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("ECONNREFUSED")));
 		const { DokployDeployer } = await import("./dokploy.js");
 		const deployer = new DokployDeployer();
 		const result = await deployer.testConnection({
@@ -47,10 +44,7 @@ describe("DokployDeployer", () => {
 	});
 
 	it("listServers returns empty array on API failure", async () => {
-		vi.stubGlobal(
-			"fetch",
-			vi.fn().mockRejectedValue(new Error("Not found")),
-		);
+		vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Not found")));
 		const { DokployDeployer } = await import("./dokploy.js");
 		const deployer = new DokployDeployer();
 		const servers = await deployer.listServers({

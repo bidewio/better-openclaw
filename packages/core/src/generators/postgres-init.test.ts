@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { generatePostgresInit, getDbRequirements } from "./postgres-init.js";
 import type { ResolverOutput } from "../types.js";
+import { generatePostgresInit, getDbRequirements } from "./postgres-init.js";
 
 function makeResolved(serviceIds: string[]): ResolverOutput {
 	return {

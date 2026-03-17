@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { generateStackManifest, type StackManifest } from "./stack-manifest.js";
 import type { GenerationInput, ResolverOutput } from "../types.js";
+import { generateStackManifest, type StackManifest } from "./stack-manifest.js";
 
 function makeResolved(serviceIds: string[]): ResolverOutput {
 	return {

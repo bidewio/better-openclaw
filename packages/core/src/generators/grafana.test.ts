@@ -2,6 +2,14 @@ import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
 import { generateGrafanaConfig, generateGrafanaDashboard } from "./grafana.js";
 
+function requireFile(files: Record<string, string>, path: string): string {
+	const content = files[path];
+	if (!content) {
+		throw new Error(`Missing file: ${path}`);
+	}
+	return content;
+}
+
 describe("generateGrafanaConfig", () => {
 	it("returns multiple config files", () => {
 		const files = generateGrafanaConfig();
@@ -10,9 +18,8 @@ describe("generateGrafanaConfig", () => {
 
 	it("generates datasource provisioning YAML", () => {
 		const files = generateGrafanaConfig();
-		const dsFile = files["config/grafana/provisioning/datasources/prometheus.yml"];
-		expect(dsFile).toBeDefined();
-		const parsed = parse(dsFile!);
+		const dsFile = requireFile(files, "config/grafana/provisioning/datasources/prometheus.yml");
+		const parsed = parse(dsFile);
 		expect(parsed.datasources).toBeInstanceOf(Array);
 		expect(parsed.datasources[0].type).toBe("prometheus");
 		expect(parsed.datasources[0].isDefault).toBe(true);
@@ -20,9 +27,8 @@ describe("generateGrafanaConfig", () => {
 
 	it("generates dashboard provisioning YAML", () => {
 		const files = generateGrafanaConfig();
-		const dashFile = files["config/grafana/provisioning/dashboards/default.yml"];
-		expect(dashFile).toBeDefined();
-		const parsed = parse(dashFile!);
+		const dashFile = requireFile(files, "config/grafana/provisioning/dashboards/default.yml");
+		const parsed = parse(dashFile);
 		expect(parsed.providers).toBeInstanceOf(Array);
 		expect(parsed.providers[0].name).toContain("OpenClaw");
 	});
@@ -38,7 +44,7 @@ describe("generateGrafanaConfig", () => {
 
 	it("disables anonymous auth", () => {
 		const files = generateGrafanaConfig();
-		const iniFile = files["config/grafana/grafana.ini"]!;
+		const iniFile = requireFile(files, "config/grafana/grafana.ini");
 		expect(iniFile).toContain("[auth.anonymous]");
 		expect(iniFile).toContain("enabled = false");
 	});

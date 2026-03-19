@@ -12,6 +12,7 @@
  */
 
 import { isIP } from "node:net";
+import type { OperationsLogger } from "@better-openclaw/core";
 import { getAvailableDeployers, getDeployer } from "@better-openclaw/core";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 
@@ -31,6 +32,27 @@ function isPrivateOrLocalIPv4(hostname: string): boolean {
 		(a === 192 && b === 168) || // 192.168.0.0/16
 		(a === 169 && b === 254) // 169.254.0.0/16 (link-local)
 	);
+}
+
+function parseIpv4FromMappedIPv6(value: string): string | null {
+	const dottedIpv4 = value.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+	if (dottedIpv4) {
+		return value;
+	}
+
+	// URL normalization can rewrite ::ffff:127.0.0.1 to ::ffff:7f00:1.
+	const segments = value.split(":");
+	if (segments.length !== 2) {
+		return null;
+	}
+
+	const a = Number.parseInt(segments[0] ?? "", 16);
+	const b = Number.parseInt(segments[1] ?? "", 16);
+	if (Number.isNaN(a) || Number.isNaN(b)) {
+		return null;
+	}
+
+	return `${(a >> 8) & 255}.${a & 255}.${(b >> 8) & 255}.${b & 255}`;
 }
 
 /**
@@ -87,8 +109,9 @@ function validateInstanceUrl(url: string): string | null {
 			return "URL must not point to a private network address";
 		}
 		if (hostname.startsWith("::ffff:")) {
-			const mappedIpv4 = hostname.slice("::ffff:".length);
+			const mappedIpv4 = parseIpv4FromMappedIPv6(hostname.slice("::ffff:".length));
 			if (
+				!mappedIpv4 ||
 				mappedIpv4 === "127.0.0.1" ||
 				mappedIpv4 === "0.0.0.0" ||
 				isPrivateOrLocalIPv4(mappedIpv4)
@@ -278,6 +301,8 @@ route.openapi(deployPost, async (c: any) => {
 		);
 	}
 
+	const logger = c.get("logger" as never) as OperationsLogger | undefined;
+
 	const result = await deployer.deploy({
 		target: { instanceUrl, apiKey },
 		projectName,
@@ -285,6 +310,7 @@ route.openapi(deployPost, async (c: any) => {
 		envContent,
 		description,
 		serverId,
+		logger,
 	});
 
 	return c.json(result);

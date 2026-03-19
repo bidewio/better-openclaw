@@ -49,8 +49,7 @@
     "zod": "^4.3.6",
     "ioredis": "^5.10.0",
     "postgres": "^3.4.7",
-    "usesend-js": "^1.6.3",
-    "zod": "^4.3.6"
+    "usesend-js": "^1.6.3"
   },
   "devDependencies": {
     "@types/archiver": "^7.0.0",

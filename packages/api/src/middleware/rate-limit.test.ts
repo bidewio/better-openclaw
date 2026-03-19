@@ -17,7 +17,14 @@ describe("rate limiting middleware", () => {
 			RATE_LIMIT_WINDOW_MS: process.env.RATE_LIMIT_WINDOW_MS,
 			RATE_LIMIT_MAX_ANON: process.env.RATE_LIMIT_MAX_ANON,
 			RATE_LIMIT_MAX_API_KEY: process.env.RATE_LIMIT_MAX_API_KEY,
+			RATE_LIMIT_GENERATE_WINDOW_MS: process.env.RATE_LIMIT_GENERATE_WINDOW_MS,
+			RATE_LIMIT_GENERATE_MAX_ANON: process.env.RATE_LIMIT_GENERATE_MAX_ANON,
+			RATE_LIMIT_GENERATE_MAX_API_KEY: process.env.RATE_LIMIT_GENERATE_MAX_API_KEY,
+			REDIS_URL: process.env.REDIS_URL,
 		};
+
+		// Force in-memory store so tests are deterministic and isolated.
+		delete process.env.REDIS_URL;
 	});
 
 	afterEach(() => {
@@ -85,10 +92,10 @@ describe("rate limiting middleware", () => {
 
 		// Requests from different IPs should have independent counters
 		const res1 = await app.request("/test", {
-			headers: { "x-forwarded-for": "1.2.3.4" },
+			headers: { "x-forwarded-for": "203.0.113.140" },
 		});
 		const res2 = await app.request("/test", {
-			headers: { "x-forwarded-for": "5.6.7.8" },
+			headers: { "x-forwarded-for": "203.0.113.141" },
 		});
 
 		// Both should have full remaining (minus 1 for first request each)
@@ -116,6 +123,30 @@ describe("rate limiting middleware", () => {
 		// Second request should have one fewer remaining than first
 		expect(remaining2).toBe(remaining1 - 1);
 	});
+
+	it("returns 429 with Retry-After when limit is exceeded", async () => {
+		process.env.RATE_LIMIT_MAX_ANON = "1";
+		process.env.RATE_LIMIT_WINDOW_MS = "60000";
+
+		const { rateLimiter } = await import("./rate-limit.js");
+		const app = new Hono();
+		app.use("/*", rateLimiter());
+		app.get("/test", (c) => c.json({ ok: true }));
+
+		const first = await app.request("/test", {
+			headers: { "x-forwarded-for": "198.51.100.201" },
+		});
+		const second = await app.request("/test", {
+			headers: { "x-forwarded-for": "198.51.100.201" },
+		});
+
+		expect(first.status).toBe(200);
+		expect(second.status).toBe(429);
+		expect(second.headers.get("Retry-After")).toBeDefined();
+
+		const body = await second.json();
+		expect(body.error.code).toBe("RATE_LIMITED");
+	});
 });
 
 describe("generateRateLimiter", () => {
@@ -135,5 +166,46 @@ describe("generateRateLimiter", () => {
 		const generateLimit = Number(generateRes.headers.get("X-RateLimit-Limit"));
 
 		expect(generateLimit).toBeLessThan(globalLimit);
+	});
+
+	it("prefers generate-specific env vars over global values", async () => {
+		process.env.RATE_LIMIT_MAX_ANON = "50";
+		process.env.RATE_LIMIT_GENERATE_MAX_ANON = "7";
+		process.env.RATE_LIMIT_MAX_API_KEY = "500";
+		process.env.RATE_LIMIT_GENERATE_MAX_API_KEY = "13";
+
+		const { generateRateLimiter } = await import("./rate-limit.js");
+		const app = new Hono();
+		app.use("/*", generateRateLimiter());
+		app.get("/test", (c) => c.json({ ok: true }));
+
+		const anonRes = await app.request("/test");
+		expect(anonRes.headers.get("X-RateLimit-Limit")).toBe("7");
+
+		const keyRes = await app.request("/test", {
+			headers: { "X-API-Key": "env-override-key" },
+		});
+		expect(keyRes.headers.get("X-RateLimit-Limit")).toBe("13");
+	});
+
+	it("allows requests up to the limit and blocks the next one", async () => {
+		process.env.RATE_LIMIT_GENERATE_MAX_API_KEY = "2";
+		process.env.RATE_LIMIT_GENERATE_WINDOW_MS = "60000";
+
+		const { generateRateLimiter } = await import("./rate-limit.js");
+		const app = new Hono();
+		app.use("/*", generateRateLimiter());
+		app.get("/test", (c) => c.json({ ok: true }));
+
+		const requestInit = {
+			headers: { "X-API-Key": "boundary-test-key" },
+		};
+		const first = await app.request("/test", requestInit);
+		const second = await app.request("/test", requestInit);
+		const third = await app.request("/test", requestInit);
+
+		expect(first.status).toBe(200);
+		expect(second.status).toBe(200);
+		expect(third.status).toBe(429);
 	});
 });

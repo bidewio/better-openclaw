@@ -4,6 +4,14 @@ import { generate } from "../generate.js";
 import type { ResolverOutput } from "../types.js";
 import { generatePrometheusConfig } from "./prometheus.js";
 
+function requireFile(files: Record<string, string>, path: string): string {
+	const content = files[path];
+	if (!content) {
+		throw new Error(`Missing file: ${path}`);
+	}
+	return content;
+}
+
 function makeResolved(serviceIds: string[]): ResolverOutput {
 	return {
 		services: serviceIds.map((id) => ({
@@ -102,7 +110,7 @@ describe("prometheus via generate()", () => {
 			monitoring: true,
 		});
 		expect(result.files).toHaveProperty("prometheus/prometheus.yml");
-		const promConfig = parse(result.files["prometheus/prometheus.yml"]!);
+		const promConfig = parse(requireFile(result.files, "prometheus/prometheus.yml"));
 		expect(promConfig.scrape_configs.length).toBeGreaterThan(0);
 	});
 });

@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
 import { generate } from "../generate.js";
-import { getAllFrameworks, getFrameworkById } from "./registry.js";
+import { getAllFrameworks } from "./registry.js";
+
+function parseCompose(result: ReturnType<typeof generate>) {
+	const compose = result.files["docker-compose.yml"];
+	if (!compose) {
+		throw new Error("Missing docker-compose.yml");
+	}
+	return parse(compose);
+}
 
 /**
  * Smoke tests for all registered framework definitions.
@@ -30,7 +38,7 @@ describe("framework smoke tests via generate()", () => {
 				});
 
 				expect(result.files).toHaveProperty("docker-compose.yml");
-				const composed = parse(result.files["docker-compose.yml"]!);
+				const composed = parseCompose(result);
 				expect(composed.services).toBeDefined();
 
 				// Gateway service should exist with the framework's naming pattern
@@ -52,7 +60,7 @@ describe("framework smoke tests via generate()", () => {
 					primaryFramework: fw.id,
 				});
 
-				const composed = parse(result.files["docker-compose.yml"]!);
+				const composed = parseCompose(result);
 				if (fw.networkName) {
 					expect(composed.networks).toHaveProperty(fw.networkName);
 				}
@@ -108,7 +116,7 @@ describe("companion frameworks via generate()", () => {
 				companionFrameworks: [fw.id],
 			});
 
-			const composed = parse(result.files["docker-compose.yml"]!);
+			const composed = parseCompose(result);
 			expect(composed.services).toBeDefined();
 
 			// Companion should appear in compose

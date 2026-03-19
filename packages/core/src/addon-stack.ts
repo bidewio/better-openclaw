@@ -234,8 +234,12 @@ function resolvePortConflicts(
 			if (userOverride) {
 				usedPorts.add(userOverride);
 				assignments[`${def.id}:${port.container}`] = userOverride;
-				overrides[def.id] ??= {};
-				overrides[def.id]![String(port.host)] = userOverride;
+				let serviceOverrides = overrides[def.id];
+				if (!serviceOverrides) {
+					serviceOverrides = {};
+					overrides[def.id] = serviceOverrides;
+				}
+				serviceOverrides[String(port.host)] = userOverride;
 				continue;
 			}
 
@@ -246,8 +250,12 @@ function resolvePortConflicts(
 				while (usedPorts.has(assignedPort)) {
 					assignedPort++;
 				}
-				overrides[def.id] ??= {};
-				overrides[def.id]![String(port.host)] = assignedPort;
+				let serviceOverrides = overrides[def.id];
+				if (!serviceOverrides) {
+					serviceOverrides = {};
+					overrides[def.id] = serviceOverrides;
+				}
+				serviceOverrides[String(port.host)] = assignedPort;
 			}
 			usedPorts.add(assignedPort);
 			assignments[`${def.id}:${port.container}`] = assignedPort;
@@ -284,7 +292,10 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 	const projectName = sanitizeProjectName(input.instanceId);
 
 	// Resolve framework for this addon stack (defaults to openclaw)
-	const framework = getFrameworkById("openclaw")!;
+	const framework = getFrameworkById("openclaw");
+	if (!framework) {
+		return emptyResult('Framework "openclaw" is not registered.');
+	}
 	const infraIds = getInfraServiceIds(framework);
 	const managedKeys = getManagedEnvKeys(framework);
 
@@ -518,13 +529,14 @@ export function generateAddonStack(rawInput: AddonStackInput): AddonStackResult 
 				// and the env var's defaultValue is "${N8N_DB_PASSWORD}", sync the ref key
 				// so postgres-setup uses the same password.
 				for (const envVar of def.environment) {
+					const credentialValue = userCreds[envVar.key];
 					if (
-						userCreds[envVar.key] &&
+						credentialValue &&
 						envVar.defaultValue?.startsWith("${") &&
 						envVar.defaultValue?.endsWith("}")
 					) {
 						const refKey = envVar.defaultValue.slice(2, -1);
-						envValues.set(refKey, userCreds[envVar.key]!);
+						envValues.set(refKey, credentialValue);
 					}
 				}
 			}

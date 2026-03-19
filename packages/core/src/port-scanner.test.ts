@@ -12,41 +12,54 @@ import type { ServiceDefinition } from "./types.js";
 // Mock the internal isPortAvailable to control port availability
 vi.mock("node:net", () => {
 	const portsInUse = new Set([80, 443, 3000]);
+	type VoidCallback = () => void;
+
+	class MockSocket {
+		private connectCb?: VoidCallback;
+		private errorCb?: VoidCallback;
+
+		connect(port: number) {
+			// Simulate: ports in portsInUse are "in use"
+			setTimeout(() => {
+				if (portsInUse.has(port)) {
+					this.connectCb?.();
+				} else {
+					this.errorCb?.();
+				}
+			}, 1);
+		}
+
+		once(event: string, cb: VoidCallback) {
+			if (event === "connect") this.connectCb = cb;
+			if (event === "error") this.errorCb = cb;
+		}
+
+		setTimeout() {}
+		removeAllListeners() {}
+		destroy() {}
+	}
+
+	class MockServer {
+		once(_event: string, _cb: (err?: Error) => void) {}
+
+		listen(_port: number, _host: string, cb: VoidCallback) {
+			cb();
+		}
+
+		close(cb: VoidCallback) {
+			cb();
+		}
+	}
 
 	return {
+		Socket: MockSocket,
+		createServer() {
+			return new MockServer();
+		},
 		default: {
-			Socket: class MockSocket {
-				connect(port: number) {
-					// Simulate: ports in portsInUse are "in use"
-					setTimeout(() => {
-						if (portsInUse.has(port)) {
-							(this as any).connectCb?.();
-						} else {
-							(this as any).errorCb?.();
-						}
-					}, 1);
-				}
-				once(event: string, cb: () => void) {
-					if (event === "connect") (this as any).connectCb = cb;
-					if (event === "error") (this as any).errorCb = cb;
-					if (event === "timeout") (this as any).timeoutCb = cb;
-				}
-				setTimeout() {}
-				removeAllListeners() {}
-				destroy() {}
-			},
+			Socket: MockSocket,
 			createServer() {
-				return {
-					once(event: string, cb: (err?: Error) => void) {
-						if (event === "error") (this as any).errorCb = cb;
-					},
-					listen(_port: number, _host: string, cb: () => void) {
-						cb();
-					},
-					close(cb: () => void) {
-						cb();
-					},
-				};
+				return new MockServer();
 			},
 		},
 	};
@@ -118,10 +131,10 @@ describe("formatPortConflicts", () => {
 		]);
 		const conflicts = formatPortConflicts(services, reassignments);
 		expect(conflicts).toHaveLength(2);
-		expect(conflicts[0]!.port).toBe(80);
-		expect(conflicts[0]!.suggestedPort).toBe(1080);
-		expect(conflicts[1]!.port).toBe(443);
-		expect(conflicts[1]!.suggestedPort).toBe(1443);
+		expect(conflicts[0]?.port).toBe(80);
+		expect(conflicts[0]?.suggestedPort).toBe(1080);
+		expect(conflicts[1]?.port).toBe(443);
+		expect(conflicts[1]?.suggestedPort).toBe(1443);
 	});
 
 	it("uses service name as fallback when port has no description", () => {
@@ -130,7 +143,7 @@ describe("formatPortConflicts", () => {
 		];
 		const reassignments = new Map([["myapp", new Map([[9000, 10000]])]]);
 		const conflicts = formatPortConflicts(services, reassignments);
-		expect(conflicts[0]!.description).toBe("myapp port");
+		expect(conflicts[0]?.description).toBe("myapp port");
 	});
 });
 
@@ -160,7 +173,10 @@ describe("scanPortConflicts", () => {
 		// First service wins, second gets reassigned
 		expect(result.has("web1")).toBe(false); // web1 keeps its port
 		expect(result.has("web2")).toBe(true); // web2 gets reassigned
-		const web2Reassignments = result.get("web2")!;
+		const web2Reassignments = result.get("web2");
+		if (!web2Reassignments) {
+			throw new Error("Expected web2 to have reassigned ports");
+		}
 		expect(web2Reassignments.has(8080)).toBe(true);
 		expect(web2Reassignments.get(8080)).toBeGreaterThan(8080);
 	});

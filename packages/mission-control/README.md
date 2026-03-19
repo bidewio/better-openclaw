@@ -1,13 +1,16 @@
 # @better-openclaw/mission-control
 
-The centralized oversight system and orchestration dashboard for Better OpenClaw. Built entirely upon extremely modern standards: Vite, React, Convex (real-time backend), and Tailwind v4. 
-It enables humans to interact with, manage, and assign goals to autonomous agent deployments running within constructed OpenClaw clusters.
+The centralized oversight system and orchestration dashboard for Better OpenClaw. Built entirely upon extremely modern standards: Vite, React, Convex (real-time backend), and Tailwind v4.
+It enables humans to interact with, manage, and assign goals to autonomous agent deployments running within constructed agent clusters.
+
+> **Note:** Mission Control is included automatically when using the OpenClaw framework but is **optional** for other frameworks (CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex). Non-OpenClaw stacks skip Convex and Mission Control by default.
 
 ## Features
 
 - 🎯 **Kanban Mission Queue:** Watch agent tasking progress organically via a dynamic Inbox → Assigned → In Progress → Review → Done state graph.
 - 🤖 **Agent Oversight Sidebar:** Real-time visibility into agent health status (idle, active, blocked), hierarchical levels (LEAD, INT, SPC), and automated rapid task dispatch mapping.
-- 📄 **Document Management & Viewing Trays:** Access Markdown records, images, code files, and operational artifacts asynchronously created by AI workers.
+- 📄 **Document Management & Viewing Trays:** Access Markdown records, images, code files, and operational artifacts asynchronously created by AI workers. Sandbox-type documents render an embedded VNC desktop viewer.
+- 🖥️ **Desktop Sandbox Viewer:** Embedded noVNC/KasmVNC iframe viewer with fullscreen, refresh, terminate controls, and Chrome DevTools tab switching. Appears in the dedicated Sandboxes page, inline in task detail panels, and in document preview trays.
 - 📡 **Live Telemetry Feed:** Real-time logging of activity broadcasts tracking agent state transitions and tool outputs.
 - 🔗 **Deep OpenClaw Hooks Integration:** Natively receives webhook triggers from OpenClaw instances automatically instantiating human-review tracks for requested actions.
 - 🔒 **Convex Auth Layer:** Built-in multi-tenant isolation and email/password secure gating.
@@ -19,7 +22,8 @@ It enables humans to interact with, manage, and assign goals to autonomous agent
 packages/mission-control/
 ├── convex/              # Auto-syncing real-time database schema
 │   ├── schema.ts        # Declarative data models (agents, tasks, messages)
-│   ├── openclaw.ts      # Webhook ingestion logic (POST tracking)
+│   ├── openclaw.ts      # Webhook ingestion logic (POST tracking, sandbox events)
+│   ├── sandboxes.ts     # Sandbox session CRUD (noVNC/KasmVNC sessions)
 │   ├── queries.ts       # Database accessors and subscription polling
 │   └── seed.ts          # Sample state bootstrapping
 ├── hooks/               # OpenClaw webhook listener definition

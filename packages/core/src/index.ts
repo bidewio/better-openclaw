@@ -1,5 +1,5 @@
-// ─── Schemas ────────────────────────────────────────────────────────────────
-
+// ─── Addon Stack (Clawexa) ──────────────────────────────────────────────────
+export { generateAddonStack, updateAddonStack } from "./addon-stack.js";
 // ─── Core Engines ───────────────────────────────────────────────────────────
 export {
 	partitionBareMetal,
@@ -7,7 +7,14 @@ export {
 	resolvedWithOnlyServices,
 } from "./bare-metal-partition.js";
 export type { ComposeResult } from "./composer.js";
-export { compose, composeMultiFile } from "./composer.js";
+export {
+	buildCompanionService,
+	buildPostgresSetup,
+	compose,
+	composeMultiFile,
+	quotedStr,
+	YAML_OPTIONS,
+} from "./composer.js";
 // ─── PaaS Deployers ─────────────────────────────────────────────────────────
 export type {
 	DeployInput as PaasDeployInput,
@@ -26,6 +33,18 @@ export {
 } from "./deployers/index.js";
 // ─── Errors ─────────────────────────────────────────────────────────────────
 export { StackConfigError, ValidationError } from "./errors.js";
+// ─── Agent Frameworks ───────────────────────────────────────────────────────
+export type {
+	AgentFrameworkDefinition,
+	AgentFrameworkId,
+} from "./frameworks/index.js";
+export {
+	getAllFrameworks,
+	getCompanionFrameworks,
+	getFrameworkById,
+	getPrimaryFrameworks,
+	registerFramework,
+} from "./frameworks/index.js";
 export { generate, generateServicesDoc } from "./generate.js";
 export { generateCaddyfile } from "./generators/caddy.js";
 export { generateCloneScripts } from "./generators/clone-repos.js";
@@ -51,6 +70,26 @@ export type {
 	StackManifestSkill,
 } from "./generators/stack-manifest.js";
 export { generateStackManifest } from "./generators/stack-manifest.js";
+export type {
+	LogLevel,
+	LogSink,
+	LogSource,
+	OperationCategory,
+	OperationOutcome,
+	OperationStep,
+	OperationsLogEntry,
+	OperationsLoggerOptions,
+} from "./logger/index.js";
+// ─── Operations Logger ─────────────────────────────────────────────────────
+// Note: FileSink is excluded from the barrel export because it depends on
+// Node.js `fs` and breaks browser/edge bundlers (e.g. Next.js webpack).
+// Import it directly: import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink"
+export {
+	CallbackSink,
+	ConsoleSink,
+	OperationsLogger,
+	StepTracker,
+} from "./logger/index.js";
 // ─── Config Migrations ──────────────────────────────────────────────────────
 export {
 	CURRENT_CONFIG_VERSION,
@@ -69,6 +108,11 @@ export {
 export { resolve } from "./resolver.js";
 export {
 	AddedDependencySchema,
+	AddonStackInputSchema,
+	AddonStackResultSchema,
+	AddonStackUpdateInputSchema,
+	AddonStackUpdateResultSchema,
+	AgentFrameworkSchema,
 	ApiErrorSchema,
 	BuildContextSchema,
 	ComposeOptionsSchema,
@@ -76,6 +120,8 @@ export {
 	DeploymentTypeSchema,
 	DeploySchema,
 	DeployTargetSchema,
+	EnvQuirkFixSchema,
+	EnvQuirkSchema,
 	EnvVariableSchema,
 	ErrorSchema,
 	GenerationInputSchema,
@@ -90,6 +136,7 @@ export {
 	PlatformSchema,
 	PortMappingSchema,
 	PresetSchema,
+	ProxyRouteSchema,
 	ProxyTypeSchema,
 	ResolvedServiceSchema,
 	ResolverOutputSchema,
@@ -99,6 +146,8 @@ export {
 	ServiceDefinitionSchema,
 	SkillBindingSchema,
 	SkillPackSchema,
+	SkippedServiceReasonSchema,
+	SkippedServiceSchema,
 	ValidateRequestSchema,
 	ValidateResponseSchema,
 	VolumeMappingSchema,
@@ -131,6 +180,11 @@ export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 // ─── Types ──────────────────────────────────────────────────────────────────
 export type {
 	AddedDependency,
+	AddonStackInput,
+	AddonStackResult,
+	AddonStackUpdateInput,
+	AddonStackUpdateResult,
+	AgentFramework,
 	AiProvider,
 	ApiError,
 	BuildContext,
@@ -140,6 +194,8 @@ export type {
 	DeploymentTarget,
 	DeploymentType,
 	DeployTarget,
+	EnvQuirk,
+	EnvQuirkFix,
 	EnvVariable,
 	GeneratedFiles,
 	GenerationInput,
@@ -157,6 +213,7 @@ export type {
 	Platform,
 	PortMapping,
 	Preset,
+	ProxyRoute,
 	ProxyType,
 	ResolvedService,
 	ResolverError,
@@ -168,6 +225,7 @@ export type {
 	ServiceDefinition,
 	SkillBinding,
 	SkillPack,
+	SkippedService,
 	ValidateRequest,
 	ValidateResponse,
 	VolumeMapping,

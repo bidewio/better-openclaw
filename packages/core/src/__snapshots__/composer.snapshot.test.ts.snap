@@ -80,6 +80,7 @@ exports[`compose snapshot tests > creator preset (ffmpeg + remotion + minio + re
       RUST_LOG: info
       DISABLE_BEACON: ""
       CONVEX_SELF_HOSTED_ADMIN_KEY: \${CONVEX_SELF_HOSTED_ADMIN_KEY}
+      CONVEX_INSTANCE_SECRET: \${CONVEX_INSTANCE_SECRET}
     ports:
       - \${CONVEX_EXTERNAL_PORT_0:-3210}:3210
       - \${CONVEX_EXTERNAL_PORT_1:-3211}:3211
@@ -296,6 +297,7 @@ exports[`compose snapshot tests > devops preset (n8n + postgresql + redis + moni
       RUST_LOG: info
       DISABLE_BEACON: ""
       CONVEX_SELF_HOSTED_ADMIN_KEY: \${CONVEX_SELF_HOSTED_ADMIN_KEY}
+      CONVEX_INSTANCE_SECRET: \${CONVEX_INSTANCE_SECRET}
     ports:
       - \${CONVEX_EXTERNAL_PORT_0:-3210}:3210
       - \${CONVEX_EXTERNAL_PORT_1:-3211}:3211
@@ -706,6 +708,7 @@ exports[`compose snapshot tests > full preset (many services) 1`] = `
       RUST_LOG: info
       DISABLE_BEACON: ""
       CONVEX_SELF_HOSTED_ADMIN_KEY: \${CONVEX_SELF_HOSTED_ADMIN_KEY}
+      CONVEX_INSTANCE_SECRET: \${CONVEX_INSTANCE_SECRET}
     ports:
       - \${CONVEX_EXTERNAL_PORT_0:-3210}:3210
       - \${CONVEX_EXTERNAL_PORT_1:-3211}:3211
@@ -1043,6 +1046,7 @@ exports[`compose snapshot tests > minimal preset (redis only) 1`] = `
       RUST_LOG: info
       DISABLE_BEACON: ""
       CONVEX_SELF_HOSTED_ADMIN_KEY: \${CONVEX_SELF_HOSTED_ADMIN_KEY}
+      CONVEX_INSTANCE_SECRET: \${CONVEX_INSTANCE_SECRET}
     ports:
       - \${CONVEX_EXTERNAL_PORT_0:-3210}:3210
       - \${CONVEX_EXTERNAL_PORT_1:-3211}:3211
@@ -1226,6 +1230,7 @@ exports[`compose snapshot tests > researcher preset (qdrant + searxng + browserl
       RUST_LOG: info
       DISABLE_BEACON: ""
       CONVEX_SELF_HOSTED_ADMIN_KEY: \${CONVEX_SELF_HOSTED_ADMIN_KEY}
+      CONVEX_INSTANCE_SECRET: \${CONVEX_INSTANCE_SECRET}
     ports:
       - \${CONVEX_EXTERNAL_PORT_0:-3210}:3210
       - \${CONVEX_EXTERNAL_PORT_1:-3211}:3211

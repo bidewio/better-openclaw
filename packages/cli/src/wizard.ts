@@ -1,17 +1,28 @@
-import type { GenerationInput, Preset, ServiceDefinition, SkillPack } from "@better-openclaw/core";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import type {
+	AgentFramework,
+	GenerationInput,
+	Preset,
+	ServiceDefinition,
+	SkillPack,
+} from "@better-openclaw/core";
 import {
 	buildAnalyticsPayload,
 	formatPortConflicts,
 	generate,
+	getAllFrameworks,
 	getAllPresets,
 	getAllServices,
 	getAllSkillPacks,
 	getCompatibleSkillPacks,
+	OperationsLogger,
 	resolve,
 	SERVICE_CATEGORIES,
 	scanPortConflicts,
 	trackAnalytics,
 } from "@better-openclaw/core";
+import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink";
 import {
 	cancel,
 	confirm,
@@ -101,25 +112,71 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 		}),
 	);
 
-	// ── OpenClaw Install Method ─────────────────────────────────────────────
+	// ── Primary Agent Framework ──────────────────────────────────────────────
 
-	const openclawInstallMethod = ensureNotCancelled(
+	const allFrameworks = getAllFrameworks().filter((fw) => fw.canBePrimary);
+	const primaryFramework = ensureNotCancelled(
 		await select({
-			message: "How would you like to install OpenClaw itself?",
-			options: [
-				{
-					value: "docker" as const,
-					label: "Docker (container)",
-					hint: "runs alongside your services in Docker",
-				},
-				{
-					value: "direct" as const,
-					label: "Direct install (host)",
-					hint: "installs on host via curl — no Docker needed for OpenClaw",
-				},
-			],
+			message: "Primary agent framework:",
+			options: allFrameworks.map((fw) => ({
+				value: fw.id as AgentFramework,
+				label: `${fw.icon} ${fw.name}`,
+				hint: fw.description,
+			})),
 		}),
 	);
+
+	// ── Companion Frameworks (optional) ──────────────────────────────────────
+
+	const companionFrameworks: AgentFramework[] = [];
+	const companionOptions = getAllFrameworks().filter(
+		(fw) => fw.canBeCompanion && fw.id !== primaryFramework,
+	);
+	if (companionOptions.length > 0) {
+		const addCompanions = ensureNotCancelled(
+			await confirm({
+				message: "Add companion agent frameworks alongside the primary?",
+				initialValue: false,
+			}),
+		);
+		if (addCompanions) {
+			const selected = ensureNotCancelled(
+				await multiselect({
+					message: "Select companion frameworks:",
+					options: companionOptions.map((fw) => ({
+						value: fw.id as AgentFramework,
+						label: `${fw.icon} ${fw.name}`,
+						hint: fw.description,
+					})),
+					required: false,
+				}),
+			);
+			companionFrameworks.push(...(selected as AgentFramework[]));
+		}
+	}
+
+	// ── Install Method ──────────────────────────────────────────────────────
+
+	let openclawInstallMethod: "docker" | "direct" = "docker";
+	if (primaryFramework === "openclaw") {
+		openclawInstallMethod = ensureNotCancelled(
+			await select({
+				message: "How would you like to install OpenClaw itself?",
+				options: [
+					{
+						value: "docker" as const,
+						label: "Docker (container)",
+						hint: "runs alongside your services in Docker",
+					},
+					{
+						value: "direct" as const,
+						label: "Direct install (host)",
+						hint: "installs on host via curl — no Docker needed for OpenClaw",
+					},
+				],
+			}),
+		);
+	}
 
 	const platformOptions =
 		deploymentType === "docker"
@@ -142,10 +199,10 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 		}),
 	);
 
-	// ── OpenClaw Image Variant (only when Docker install) ───────────────────
+	// ── Image Variant (only when Docker install + OpenClaw primary) ─────────
 
 	let openclawImage: "official" | "coolify" | "alpine" = "official";
-	if (openclawInstallMethod === "docker") {
+	if (primaryFramework === "openclaw" && openclawInstallMethod === "docker") {
 		openclawImage = ensureNotCancelled(
 			await select({
 				message: "OpenClaw Docker image variant:",
@@ -625,11 +682,23 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 		openclawInstallMethod: openclawInstallMethod as "docker" | "direct",
 		deployTarget: "local",
 		hardened: true,
+		primaryFramework,
+		companionFrameworks: companionFrameworks.length > 0 ? companionFrameworks : undefined,
 	};
+
+	const logger = new OperationsLogger({
+		source: "cli",
+		sinks: [
+			new FileSink({
+				logDir: join(homedir(), ".better-openclaw", "logs"),
+			}),
+		],
+		minLevel: "info",
+	});
 
 	let result: ReturnType<typeof generate>;
 	try {
-		result = generate(input);
+		result = generate(input, { logger });
 	} catch (err) {
 		s.stop("Generation failed.");
 		console.error(pc.red(`\n${err instanceof Error ? err.message : String(err)}`));
@@ -642,6 +711,7 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 
 	await writeProject(String(projectDir), result.files, {
 		outputFormat: String(outputFormat),
+		logger,
 	});
 
 	s.stop("Stack generated successfully!");

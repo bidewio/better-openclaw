@@ -1,3 +1,4 @@
+import { getFrameworkById } from "./frameworks/index.js";
 import { getAllServices, getServiceById } from "./services/registry.js";
 import { getSkillPackById } from "./skills/registry.js";
 import type {
@@ -99,14 +100,28 @@ export function resolve(input: ResolverInput): ResolverOutput {
 		}
 	}
 
-	// Add mandatory platform services (mission-control, convex, tailscale, etc.)
+	// Add mandatory platform services based on selected framework
+	const framework = getFrameworkById(input.primaryFramework ?? "openclaw");
+	const frameworkMandatoryIds = new Set(framework?.getMandatoryServices() ?? []);
+
 	for (const def of getAllServices()) {
-		if (def.mandatory && !serviceIds.has(def.id)) {
+		if (!serviceIds.has(def.id) && frameworkMandatoryIds.has(def.id)) {
 			serviceIds.add(def.id);
 			serviceAddedBy.set(def.id, "mandatory");
 			addedDependencies.push({
 				service: def.id,
-				reason: "Mandatory OpenClaw platform service",
+				reason: `Required by ${framework?.name ?? "platform"}`,
+			});
+		}
+	}
+
+	// Surface framework-level recommendations for services not selected
+	const frameworkRecommendedIds = new Set(framework?.getRecommendedServices() ?? []);
+	for (const recId of frameworkRecommendedIds) {
+		if (!serviceIds.has(recId) && getServiceById(recId)) {
+			warnings.push({
+				type: "recommendation",
+				message: `${framework?.name ?? "Framework"} recommends "${recId}" for smart LLM routing and cost optimization`,
 			});
 		}
 	}
@@ -265,6 +280,7 @@ export function resolve(input: ResolverInput): ResolverOutput {
 		estimatedMemoryMB,
 		aiProviders: input.aiProviders ?? [],
 		gsdRuntimes: [],
+		primaryFramework: input.primaryFramework ?? "openclaw",
 	};
 }
 

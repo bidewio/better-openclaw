@@ -48,11 +48,25 @@ export const twentyDefinition: ServiceDefinition = {
 			required: true,
 		},
 		{
+			key: "SERVER_URL",
+			defaultValue: "http://localhost:3037",
+			secret: false,
+			description: "Server URL for API and webhooks",
+			required: true,
+		},
+		{
 			key: "FRONT_BASE_URL",
 			defaultValue: "http://localhost:3037",
 			secret: false,
 			description: "Public frontend URL",
 			required: true,
+		},
+		{
+			key: "ENABLE_DB_MIGRATIONS",
+			defaultValue: "true",
+			secret: false,
+			description: "Run database migrations on startup",
+			required: false,
 		},
 	],
 	healthcheck: {
@@ -62,7 +76,7 @@ export const twentyDefinition: ServiceDefinition = {
 		retries: 3,
 		startPeriod: "30s",
 	},
-	dependsOn: ["postgresql", "redis"],
+	dependsOn: ["postgresql", "redis", "twenty-worker"],
 	restartPolicy: "unless-stopped",
 	networks: ["openclaw-network"],
 
@@ -73,7 +87,7 @@ export const twentyDefinition: ServiceDefinition = {
 	tags: ["crm", "sales", "customer", "contacts", "pipeline", "graphql"],
 	maturity: "stable",
 
-	requires: ["postgresql", "redis"],
+	requires: ["postgresql", "redis", "twenty-worker"],
 	recommends: [],
 	conflictsWith: [],
 

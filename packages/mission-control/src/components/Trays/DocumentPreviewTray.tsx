@@ -1,7 +1,9 @@
 import { IconX } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
+import { useMemo } from "react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
+import SandboxViewer, { type SandboxSession } from "../SandboxViewer";
 
 interface DocumentPreviewTrayProps {
 	documentId: Id<"documents">;
@@ -18,10 +20,31 @@ export default function DocumentPreviewTray({
 		documentId,
 	});
 
+	// Parse sandbox session data from document content for sandbox type
+	const sandboxSession = useMemo<SandboxSession | null>(() => {
+		if (!docContext || docContext.type !== "sandbox") return null;
+		try {
+			const data = JSON.parse(docContext.content);
+			return {
+				_id: docContext._id as unknown as Id<"sandboxSessions">,
+				sandboxId: data.sandbox_id ?? docContext.path ?? "unknown",
+				novncUrl: data.novnc_url ?? "",
+				vncEndpoint: data.vnc_endpoint,
+				devtoolsUrl: data.devtools_url,
+				image: data.image ?? "opensandbox/desktop:latest",
+				resolution: data.resolution,
+				status: "running" as const,
+			};
+		} catch {
+			return null;
+		}
+	}, [docContext]);
+
 	if (!docContext) return null;
 
 	const isCode = docContext.type === "code";
 	const isImage = docContext.type === "image";
+	const isSandbox = docContext.type === "sandbox";
 
 	return (
 		<div className={`tray tray-preview ${isOpen ? "is-open" : ""}`}>
@@ -46,7 +69,9 @@ export default function DocumentPreviewTray({
 
 				{/* Content */}
 				<div className="flex-1 overflow-y-auto p-4">
-					{isImage && docContext.path ? (
+					{isSandbox && sandboxSession ? (
+						<SandboxViewer session={sandboxSession} compact />
+					) : isImage && docContext.path ? (
 						<img
 							src={`/api/local-file?path=${encodeURIComponent(docContext.path)}`}
 							alt={docContext.title}

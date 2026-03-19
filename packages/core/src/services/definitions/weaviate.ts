@@ -65,7 +65,7 @@ export const weaviateDefinition: ServiceDefinition = {
 	restartPolicy: "unless-stopped",
 	networks: ["openclaw-network"],
 
-	skills: [],
+	skills: [{ skillId: "weaviate-memory", autoInstall: true }],
 	openclawEnvVars: [
 		{
 			key: "WEAVIATE_HOST",

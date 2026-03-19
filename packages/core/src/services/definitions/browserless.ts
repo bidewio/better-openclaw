@@ -81,4 +81,7 @@ export const browserlessDefinition: ServiceDefinition = {
 
 	minMemoryMB: 512,
 	gpuRequired: false,
+	capDropCompatible: false,
+	proxyPath: "/browserless",
+	firstBootCapabilities: ["SYS_ADMIN"],
 };

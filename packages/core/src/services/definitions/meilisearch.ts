@@ -80,4 +80,13 @@ export const meilisearchDefinition: ServiceDefinition = {
 
 	minMemoryMB: 256,
 	gpuRequired: false,
+	capDropCompatible: true,
+	proxyPath: "/meilisearch",
+	envQuirks: [
+		{
+			key: "MEILI_MASTER_KEY",
+			issue: "min_length" as const,
+			fix: { type: "generate_base64url" as const, minBytes: 24 },
+		},
+	],
 };

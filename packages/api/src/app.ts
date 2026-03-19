@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { secureHeaders } from "hono/secure-headers";
 import { auth } from "./lib/auth.js";
 import { optionalApiKey } from "./middleware/api-key.js";
+import { operationsLoggerMiddleware } from "./middleware/operations-logger.js";
 import { generateRateLimiter, rateLimiter } from "./middleware/rate-limit.js";
 import { requestId } from "./middleware/request-id.js";
 import { analyticsRoute } from "./routes/analytics.js";
@@ -34,6 +35,7 @@ const trustedOrigins = process.env.TRUSTED_ORIGINS?.split(",") || [
 
 // Middleware
 app.use("/*", requestId());
+app.use("/*", operationsLoggerMiddleware());
 // Security: Enable secure headers (X-Content-Type-Options, X-Frame-Options, etc.)
 app.use(
 	"/*",

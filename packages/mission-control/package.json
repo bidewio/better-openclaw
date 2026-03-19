@@ -1,6 +1,6 @@
 {
   "name": "@better-openclaw/mission-control",
-  "version": "1.0.24",
+  "version": "1.0.31",
   "private": true,
   "license": "AGPL-3.0",
   "type": "module",
@@ -26,7 +26,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@tabler/icons-react": "^3.40.0",
     "@tailwindcss/typography": "^0.5.19",
-    "convex": "^1.32.0",
+    "convex": "^1.33.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
@@ -39,11 +39,11 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
-    "jsdom": "^28.1.0",
+    "jsdom": "^29.0.0",
     "npm-run-all2": "^8.0.4",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
+    "vite": "^8.0.0",
     "vitest": "^4.0.18"
   }
 }

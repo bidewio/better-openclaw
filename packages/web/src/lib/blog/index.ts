@@ -1,3 +1,5 @@
+import { post as post42 } from "./posts/addon-stack-generation-hosting-guide";
+import { post as post47 } from "./posts/agent-browser-ai-native-browser-automation";
 import { post as post24 } from "./posts/ai-agent-memory-redis-persistent-context";
 import { post as post41 } from "./posts/ai-powerhouse-self-hosted-manus-alternative";
 import { post as post5 } from "./posts/ai-skill-packs-explained";
@@ -6,6 +8,7 @@ import { post as post15 } from "./posts/backing-up-docker-volumes-guide";
 import { post as post23 } from "./posts/browser-automation-playwright-browserless";
 import { post as post32 } from "./posts/building-ai-coding-assistant-continue-dev";
 import { post as post12 } from "./posts/building-personal-ai-assistant-2026";
+import { post as post43 } from "./posts/building-service-marketplace-skills-addons";
 import { post as post16 } from "./posts/caddy-vs-traefik-homelab-reverse-proxy";
 import { post as post20 } from "./posts/cicd-docker-compose-automated-deployments";
 import { post as post35 } from "./posts/cloudflare-tunnels-vs-wireguard-remote-access";
@@ -21,6 +24,7 @@ import { post as post19 } from "./posts/knowledge-base-outline-meilisearch";
 import { post as post21 } from "./posts/librechat-open-webui-self-hosted-chatgpt";
 import { post as post34 } from "./posts/minio-s3-compatible-storage-self-hosted";
 import { post as post10 } from "./posts/monitoring-ai-stack-grafana-prometheus";
+import { post as post45 } from "./posts/multi-framework-agent-support";
 import { post as post6 } from "./posts/n8n-ai-workflow-automation";
 import { post as post27 } from "./posts/n8n-vs-temporal-workflow-automation";
 import { post as post38 } from "./posts/nextcloud-vs-owncloud-data-sovereignty";
@@ -28,6 +32,7 @@ import { post as post29 } from "./posts/ollama-vs-litellm-local-ai-inference";
 import { post as post37 } from "./posts/open-source-erp-erpnext-odoo-comparison";
 import { post as post13 } from "./posts/open-source-llm-models-comparison";
 import { post as post2 } from "./posts/openclaw-vs-manual-docker-setup";
+import { post as post44 } from "./posts/opensandbox-secure-ai-code-execution";
 import { post as post26 } from "./posts/postgresql-vs-supabase-self-hosted";
 import { post as post8 } from "./posts/private-rag-pipeline-qdrant-searxng";
 import { post as post11 } from "./posts/proxmox-vs-truenas-homelab-os";
@@ -39,6 +44,7 @@ import { post as post36 } from "./posts/self-hosting-email-mailcow-postfix";
 import { post as post7 } from "./posts/self-hosting-vs-cloud-ai-costs";
 import { post as post14 } from "./posts/setting-up-tailscale-homelab-vpn";
 import { post as post17 } from "./posts/vector-databases-qdrant-milvus-chromadb";
+import { post as post46 } from "./posts/vnc-gui-desktop-sandbox-integration";
 import type { BlogCategory, BlogPost } from "./types";
 
 export const blogPosts: BlogPost[] = [
@@ -83,6 +89,12 @@ export const blogPosts: BlogPost[] = [
 	post39,
 	post40,
 	post41,
+	post42,
+	post43,
+	post44,
+	post45,
+	post46,
+	post47,
 ];
 
 // Helper functions for accessing posts

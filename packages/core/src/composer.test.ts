@@ -223,4 +223,63 @@ describe("compose", () => {
 		const serviceKeys = Object.keys(parsed.services);
 		expect(serviceKeys[0]).toBe("openclaw-gateway");
 	});
+
+	// ── Multi-framework tests ──────────────────────────────────────────────
+
+	it("generates zeroclaw-gateway when primaryFramework is zeroclaw", () => {
+		const resolved = resolve({ services: ["redis"], skillPacks: [], primaryFramework: "zeroclaw" });
+		const yaml = compose(resolved, {
+			...defaultOptions,
+			primaryFramework: "zeroclaw",
+		});
+		const parsed = parse(yaml);
+
+		// Should have zeroclaw-gateway, NOT openclaw-gateway
+		expect(parsed.services).toHaveProperty("zeroclaw-gateway");
+		expect(parsed.services).not.toHaveProperty("openclaw-gateway");
+		expect(parsed.services).not.toHaveProperty("openclaw-cli");
+
+		// Network should be zeroclaw-network
+		expect(parsed.networks).toHaveProperty("zeroclaw-network");
+		expect(parsed.services.redis.networks).toContain("zeroclaw-network");
+	});
+
+	it("generates claude-code-gateway when primaryFramework is claude-code", () => {
+		const resolved = resolve({ services: [], skillPacks: [], primaryFramework: "claude-code" });
+		const yaml = compose(resolved, {
+			...defaultOptions,
+			primaryFramework: "claude-code",
+		});
+		const parsed = parse(yaml);
+
+		expect(parsed.services).toHaveProperty("claude-code-gateway");
+		expect(parsed.networks).toHaveProperty("claude-code-network");
+	});
+
+	it("does NOT include convex/mission-control in non-openclaw framework stacks", () => {
+		const resolved = resolve({ services: ["redis"], skillPacks: [], primaryFramework: "copaw" });
+		const yaml = compose(resolved, {
+			...defaultOptions,
+			primaryFramework: "copaw",
+		});
+		const parsed = parse(yaml);
+
+		expect(parsed.services).not.toHaveProperty("convex");
+		expect(parsed.services).not.toHaveProperty("mission-control");
+		expect(parsed.services).not.toHaveProperty("tailscale");
+	});
+
+	it("adds companion framework containers", () => {
+		const resolved = resolve({ services: ["redis"], skillPacks: [] });
+		const yaml = compose(resolved, {
+			...defaultOptions,
+			companionFrameworks: ["claude-code"],
+		});
+		const parsed = parse(yaml);
+
+		// Primary should still be openclaw
+		expect(parsed.services).toHaveProperty("openclaw-gateway");
+		// Companion should exist
+		expect(parsed.services).toHaveProperty("claude-code-companion");
+	});
 });

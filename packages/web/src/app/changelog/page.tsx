@@ -22,6 +22,131 @@ interface Release {
 
 const RELEASES: Release[] = [
 	{
+		version: "v1.4.0",
+		date: "March 2026",
+		title: "Centralized Operations Logger",
+		changes: [
+			{
+				type: "feature",
+				description:
+					"Unified OperationsLogger module in @better-openclaw/core — structured NDJSON logging for every significant action across CLI, API, and MCP packages.",
+			},
+			{
+				type: "feature",
+				description:
+					"Three pluggable log sinks: ConsoleSink (human-readable terminal output), FileSink (NDJSON with size-based rotation), and CallbackSink (custom handlers for tests, Sentry, WebSocket streaming).",
+			},
+			{
+				type: "feature",
+				description:
+					"StepTracker class for multi-step operations (deployments, generation pipelines) with per-step timing, status, and outcome tracking.",
+			},
+			{
+				type: "feature",
+				description:
+					"timed() helper wraps async operations with automatic start/end/duration/outcome logging — zero overhead on the happy path.",
+			},
+			{
+				type: "improvement",
+				description:
+					"API middleware creates per-request loggers using X-Request-Id as correlation ID, logging method/path/status/duration for every request.",
+			},
+			{
+				type: "improvement",
+				description:
+					"CLI, API, and MCP all pass loggers through to core's generate() and deployer.deploy() for full end-to-end tracing.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Automatic redaction of sensitive context keys (apiKey, password, token, secret, authorization, credentials, private_key) before writing to any sink.",
+			},
+		],
+	},
+	{
+		version: "v1.3.0",
+		date: "March 2026",
+		title: "Multi-Agent Framework Support",
+		changes: [
+			{
+				type: "feature",
+				description:
+					"Choose from 8 agent frameworks as primary orchestrator: OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex.",
+			},
+			{
+				type: "feature",
+				description:
+					"Companion framework support — run multiple agent frameworks side-by-side in hybrid stacks.",
+			},
+			{
+				type: "feature",
+				description: "Framework-aware CLI wizard with primary/companion selection steps.",
+			},
+			{
+				type: "feature",
+				description:
+					"FrameworkSelector component in the web builder for visual framework selection.",
+			},
+			{
+				type: "feature",
+				description:
+					"MCP generate-stack tool now accepts primaryFramework and companionFrameworks parameters.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Resolver honors framework-specific mandatory services. Non-OpenClaw frameworks skip Convex/Mission-Control/Tailscale.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Composer generates framework-specific gateway containers, CLI services, and network names.",
+			},
+			{
+				type: "improvement",
+				description:
+					"README generator produces framework-aware documentation tailored to the selected primary framework.",
+			},
+		],
+	},
+	{
+		version: "v1.0.26",
+		date: "March 2026",
+		title: "OpenSandbox: Secure AI Code Execution",
+		changes: [
+			{
+				type: "feature",
+				description:
+					"Added OpenSandbox service definition — secure, containerized code execution for AI agents with multi-language support (Python, JS/TS, Java, Go, Bash).",
+			},
+			{
+				type: "feature",
+				description:
+					"New `code-sandbox` skill with 8 actions: execute_code, execute_shell, upload/download files, sandbox management, and VNC desktop preview via create_desktop and get_preview_url.",
+			},
+			{
+				type: "feature",
+				description:
+					"Automatic `sandbox.toml` config generation via new `additionalFiles` field in AddonStackResult, supporting gVisor runtime, capability dropping, and PID limits.",
+			},
+			{
+				type: "feature",
+				description:
+					"Pre-pull image declarations with 3-tier priority system (8 images: server, execd, desktop, chrome, vscode, and code interpreters).",
+			},
+			{
+				type: "improvement",
+				description:
+					"Port conflict resolution between OpenSandbox and SearXNG (both port 8080) with automatic remapping.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Extended schema with `additionalFiles` and `prePullImages` metadata fields for richer stack output.",
+			},
+		],
+	},
+	{
 		version: "v1.2.0",
 		date: "March 2026",
 		title: "User Accounts & Cloud Persistence",

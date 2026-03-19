@@ -5,7 +5,7 @@ export const codexDefinition: ServiceDefinition = {
 	name: "OpenAI Codex CLI",
 	description:
 		"OpenAI's lightweight coding agent that runs in the terminal. Uses OpenAI models to understand context, suggest edits, and execute commands in a sandboxed environment.",
-	category: "coding-agent",
+	category: "agent-framework",
 	icon: "🟢",
 
 	image: "node",

@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
+import SandboxViewer from "./SandboxViewer";
 
 interface TaskDetailPanelProps {
 	taskId: Id<"tasks">;
@@ -29,6 +30,9 @@ export default function TaskDetailPanel({
 	const tasks = useQuery(api.queries.listTasks, {});
 	const agents = useQuery(api.queries.listAgents, {});
 	const documents = useQuery(api.documents.listByTask, {
+		taskId,
+	});
+	const sandboxSessions = useQuery(api.sandboxes.listAll, {
 		taskId,
 	});
 	const updateStatus = useMutation(api.tasks.updateStatus);
@@ -150,6 +154,22 @@ export default function TaskDetailPanel({
 								<IconArrowRight size={12} className="ml-auto text-muted-foreground" />
 							</button>
 						))}
+					</div>
+				</div>
+			)}
+
+			{/* Sandbox Sessions */}
+			{sandboxSessions && sandboxSessions.filter((s) => s.status === "running").length > 0 && (
+				<div className="p-3 border-b border-border">
+					<h4 className="text-xs font-semibold text-muted-foreground uppercase mb-2">
+						Desktop Sandboxes
+					</h4>
+					<div className="space-y-2">
+						{sandboxSessions
+							.filter((s) => s.status === "running")
+							.map((session) => (
+								<SandboxViewer key={session._id} session={session} compact />
+							))}
 					</div>
 				</div>
 			)}

@@ -14,6 +14,7 @@ import MissionQueue from "./components/MissionQueue";
 import ObservabilityPage from "./components/ObservabilityPage";
 import RegisterStackModal from "./components/RegisterStackModal";
 import RightSidebar from "./components/RightSidebar";
+import SandboxesPage from "./components/SandboxesPage";
 import SearchOverlay from "./components/SearchOverlay";
 import ServicesPage from "./components/ServicesPage";
 import SessionsPage from "./components/SessionsPage";
@@ -281,6 +282,13 @@ export default function App() {
 					{activeView === "standup" && (
 						<div style={{ gridArea: "main" }}>
 							<StandupPanel />
+						</div>
+					)}
+
+					{/* Sandboxes view */}
+					{activeView === "sandboxes" && (
+						<div style={{ gridArea: "main" }}>
+							<SandboxesPage />
 						</div>
 					)}
 				</main>

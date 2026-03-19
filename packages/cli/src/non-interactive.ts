@@ -1,3 +1,5 @@
+import { homedir } from "node:os";
+import { join } from "node:path";
 import type {
 	DeploymentType,
 	GenerationInput,
@@ -18,9 +20,11 @@ import {
 	getPresetById,
 	getServiceById,
 	getSkillPackById,
+	OperationsLogger,
 	scanPortConflicts,
 	trackAnalytics,
 } from "@better-openclaw/core";
+import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink";
 import pc from "picocolors";
 import { writeProject } from "./writer.js";
 
@@ -262,8 +266,19 @@ export async function runNonInteractive(options: NonInteractiveOptions): Promise
 		console.log("");
 	}
 
+	// Create operations logger
+	const logger = new OperationsLogger({
+		source: "cli",
+		sinks: [
+			new FileSink({
+				logDir: join(homedir(), ".better-openclaw", "logs"),
+			}),
+		],
+		minLevel: "info",
+	});
+
 	// Generate
-	const result = generate(input);
+	const result = generate(input, { logger });
 
 	// Fire-and-forget analytics tracking
 	const analyticsPayload = buildAnalyticsPayload(input, result.metadata, "cli", options.preset);
@@ -282,6 +297,7 @@ export async function runNonInteractive(options: NonInteractiveOptions): Promise
 				dryRun: false,
 				force: options.force,
 				outputFormat: options.outputFormat,
+				logger,
 			});
 		}
 		return;
@@ -292,6 +308,7 @@ export async function runNonInteractive(options: NonInteractiveOptions): Promise
 		dryRun: options.dryRun,
 		force: options.force,
 		outputFormat: options.outputFormat,
+		logger,
 	});
 
 	// Summary

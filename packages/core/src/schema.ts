@@ -39,6 +39,7 @@ export const ServiceCategorySchema = z.enum([
 	"dns-networking",
 	"iot",
 	"saas-boilerplate",
+	"agent-framework",
 ]);
 
 export const MaturitySchema = z.enum(["stable", "beta", "experimental"]);
@@ -88,6 +89,17 @@ export const AiProviderSchema = z.enum([
 
 export const GsdRuntimeSchema = z.enum(["claude", "opencode", "gemini", "codex"]);
 
+export const AgentFrameworkSchema = z.enum([
+	"openclaw",
+	"copaw",
+	"nanoclaw",
+	"nanobot",
+	"zeroclaw",
+	"memu",
+	"claude-code",
+	"codex",
+]);
+
 // ─── Sub-Schemas ────────────────────────────────────────────────────────────
 
 export const PortMappingSchema = z.object({
@@ -95,6 +107,8 @@ export const PortMappingSchema = z.object({
 	container: z.number().int().min(1).max(65535),
 	description: z.string(),
 	exposed: z.boolean().default(true),
+	/** When true, Caddy adds flush_interval -1 for streaming WebSocket support (noVNC, KasmVNC) */
+	websocket: z.boolean().default(false).optional(),
 });
 
 export const VolumeMappingSchema = z.object({
@@ -178,6 +192,24 @@ export const BuildContextSchema = z.object({
 	target: z.string().optional(),
 });
 
+// ─── Env Quirks (for addon stack generation) ────────────────────────────────
+
+export const EnvQuirkFixSchema = z.object({
+	type: z.enum(["set_value", "generate_hex", "generate_base64url", "sync_with"]),
+	/** Fixed value to set (for set_value type). */
+	value: z.string().optional(),
+	/** Minimum bytes for generated secrets (for generate_hex/generate_base64url). */
+	minBytes: z.number().int().min(1).optional(),
+	/** Key to synchronize with (for sync_with type). */
+	syncKey: z.string().optional(),
+});
+
+export const EnvQuirkSchema = z.object({
+	key: z.string(),
+	issue: z.enum(["empty_string_crashes", "min_length", "must_sync"]),
+	fix: EnvQuirkFixSchema,
+});
+
 // ─── Service Definition ─────────────────────────────────────────────────────
 
 export const ServiceDefinitionSchema = z.object({
@@ -210,10 +242,12 @@ export const ServiceDefinitionSchema = z.object({
 	labels: z.record(z.string(), z.string()).optional(),
 	deploy: DeploySchema.optional(),
 
-	// OpenClaw Integration
+	// Framework Integration (gatewayEnvVars/gatewayVolumeMounts are framework-agnostic aliases)
 	skills: z.array(SkillBindingSchema).default([]),
 	openclawEnvVars: z.array(EnvVariableSchema).default([]),
 	openclawVolumeMounts: z.array(VolumeMappingSchema).optional(),
+	gatewayEnvVars: z.array(EnvVariableSchema).optional(),
+	gatewayVolumeMounts: z.array(VolumeMappingSchema).optional(),
 
 	// Metadata
 	docsUrl: z.string().url(),
@@ -236,6 +270,18 @@ export const ServiceDefinitionSchema = z.object({
 	// Bare-metal native (install/run on host when no Docker)
 	nativeSupported: z.boolean().optional(),
 	nativeRecipes: z.array(NativeRecipeSchema).optional(),
+
+	// Clawexa addon metadata
+	/** Whether the service works with cap_drop: ALL (default: undefined = not audited). */
+	capDropCompatible: z.boolean().optional(),
+	/** Pre-built Docker image for cloud-init deployment (replaces build: directives). */
+	prebuiltImage: z.string().optional(),
+	/** Default reverse proxy path (e.g. "/n8n", "/grafana"). */
+	proxyPath: z.string().optional(),
+	/** Linux capabilities needed at first boot (e.g. ["CHOWN", "SETGID"]). */
+	firstBootCapabilities: z.array(z.string()).optional(),
+	/** Known environment variable quirks that need special handling. */
+	envQuirks: z.array(EnvQuirkSchema).optional(),
 });
 
 // ─── Skill Pack ─────────────────────────────────────────────────────────────
@@ -279,6 +325,8 @@ export const GenerationInputSchema = z.object({
 			message:
 				"Project name must be lowercase alphanumeric with hyphens, cannot start or end with hyphen",
 		}),
+	primaryFramework: AgentFrameworkSchema.optional(),
+	companionFrameworks: z.array(AgentFrameworkSchema).optional(),
 	services: z.array(z.string()).default([]),
 	skillPacks: z.array(z.string()).default([]),
 	aiProviders: z.array(AiProviderSchema).default([]),
@@ -339,12 +387,15 @@ export const ResolverOutputSchema = z.object({
 	estimatedMemoryMB: z.number().int().min(0),
 	aiProviders: z.array(AiProviderSchema).default([]),
 	gsdRuntimes: z.array(GsdRuntimeSchema).default([]),
+	primaryFramework: AgentFrameworkSchema.optional(),
 });
 
 // ─── Compose Options ────────────────────────────────────────────────────────
 
 export const ComposeOptionsSchema = z.object({
 	projectName: z.string(),
+	primaryFramework: AgentFrameworkSchema.optional(),
+	companionFrameworks: z.array(AgentFrameworkSchema).optional(),
 	proxy: ProxyTypeSchema.default("none"),
 	proxyHttpPort: z.number().int().min(1).max(65535).optional(),
 	proxyHttpsPort: z.number().int().min(1).max(65535).optional(),
@@ -366,6 +417,182 @@ export const ComposeOptionsSchema = z.object({
 	openclawInstallMethod: OpenclawInstallMethodSchema.default("docker"),
 });
 
+// ─── Addon Stack (Clawexa) ───────────────────────────────────────────────────
+
+export const SkippedServiceReasonSchema = z.enum([
+	"missing_credentials",
+	"no_image",
+	"platform_unsupported",
+	"conflict",
+	"gpu_required",
+	"unknown_service",
+	"resolution_error",
+]);
+
+export const SkippedServiceSchema = z.object({
+	serviceId: z.string(),
+	reason: SkippedServiceReasonSchema,
+	details: z.string(),
+	requiredCredentials: z.array(z.string()).optional(),
+});
+
+export const ProxyRouteSchema = z.object({
+	serviceId: z.string(),
+	path: z.string(),
+	port: z.number().int(),
+	protocol: z.enum(["http", "https", "ws"]).default("http"),
+	stripPrefix: z.boolean().default(true),
+});
+
+export const AddonStackInputSchema = z.object({
+	/** Instance identifier (used for project name sanitization). */
+	instanceId: z.string().min(1),
+	/** Addon service IDs to deploy. */
+	services: z.array(z.string()),
+	/** Optional skill packs. */
+	skillPacks: z.array(z.string()).default([]),
+	/** Platform architecture. */
+	platform: PlatformSchema.default("linux/amd64"),
+	/** OpenClaw version running on the instance. */
+	openclawVersion: z.string().default("latest"),
+	/** Services already running on the instance (to detect conflicts). */
+	existingServices: z.array(z.string()).default([]),
+	/** Ports already in use on the host. */
+	reservedPorts: z.array(z.number().int()).default([]),
+	/** Whether to generate secrets (default: true). */
+	generateSecrets: z.boolean().default(true),
+	/** User-provided credentials for services that need them. */
+	credentials: z.record(z.string(), z.record(z.string(), z.string())).default({}),
+	/** Port overrides for specific services. */
+	portOverrides: z
+		.record(z.string(), z.record(z.string(), z.number().int().min(1).max(65535)))
+		.optional(),
+	/** Whether the host has GPU support. */
+	gpu: z.boolean().default(false),
+	/** AI providers configured on this instance. */
+	aiProviders: z.array(AiProviderSchema).default([]),
+	/** Pre-built image overrides (serviceId → image:tag). */
+	prebuiltImages: z.record(z.string(), z.string()).default({}),
+});
+
+export const AddonStackResultSchema = z.object({
+	/** Single docker-compose.override.yml content. */
+	composeOverride: z.string(),
+	/** Complete .env file with all secrets generated. */
+	envFile: z.string(),
+	/** Structured env vars for UI display / credential management. */
+	envVars: z.array(
+		z.object({
+			serviceName: z.string(),
+			vars: z.array(
+				z.object({
+					key: z.string(),
+					description: z.string(),
+					value: z.string(),
+					secret: z.boolean(),
+				}),
+			),
+		}),
+	),
+	/** SKILL.md files keyed by slug. */
+	skillFiles: z.record(z.string(), z.string()),
+	/** OpenClaw config additions (skills.entries to merge). */
+	openclawConfigPatch: z.object({
+		skills: z.object({
+			entries: z.record(z.string(), z.object({ enabled: z.boolean() })),
+		}),
+	}),
+	/** Port mapping for reverse proxy configuration. */
+	proxyRoutes: z.array(ProxyRouteSchema),
+	/** Additional files to write alongside compose (e.g. sandbox.toml). Keyed by filename. */
+	additionalFiles: z.record(z.string(), z.string()).default({}),
+	/** Metadata. */
+	metadata: z.object({
+		serviceCount: z.number(),
+		skillCount: z.number(),
+		estimatedMemoryMB: z.number(),
+		resolvedServices: z.array(z.string()),
+		skippedServices: z.array(SkippedServiceSchema),
+		generatedSecretKeys: z.array(z.string()),
+		portAssignments: z.record(z.string(), z.number()),
+		/** Docker images to pre-pull during cloud-init, grouped by priority. */
+		prePullImages: z
+			.array(
+				z.object({
+					image: z.string(),
+					priority: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+				}),
+			)
+			.default([]),
+	}),
+	/** Warnings (non-fatal issues). */
+	warnings: z.array(z.string()),
+});
+
+export const AddonStackUpdateInputSchema = z.object({
+	instanceId: z.string().min(1),
+	/** Current compose override YAML (from the running instance). */
+	currentCompose: z.string(),
+	/** Current .env content. */
+	currentEnv: z.string(),
+	/** Services to add. */
+	addServices: z.array(z.string()).default([]),
+	/** Services to remove. */
+	removeServices: z.array(z.string()).default([]),
+	/** Whether to generate secrets for newly added services (default: true). */
+	generateSecrets: z.boolean().default(true),
+	/** User-provided credentials for new services. */
+	credentials: z.record(z.string(), z.record(z.string(), z.string())).default({}),
+	/** Port overrides for specific services. */
+	portOverrides: z
+		.record(z.string(), z.record(z.string(), z.number().int().min(1).max(65535)))
+		.optional(),
+	/** Services already running on the instance (to detect conflicts). */
+	existingServices: z.array(z.string()).default([]),
+	/** Reserved ports. */
+	reservedPorts: z.array(z.number().int()).default([]),
+	platform: PlatformSchema.default("linux/amd64"),
+	openclawVersion: z.string().default("latest"),
+	/** Whether the host has GPU support. */
+	gpu: z.boolean().default(false),
+	aiProviders: z.array(AiProviderSchema).default([]),
+	prebuiltImages: z.record(z.string(), z.string()).default({}),
+});
+
+export const AddonStackUpdateResultSchema = z.object({
+	/** Updated compose override (merged with existing). */
+	composeOverride: z.string(),
+	/** Updated .env (existing values preserved, new ones added). */
+	envFile: z.string(),
+	/** Only NEW skill files to deploy. */
+	newSkillFiles: z.record(z.string(), z.string()),
+	/** Skill slugs to remove from openclaw.json. */
+	removedSkillSlugs: z.array(z.string()),
+	/** Config patch to apply. */
+	openclawConfigPatch: z.object({
+		skills: z.object({
+			add: z.record(z.string(), z.object({ enabled: z.boolean() })),
+			remove: z.array(z.string()),
+		}),
+	}),
+	/** New proxy routes to add. */
+	addProxyRoutes: z.array(ProxyRouteSchema),
+	/** Proxy routes to remove (service IDs). */
+	removeProxyRoutes: z.array(z.string()),
+	/** Services that need their images pulled. */
+	imagesToPull: z.array(z.string()),
+	/** Services to restart (due to dependency changes). */
+	restartRequired: z.array(z.string()),
+	/** Metadata. */
+	metadata: z.object({
+		added: z.array(z.string()),
+		removed: z.array(z.string()),
+		unchanged: z.array(z.string()),
+		estimatedMemoryDelta: z.number(),
+	}),
+	warnings: z.array(z.string()),
+});
+
 // ─── API Request/Response ───────────────────────────────────────────────────
 
 export const ValidateRequestSchema = z.object({
@@ -373,6 +600,8 @@ export const ValidateRequestSchema = z.object({
 	skillPacks: z.array(z.string()).default([]),
 	aiProviders: z.array(AiProviderSchema).default([]),
 	gsdRuntimes: z.array(GsdRuntimeSchema).default([]),
+	primaryFramework: AgentFrameworkSchema.optional(),
+	companionFrameworks: z.array(AgentFrameworkSchema).optional(),
 	proxy: ProxyTypeSchema.default("none"),
 	domain: z.string().optional(),
 	gpu: z.boolean().default(false),

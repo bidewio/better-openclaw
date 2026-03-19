@@ -115,6 +115,12 @@ npm install -g create-better-openclaw@latest`}</code>
 			</pre>
 
 			<h2 id="direct-install">Option 3: Direct Install (OpenClaw on Host)</h2>
+			<blockquote>
+				<p>
+					<strong>Note:</strong> Direct install is currently specific to the OpenClaw framework.
+					Other frameworks (CoPaw, NanoClaw, ZeroClaw, etc.) use Docker-only deployment.
+				</p>
+			</blockquote>
 			<p>
 				Instead of running OpenClaw inside Docker, you can install it directly on your host machine.
 				This is useful if you want more control over the OpenClaw process, need access to local GPU

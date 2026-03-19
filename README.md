@@ -1,8 +1,8 @@
 <p align="center">
   <h1 align="center">better-openclaw</h1>
   <p align="center">
-    <strong>Build your OpenClaw superstack in seconds.</strong><br/>
-    186 services. 43 skill packs. 21 presets. One command.
+    <strong>Build your AI agent superstack in seconds.</strong><br/>
+    94 services. 8 agent frameworks. 10 skill packs. 9 presets. One command.
   </p>
 </p>
 
@@ -27,7 +27,7 @@
 
 ---
 
-**better-openclaw** is a CLI tool, REST API, and web UI for scaffolding production-ready [OpenClaw](https://github.com/openclaw) stacks with Docker Compose. Pick your services, choose skill packs, and get a fully wired `docker-compose.yml`, `.env`, reverse proxy configs, monitoring dashboards, and agent skill files -- all in one command.
+**better-openclaw** is a CLI tool, REST API, and web UI for scaffolding production-ready AI agent stacks with Docker Compose. Choose from **8 agent frameworks** (OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex), pick your services, choose skill packs, and get a fully wired `docker-compose.yml`, `.env`, reverse proxy configs, monitoring dashboards, and agent skill files -- all in one command.
 
 ## Quick Start
 
@@ -46,6 +46,12 @@ npx create-better-openclaw --preset researcher --yes
 # Cherry-pick services
 npx create-better-openclaw --services postgresql,redis,n8n,grafana --proxy caddy --domain example.com --yes
 
+# Use a different agent framework
+npx create-better-openclaw --preset researcher --primary-framework zeroclaw --yes
+
+# Run multiple frameworks side-by-side
+npx create-better-openclaw --services postgresql,redis --primary-framework memu --companion-frameworks copaw,nanoclaw --yes
+
 # Preview without writing files
 npx create-better-openclaw --preset devops --dry-run
 
@@ -57,7 +63,7 @@ npx create-better-openclaw --preset minimal --yes --json
 
 ```bash
 npx create-better-openclaw generate [dir]       # Generate a stack (default command)
-npx create-better-openclaw services list        # List all 186 available services
+npx create-better-openclaw services list        # List all 94 available services
 npx create-better-openclaw presets list         # List all preset stacks
 npx create-better-openclaw presets info <id>    # Show preset details
 npx create-better-openclaw validate <dir>      # Validate an existing stack
@@ -89,6 +95,7 @@ npx create-better-openclaw \
 
 ## Features
 
+- **8 agent frameworks** -- choose OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, or Codex as your primary orchestrator, with optional companion frameworks for hybrid stacks
 - **Interactive CLI wizard** -- guided service selection with dependency resolution
 - **Non-interactive mode** -- scriptable with presets and flags for CI/CD pipelines
 - **Automatic port conflict detection** -- scans your system for port conflicts and auto-reassigns services to available ports (interactive and non-interactive modes)
@@ -104,6 +111,7 @@ npx create-better-openclaw \
 - **Monitoring dashboards** -- Grafana + Prometheus pre-wired with service exporters
 - **Environment files** -- secure `.env` generation with random secrets
 - **One-click deploy** -- deploy generated stacks to self-hosted Dokploy or Coolify directly from the web UI or CLI
+- **Centralized operations logging** -- structured NDJSON logs across all packages (CLI, API, MCP) with correlation IDs, step tracking, duration measurement, and automatic sensitive data redaction
 - **Validation engine** -- port conflicts, resource limits, and configuration checks
 - **Multi-platform support** -- linux/amd64 and linux/arm64
 - **Bare-metal deployment** -- hybrid native + Docker: run supported services natively on the host and use Docker only for the rest (see [Deployment](#deployment))
@@ -122,7 +130,7 @@ Only services with a native recipe run on the host; others remain in Docker. Cur
 
 ## Service Catalog
 
-186 services across 36 categories, with representative categories below:
+94 services across 21 categories, ready to compose:
 
 | Category | Services |
 |---|---|
@@ -182,6 +190,23 @@ Pre-configured stack templates for quick starts:
 | **La Suite Meet** | Meet frontend/backend/agents, Redis, PostgreSQL, LiveKit | ~4 GB |
 | **Full Stack** | All core services + all skill packs | ~8 GB |
 
+## Agent Frameworks
+
+Choose your primary agent orchestrator and optionally add companion frameworks for hybrid stacks:
+
+| Framework | ID | Description |
+|---|---|---|
+| **OpenClaw** | `openclaw` | Full-featured agent framework with gateway, mission control, and Tailscale networking (default) |
+| **CoPaw** | `copaw` | Cooperative multi-agent framework with shared memory |
+| **NanoClaw** | `nanoclaw` | Lightweight single-agent runtime for resource-constrained environments |
+| **NanoBot** | `nanobot` | Minimal bot framework with plugin architecture |
+| **ZeroClaw** | `zeroclaw` | Zero-config agent framework with convention-over-configuration |
+| **MemU** | `memu` | Memory-first agent framework with persistent context and PostgreSQL backing |
+| **Claude Code** | `claude-code` | Anthropic's CLI agent for software engineering tasks |
+| **Codex** | `codex` | OpenAI's CLI agent for code generation and editing |
+
+Non-OpenClaw frameworks skip Convex, Mission Control, and Tailscale. Each framework generates its own gateway container, CLI services, and network configuration.
+
 ## REST API
 
 The API runs on port 3456 with auto-generated OpenAPI docs at `/api/v1/docs`.
@@ -206,6 +231,11 @@ curl http://localhost:3456/api/v1/presets/devops
 curl -X POST http://localhost:3456/api/v1/generate \
   -H "Content-Type: application/json" \
   -d '{"services": ["postgresql", "redis", "n8n"], "proxy": "caddy"}'
+
+# Generate with a specific agent framework
+curl -X POST http://localhost:3456/api/v1/generate \
+  -H "Content-Type: application/json" \
+  -d '{"services": ["postgresql", "redis"], "primaryFramework": "zeroclaw", "companionFrameworks": ["copaw"]}'
 ```
 
 API key authentication is supported via the `X-API-Key` header. Configure allowed keys with the `API_KEYS` environment variable (comma-separated).

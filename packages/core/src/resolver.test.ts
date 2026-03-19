@@ -211,7 +211,35 @@ describe("resolve", () => {
 		expect(frontendIdx).toBeGreaterThan(backendIdx);
 	});
 
-	// ── Mandatory services enforcement ──────────────────────────────────────
+	// ── Framework-conditional mandatory services ────────────────────────────
+
+	it("does NOT add convex/mission-control/tailscale when primaryFramework is zeroclaw", () => {
+		const result = resolve({ services: ["redis"], skillPacks: [], primaryFramework: "zeroclaw" });
+		const ids = result.services.map((s) => s.definition.id);
+		expect(ids).toContain("redis");
+		expect(ids).not.toContain("convex");
+		expect(ids).not.toContain("mission-control");
+		expect(ids).not.toContain("tailscale");
+		expect(result.isValid).toBe(true);
+	});
+
+	it("adds postgresql when primaryFramework is memu", () => {
+		const result = resolve({ services: [], skillPacks: [], primaryFramework: "memu" });
+		const ids = result.services.map((s) => s.definition.id);
+		expect(ids).toContain("postgresql");
+		expect(ids).not.toContain("convex");
+		expect(ids).not.toContain("mission-control");
+	});
+
+	it("defaults to openclaw mandatory services when no primaryFramework specified", () => {
+		const result = resolve({ services: ["redis"], skillPacks: [] });
+		const ids = result.services.map((s) => s.definition.id);
+		expect(ids).toContain("convex");
+		expect(ids).toContain("mission-control");
+		expect(ids).toContain("tailscale");
+	});
+
+	// ── Mandatory services enforcement (OpenClaw default) ────────────────
 
 	it("auto-includes mandatory services even when not selected", () => {
 		const result = resolve({ services: ["redis"], skillPacks: [] });

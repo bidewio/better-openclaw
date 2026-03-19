@@ -11,9 +11,10 @@ export default function CliReferencePage() {
 		<>
 			<h1>CLI Reference</h1>
 			<p>
-				The <code>create-better-openclaw</code> CLI is the primary way to generate OpenClaw stacks.
-				It supports both an <Link href="/docs/cli/wizard">interactive wizard</Link> and a fully
-				non-interactive mode for CI/CD pipelines.
+				The <code>create-better-openclaw</code> CLI is the primary way to generate AI agent stacks.
+				Choose from 8 agent frameworks, use an{" "}
+				<Link href="/docs/cli/wizard">interactive wizard</Link>, or run fully non-interactive for
+				CI/CD pipelines.
 			</p>
 
 			<h2>Basic Usage</h2>
@@ -84,6 +85,28 @@ export default function CliReferencePage() {
 						<td>
 							Domain name for reverse proxy (requires <code>--proxy</code>)
 						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>--primary-framework &lt;id&gt;</code>
+						</td>
+						<td>string</td>
+						<td>
+							<code>openclaw</code>
+						</td>
+						<td>
+							Primary agent framework: <code>openclaw</code>, <code>copaw</code>,{" "}
+							<code>nanoclaw</code>, <code>nanobot</code>, <code>zeroclaw</code>, <code>memu</code>,{" "}
+							<code>claude-code</code>, <code>codex</code>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>--companion-frameworks &lt;list&gt;</code>
+						</td>
+						<td>string</td>
+						<td>—</td>
+						<td>Comma-separated companion frameworks to run alongside the primary</td>
 					</tr>
 					<tr>
 						<td>
@@ -230,6 +253,15 @@ npx create-better-openclaw my-stack \\
   --proxy caddy \\
   --domain openclaw.mycompany.com \\
   --generateSecrets \\
+  --yes`}</code>
+			</pre>
+
+			<h3>Different Agent Framework</h3>
+			<pre>
+				<code>{`npx create-better-openclaw my-stack \\
+  --services postgresql,redis,n8n \\
+  --primary-framework zeroclaw \\
+  --companion-frameworks copaw \\
   --yes`}</code>
 			</pre>
 

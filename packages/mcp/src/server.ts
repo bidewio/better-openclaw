@@ -1,3 +1,7 @@
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { OperationsLogger } from "@better-openclaw/core";
+import { FileSink } from "@better-openclaw/core/logger/sinks/file-sink";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import * as Sentry from "@sentry/node";
 import { registerPresetsResource } from "./resources/presets.js";
@@ -28,9 +32,21 @@ export function createServer(): McpServer {
 	const server = Sentry.wrapMcpServerWithSentry(
 		new McpServer({
 			name: "better-openclaw",
-			version: "1.0.24",
+			version: "1.0.31",
 		}),
 	);
+
+	// Create operations logger for MCP tool calls
+	const logger = new OperationsLogger({
+		source: "mcp",
+		sinks: [
+			new FileSink({
+				logDir: join(homedir(), ".better-openclaw", "logs"),
+				filename: "mcp-operations",
+			}),
+		],
+		minLevel: "info",
+	});
 
 	// Tools
 	registerListServices(server);
@@ -41,7 +57,7 @@ export function createServer(): McpServer {
 	registerListSkillPacks(server);
 	registerResolveDeps(server);
 	registerValidateStack(server);
-	registerGenerateStack(server);
+	registerGenerateStack(server, logger);
 	registerSuggestServices(server);
 
 	// Resources

@@ -1,29 +1,11 @@
 import { Scalar, stringify } from "yaml";
+import { getFrameworkById } from "./frameworks/index.js";
+import type { AgentFrameworkDefinition, FrameworkComposeOptions } from "./frameworks/types.js";
 import { getDbRequirements } from "./generators/postgres-init.js";
-import type {
-	ComposeOptions,
-	OpenclawImageVariant,
-	ResolverOutput,
-	ServiceCategory,
-} from "./types.js";
-
-/** Maps image variant to the Docker image string. */
-const IMAGE_VARIANTS: Record<OpenclawImageVariant, string> = {
-	official: "ghcr.io/openclaw/openclaw",
-	coolify: "coollabsio/openclaw",
-	alpine: "alpine/openclaw",
-};
-
-/** Returns the OpenClaw image string with version tag for a given variant. */
-function getOpenclawImage(variant: OpenclawImageVariant, version: string): string {
-	const base = IMAGE_VARIANTS[variant];
-	// Coolify and alpine images use :latest by default
-	const tag = variant === "official" ? version : "latest";
-	return `${base}:${tag}`;
-}
+import type { ComposeOptions, ResolverOutput, ServiceCategory } from "./types.js";
 
 /** Creates a YAML scalar that is always quoted — avoids YAML 1.1 bare `no` → false. */
-function quotedStr(value: string): Scalar {
+export function quotedStr(value: string): Scalar {
 	const s = new Scalar(value);
 	s.type = Scalar.QUOTE_DOUBLE;
 	return s;
@@ -53,180 +35,66 @@ const CATEGORY_PROFILE_MAP: Partial<Record<ServiceCategory, { file: string; prof
 	"saas-boilerplate": { file: "docker-compose.saas.yml", profile: "saas" },
 };
 
-const YAML_OPTIONS = { lineWidth: 120, nullStr: "" };
+export const YAML_OPTIONS = { lineWidth: 120, nullStr: "" };
 
-// ── Shared Gateway Builder ──────────────────────────────────────────────────
+// ── Framework-Aware Gateway Builder ─────────────────────────────────────────
 
-interface GatewayBuildResult {
-	gatewayService: Record<string, unknown>;
-	cliService: Record<string, unknown>;
-	allVolumes: Set<string>;
+import type { GatewayBuildResult } from "./frameworks/types.js";
+
+/** Resolves the active framework and converts ComposeOptions to FrameworkComposeOptions. */
+function resolveFramework(options: ComposeOptions): AgentFrameworkDefinition {
+	const fw = getFrameworkById(options.primaryFramework ?? "openclaw");
+	if (!fw) {
+		// Fallback to openclaw if unknown framework
+		const fallback = getFrameworkById("openclaw");
+		if (!fallback) throw new Error("OpenClaw framework not registered");
+		return fallback;
+	}
+	return fw;
+}
+
+function toFrameworkComposeOptions(options: ComposeOptions): FrameworkComposeOptions {
+	return {
+		projectName: options.projectName,
+		proxy: options.proxy,
+		proxyHttpPort: options.proxyHttpPort,
+		proxyHttpsPort: options.proxyHttpsPort,
+		domain: options.domain,
+		gpu: options.gpu,
+		platform: options.platform,
+		deployment: options.deployment ?? "local",
+		frameworkVersion: options.openclawVersion,
+		frameworkImageVariant: options.openclawImage ?? "official",
+		bareMetalNativeHost: options.bareMetalNativeHost,
+		traefikLabels: options.traefikLabels,
+		hardened: options.hardened,
+		frameworkInstallMethod: options.openclawInstallMethod ?? "docker",
+	};
 }
 
 /**
- * Builds the OpenClaw gateway and CLI service entries.
- * Matches the real OpenClaw docker-compose.yml structure:
- * - Bridge port 18790 for ACP/WebSocket
- * - Bind-mount volumes (not named volumes)
- * - Claude web-provider session env vars
- * - Gateway bind mode (--bind lan)
- * - CLI companion service with stdin/tty
+ * Builds gateway and CLI service entries by delegating to the selected framework.
+ * Framework is determined by options.primaryFramework (defaults to "openclaw").
  */
 function buildGatewayServices(
 	resolved: ResolverOutput,
 	options: ComposeOptions,
 	dependsOn?: Record<string, { condition: string }>,
-): GatewayBuildResult {
-	const allVolumes = new Set<string>();
-
-	// Gateway environment
-	const gatewayEnv: Record<string, string> = {
-		HOME: "/home/node",
-		TERM: "xterm-256color",
-		OPENCLAW_GATEWAY_TOKEN: "${OPENCLAW_GATEWAY_TOKEN}",
-		OPENCLAW_ALLOW_INSECURE_PRIVATE_WS: "${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}",
-		// Claude web-provider session vars (optional, user fills in .env)
-		CLAUDE_AI_SESSION_KEY: "${CLAUDE_AI_SESSION_KEY:-}",
-		CLAUDE_WEB_SESSION_KEY: "${CLAUDE_WEB_SESSION_KEY:-}",
-		CLAUDE_WEB_COOKIE: "${CLAUDE_WEB_COOKIE:-}",
-	};
-
-	// Add AI provider API keys to gateway environment
-	const providerKeys = [
-		"OPENAI_API_KEY",
-		"ANTHROPIC_API_KEY",
-		"GOOGLE_API_KEY",
-		"XAI_API_KEY",
-		"DEEPSEEK_API_KEY",
-		"GROQ_API_KEY",
-		"OPENROUTER_API_KEY",
-		"MISTRAL_API_KEY",
-		"TOGETHER_API_KEY",
-		"OLLAMA_API_KEY",
-	];
-	for (const key of providerKeys) {
-		gatewayEnv[key] = `\${${key}}`;
-	}
-
-	// Gateway volumes (bind-mount style matching real docker-setup.sh)
-	const gatewayVolumes: string[] = [
-		"${OPENCLAW_CONFIG_DIR:-./openclaw/config}:/home/node/.openclaw",
-		"${OPENCLAW_WORKSPACE_DIR:-./openclaw/workspace}:/home/node/.openclaw/workspace",
-	];
-
-	// Collect env vars and volume mounts from companion services
-	for (const { definition: def } of resolved.services) {
-		for (const env of def.openclawEnvVars) {
-			gatewayEnv[env.key] = env.secret ? `\${${env.key}}` : env.defaultValue;
-		}
-		if (def.openclawVolumeMounts) {
-			for (const vol of def.openclawVolumeMounts) {
-				const isBindMount =
-					vol.name.startsWith("./") || vol.name.startsWith("/") || vol.name.startsWith("~");
-				if (!isBindMount) {
-					allVolumes.add(vol.name);
-				}
-				gatewayVolumes.push(`${vol.name}:${vol.containerPath}`);
-			}
-		}
-	}
-
-	// Gateway service
-	const defaultImage = getOpenclawImage(
-		options.openclawImage ?? "official",
-		options.openclawVersion,
-	);
-	const gateway: Record<string, unknown> = {
-		image: `\${OPENCLAW_IMAGE:-${defaultImage}}`,
-		environment: gatewayEnv,
-		volumes: gatewayVolumes,
-		ports: ["${OPENCLAW_GATEWAY_PORT:-18789}:18789", "${OPENCLAW_BRIDGE_PORT:-18790}:18790"],
-		networks: ["openclaw-network"],
-		init: true,
-		restart: "unless-stopped",
-		command: [
-			"node",
-			"dist/index.js",
-			"gateway",
-			"--bind",
-			"${OPENCLAW_GATEWAY_BIND:-lan}",
-			"--port",
-			"18789",
-			"--allow-unconfigured",
-		],
-		healthcheck: {
-			test: [
-				"CMD",
-				"node",
-				"-e",
-				"fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
-			],
-			interval: "30s",
-			timeout: "5s",
-			retries: 5,
-			start_period: "20s",
-		},
-	};
-
-	// Traefik labels for the gateway
-	const gwTraefikLabels = options.traefikLabels?.get("openclaw-gateway");
-	if (gwTraefikLabels) {
-		gateway.labels = gwTraefikLabels;
-	}
-
-	if (options.bareMetalNativeHost) {
-		gateway.extra_hosts = ["host.docker.internal:host-gateway"];
-	}
-
-	if (dependsOn && Object.keys(dependsOn).length > 0) {
-		gateway.depends_on = dependsOn;
-	}
-
-	// CLI companion service (matching real OpenClaw docker-compose.yml)
-	// Build CLI environment with same keys as gateway for consistency
-	const cliEnv: Record<string, string> = {
-		HOME: "/home/node",
-		TERM: "xterm-256color",
-		OPENCLAW_GATEWAY_TOKEN: "${OPENCLAW_GATEWAY_TOKEN}",
-		OPENCLAW_ALLOW_INSECURE_PRIVATE_WS: "${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}",
-		BROWSER: "echo",
-		CLAUDE_AI_SESSION_KEY: "${CLAUDE_AI_SESSION_KEY:-}",
-		CLAUDE_WEB_SESSION_KEY: "${CLAUDE_WEB_SESSION_KEY:-}",
-		CLAUDE_WEB_COOKIE: "${CLAUDE_WEB_COOKIE:-}",
-	};
-
-	// Add same AI provider API keys to CLI for direct AI interactions
-	for (const key of providerKeys) {
-		cliEnv[key] = `\${${key}}`;
-	}
-
-	const cliService: Record<string, unknown> = {
-		image: `\${OPENCLAW_IMAGE:-${defaultImage}}`,
-		network_mode: "service:openclaw-gateway",
-		cap_drop: ["NET_RAW", "NET_ADMIN"],
-		security_opt: ["no-new-privileges:true"],
-		environment: cliEnv,
-		volumes: [
-			"${OPENCLAW_CONFIG_DIR:-./openclaw/config}:/home/node/.openclaw",
-			"${OPENCLAW_WORKSPACE_DIR:-./openclaw/workspace}:/home/node/.openclaw/workspace",
-		],
-		stdin_open: true,
-		tty: true,
-		init: true,
-		entrypoint: ["node", "dist/index.js"],
-		depends_on: ["openclaw-gateway"],
-	};
-
-	return { gatewayService: gateway, cliService: cliService, allVolumes };
+): GatewayBuildResult & { framework: AgentFrameworkDefinition } {
+	const framework = resolveFramework(options);
+	const fwOptions = toFrameworkComposeOptions(options);
+	const result = framework.buildGatewayService(resolved, fwOptions, dependsOn);
+	return { ...result, framework };
 }
 
 // ── Shared Companion Service Builder ────────────────────────────────────────
 
-function buildCompanionService(
+export function buildCompanionService(
 	def: ResolverOutput["services"][number]["definition"],
 	resolved: ResolverOutput,
 	options: ComposeOptions,
 	allVolumes: Set<string>,
+	networkName?: string,
 ): { entry: Record<string, unknown>; volumeNames: string[] } {
 	const svc: Record<string, unknown> = {};
 	const volumeNames: string[] = [];
@@ -342,7 +210,11 @@ function buildCompanionService(
 	}
 
 	svc.restart = def.restartPolicy;
-	svc.networks = def.networks;
+	// Map "openclaw-network" to the active framework's network name at compose-time
+	// so service definitions don't need mass-editing (190+ files).
+	svc.networks = networkName
+		? def.networks.map((n: string) => (n === "openclaw-network" ? networkName : n))
+		: def.networks;
 
 	if (def.command) svc.command = def.command;
 	if (def.entrypoint) svc.entrypoint = def.entrypoint;
@@ -446,7 +318,10 @@ function buildCompanionService(
  *
  * Returns null when no setup is needed (no PostgreSQL or no DB requirements).
  */
-function buildPostgresSetup(resolved: ResolverOutput): Record<string, unknown> | null {
+export function buildPostgresSetup(
+	resolved: ResolverOutput,
+	networkName = "openclaw-network",
+): Record<string, unknown> | null {
 	const hasPostgres = resolved.services.some((s) => s.definition.id === "postgresql");
 	if (!hasPostgres) return null;
 
@@ -501,7 +376,7 @@ function buildPostgresSetup(resolved: ResolverOutput): Record<string, unknown> |
 		entrypoint: ["/bin/sh", "-c"],
 		command: [scriptLines.join("\n")],
 		restart: quotedStr("no"),
-		networks: ["openclaw-network"],
+		networks: [networkName],
 	};
 }
 
@@ -525,6 +400,10 @@ export function compose(resolved: ResolverOutput, options: ComposeOptions): stri
 	const services: Record<string, Record<string, unknown>> = {};
 	let allVolumes = new Set<string>();
 
+	const framework = resolveFramework(options);
+	const gatewayKey = `${framework.id}-gateway`;
+	const cliKey = `${framework.id}-cli`;
+
 	if (!isDirectInstall) {
 		const {
 			gatewayService,
@@ -532,14 +411,20 @@ export function compose(resolved: ResolverOutput, options: ComposeOptions): stri
 			allVolumes: gwVolumes,
 		} = buildGatewayServices(resolved, options, gatewayDependsOn);
 		allVolumes = gwVolumes;
-		services["openclaw-gateway"] = gatewayService;
+		services[gatewayKey] = gatewayService;
 		// CLI service added after companions
 		// Determine which services need DB setup so we can redirect their depends_on
 		const dbReqs = getDbRequirements(resolved);
 		const dbServiceIds = new Set(dbReqs.map((r) => r.serviceId));
 
 		for (const { definition: def } of resolved.services) {
-			const { entry } = buildCompanionService(def, resolved, options, allVolumes);
+			const { entry } = buildCompanionService(
+				def,
+				resolved,
+				options,
+				allVolumes,
+				framework.networkName,
+			);
 			if (dbServiceIds.has(def.id) && entry.depends_on) {
 				const deps = entry.depends_on as Record<string, { condition: string }>;
 				if (deps.postgresql) {
@@ -550,19 +435,46 @@ export function compose(resolved: ResolverOutput, options: ComposeOptions): stri
 			services[def.id] = entry;
 		}
 
-		const pgSetup = buildPostgresSetup(resolved);
+		const pgSetup = buildPostgresSetup(resolved, framework.networkName);
 		if (pgSetup) {
 			services["postgres-setup"] = pgSetup;
 		}
 
-		services["openclaw-cli"] = cliService;
+		// Add companion framework containers
+		if (options.companionFrameworks && options.companionFrameworks.length > 0) {
+			const fwOptions = toFrameworkComposeOptions(options);
+			for (const companionId of options.companionFrameworks) {
+				const companionFw = getFrameworkById(companionId);
+				if (!companionFw || companionFw.id === framework.id) continue;
+				if (companionFw.buildCompanionService) {
+					const companionEntry = companionFw.buildCompanionService(resolved, fwOptions);
+					if (companionEntry) {
+						services[`${companionFw.id}-companion`] = companionEntry;
+					}
+				} else {
+					// Fallback: build a gateway-style container for the companion
+					const companionResult = companionFw.buildGatewayService(resolved, fwOptions);
+					services[`${companionFw.id}-companion`] = companionResult.gatewayService;
+				}
+			}
+		}
+
+		if (cliService) {
+			services[cliKey] = cliService;
+		}
 	} else {
 		// Direct install: no gateway/CLI containers, just companion services
 		const dbReqs = getDbRequirements(resolved);
 		const dbServiceIds = new Set(dbReqs.map((r) => r.serviceId));
 
 		for (const { definition: def } of resolved.services) {
-			const { entry } = buildCompanionService(def, resolved, options, allVolumes);
+			const { entry } = buildCompanionService(
+				def,
+				resolved,
+				options,
+				allVolumes,
+				framework.networkName,
+			);
 			if (dbServiceIds.has(def.id) && entry.depends_on) {
 				const deps = entry.depends_on as Record<string, { condition: string }>;
 				if (deps.postgresql) {
@@ -573,7 +485,7 @@ export function compose(resolved: ResolverOutput, options: ComposeOptions): stri
 			services[def.id] = entry;
 		}
 
-		const pgSetup = buildPostgresSetup(resolved);
+		const pgSetup = buildPostgresSetup(resolved, framework.networkName);
 		if (pgSetup) {
 			services["postgres-setup"] = pgSetup;
 		}
@@ -584,7 +496,7 @@ export function compose(resolved: ResolverOutput, options: ComposeOptions): stri
 		volumes[v] = null;
 	}
 
-	const networks = { "openclaw-network": { driver: "bridge" } };
+	const networks = { [framework.networkName]: { driver: "bridge" } };
 
 	return stringify({ services, volumes, networks }, YAML_OPTIONS);
 }
@@ -605,6 +517,7 @@ interface ServiceInfo {
 export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptions): ComposeResult {
 	const isDirectInstall = options.openclawInstallMethod === "direct";
 	const allVolumes = new Set<string>();
+	const framework = resolveFramework(options);
 
 	// Build all companion service entries & classify by category
 	const serviceInfos: ServiceInfo[] = [];
@@ -612,7 +525,13 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 	const dbServiceIds = new Set(dbReqs.map((r) => r.serviceId));
 
 	for (const { definition: def } of resolved.services) {
-		const { entry, volumeNames } = buildCompanionService(def, resolved, options, allVolumes);
+		const { entry, volumeNames } = buildCompanionService(
+			def,
+			resolved,
+			options,
+			allVolumes,
+			framework.networkName,
+		);
 		// Redirect DB-dependent services to depend on postgres-setup
 		if (dbServiceIds.has(def.id) && entry.depends_on) {
 			const deps = entry.depends_on as Record<string, { condition: string }>;
@@ -631,17 +550,16 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 	for (const info of serviceInfos) {
 		const mapping = CATEGORY_PROFILE_MAP[info.category];
 		if (mapping) {
-			let profileFile = profileFileMap[mapping.file];
-			if (!profileFile) {
-				profileFile = { profile: mapping.profile, services: [] };
-				profileFileMap[mapping.file] = profileFile;
+			if (!profileFileMap[mapping.file]) {
+				profileFileMap[mapping.file] = { profile: mapping.profile, services: [] };
 			}
-			profileFile.services.push(info);
+			profileFileMap[mapping.file]?.services.push(info);
 		} else {
 			baseServiceIds.add(info.id);
 		}
 	}
-
+	const gatewayKey = `${framework.id}-gateway`;
+	const cliKey = `${framework.id}-cli`;
 	const baseServices: Record<string, Record<string, unknown>> = {};
 
 	if (!isDirectInstall) {
@@ -664,7 +582,7 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 		// Merge gateway volumes into allVolumes
 		for (const v of gwVolumes) allVolumes.add(v);
 
-		baseServices["openclaw-gateway"] = gatewayService;
+		baseServices[gatewayKey] = gatewayService;
 
 		for (const info of serviceInfos) {
 			if (baseServiceIds.has(info.id)) {
@@ -673,12 +591,32 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 		}
 
 		// Add postgres-setup init container if needed
-		const pgSetup = buildPostgresSetup(resolved);
+		const pgSetup = buildPostgresSetup(resolved, framework.networkName);
 		if (pgSetup) {
 			baseServices["postgres-setup"] = pgSetup;
 		}
 
-		baseServices["openclaw-cli"] = cliService;
+		// Add companion framework containers
+		if (options.companionFrameworks && options.companionFrameworks.length > 0) {
+			const fwOptions = toFrameworkComposeOptions(options);
+			for (const companionId of options.companionFrameworks) {
+				const companionFw = getFrameworkById(companionId);
+				if (!companionFw || companionFw.id === framework.id) continue;
+				if (companionFw.buildCompanionService) {
+					const companionEntry = companionFw.buildCompanionService(resolved, fwOptions);
+					if (companionEntry) {
+						baseServices[`${companionFw.id}-companion`] = companionEntry;
+					}
+				} else {
+					const companionResult = companionFw.buildGatewayService(resolved, fwOptions);
+					baseServices[`${companionFw.id}-companion`] = companionResult.gatewayService;
+				}
+			}
+		}
+
+		if (cliService) {
+			baseServices[cliKey] = cliService;
+		}
 	} else {
 		// Direct install: no gateway/CLI containers
 		for (const info of serviceInfos) {
@@ -687,7 +625,7 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 			}
 		}
 
-		const pgSetup = buildPostgresSetup(resolved);
+		const pgSetup = buildPostgresSetup(resolved, framework.networkName);
 		if (pgSetup) {
 			baseServices["postgres-setup"] = pgSetup;
 		}
@@ -698,7 +636,7 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 		sortedAllVolumes[v] = null;
 	}
 
-	const networks = { "openclaw-network": { driver: "bridge" } };
+	const networks = { [framework.networkName]: { driver: "bridge" } };
 
 	const files: Record<string, string> = {};
 	files["docker-compose.yml"] = stringify(

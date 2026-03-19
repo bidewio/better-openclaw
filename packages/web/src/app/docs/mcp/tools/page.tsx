@@ -51,7 +51,11 @@ export default function McpToolsPage() {
 						<td>✓</td>
 						<td>
 							Service IDs (e.g.{" "}
-							<code>[&quot;postgresql&quot;, &quot;redis&quot;, &quot;n8n&quot;]</code>)
+							<code>
+								[&quot;postgresql&quot;, &quot;redis&quot;, &quot;n8n&quot;,
+								&quot;opensandbox&quot;]
+							</code>
+							)
 						</td>
 					</tr>
 					<tr>
@@ -114,6 +118,26 @@ export default function McpToolsPage() {
 						<td>boolean</td>
 						<td></td>
 						<td>Auto-generate passwords and keys</td>
+					</tr>
+					<tr>
+						<td>
+							<code>primaryFramework</code>
+						</td>
+						<td>enum</td>
+						<td></td>
+						<td>
+							Primary agent framework: <code>openclaw</code> | <code>copaw</code> |{" "}
+							<code>nanoclaw</code> | <code>nanobot</code> | <code>zeroclaw</code> |{" "}
+							<code>memu</code> | <code>claude-code</code> | <code>codex</code>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>companionFrameworks</code>
+						</td>
+						<td>string[]</td>
+						<td></td>
+						<td>Companion agent frameworks to run alongside the primary</td>
 					</tr>
 				</tbody>
 			</table>

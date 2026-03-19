@@ -1,4 +1,5 @@
 export { adguardHomeDefinition } from "./adguard-home.js";
+export { agentBrowserDefinition } from "./agent-browser.js";
 export { airbyteDefinition } from "./airbyte.js";
 export { airflowDefinition } from "./airflow.js";
 export { anythingLlmDefinition } from "./anything-llm.js";
@@ -13,6 +14,7 @@ export { baserowDefinition } from "./baserow.js";
 export { beszelDefinition } from "./beszel.js";
 export { boxyhqSaasDefinition } from "./boxyhq-saas.js";
 export { browserlessDefinition } from "./browserless.js";
+export { burnlinkDefinition } from "./burnlink.js";
 export { caddyDefinition } from "./caddy.js";
 export { calComDefinition } from "./cal-com.js";
 export { calibreWebDefinition } from "./calibre-web.js";
@@ -20,6 +22,7 @@ export { chatwootDefinition } from "./chatwoot.js";
 export { chatwootWorkerDefinition } from "./chatwoot-worker.js";
 export { chromadbDefinition } from "./chromadb.js";
 export { claudeCodeDefinition } from "./claude-code.js";
+export { clawrouterDefinition } from "./clawrouter.js";
 export { clickhouseDefinition } from "./clickhouse.js";
 export { cloudflaredDefinition } from "./cloudflared.js";
 export { cmsaasStarterDefinition } from "./cmsaas-starter.js";
@@ -31,6 +34,7 @@ export { comfyuiDefinition } from "./comfyui.js";
 export { convexDefinition } from "./convex.js";
 export { convexDashboardDefinition } from "./convex-dashboard.js";
 export { coolifyDefinition } from "./coolify.js";
+export { copawDefinition } from "./copaw.js";
 export { crowdsecDefinition } from "./crowdsec.js";
 export { dagsterDefinition } from "./dagster.js";
 export { desktopEnvironmentDefinition } from "./desktop-environment.js";
@@ -63,6 +67,7 @@ export { headscaleDefinition } from "./headscale.js";
 export { hedgedocDefinition } from "./hedgedoc.js";
 export { hexstrikeDefinition } from "./hexstrike.js";
 export { heyformDefinition } from "./heyform.js";
+export { hindsightDefinition } from "./hindsight.js";
 export { homeassistantDefinition } from "./homeassistant.js";
 export { hoppscotchDefinition } from "./hoppscotch.js";
 export { immichDefinition } from "./immich.js";
@@ -98,6 +103,8 @@ export { mattermostDefinition } from "./mattermost.js";
 export { mauticDefinition } from "./mautic.js";
 export { medusaDefinition } from "./medusa.js";
 export { meilisearchDefinition } from "./meilisearch.js";
+export { mem0Definition } from "./mem0.js";
+export { memuDefinition } from "./memu.js";
 export { metabaseDefinition } from "./metabase.js";
 export { milvusDefinition } from "./milvus.js";
 export { minioDefinition } from "./minio.js";
@@ -107,6 +114,8 @@ export { mosquittoDefinition } from "./mosquitto.js";
 export { motionCanvasDefinition } from "./motion-canvas.js";
 export { mysqlDefinition } from "./mysql.js";
 export { n8nDefinition } from "./n8n.js";
+export { nanobotDefinition } from "./nanobot.js";
+export { nanoclawDefinition } from "./nanoclaw.js";
 export { navidromeDefinition } from "./navidrome.js";
 export { neo4jDefinition } from "./neo4j.js";
 export { nextcloudDefinition } from "./nextcloud.js";
@@ -121,6 +130,7 @@ export { openWebuiDefinition } from "./open-webui.js";
 export { opencodeDefinition } from "./opencode.js";
 export { openhandsDefinition } from "./openhands.js";
 export { openpanelDefinition } from "./openpanel.js";
+export { opensandboxDefinition } from "./opensandbox.js";
 export { opensearchDefinition } from "./opensearch.js";
 export { outlineDefinition } from "./outline.js";
 export { paperlessNgxDefinition } from "./paperless-ngx.js";
@@ -143,6 +153,9 @@ export { qdrantDefinition } from "./qdrant.js";
 export { rabbitmqDefinition } from "./rabbitmq.js";
 export { ragflowDefinition } from "./ragflow.js";
 export { redisDefinition } from "./redis.js";
+export { relaticleDefinition } from "./relaticle.js";
+export { relaticleHorizonDefinition } from "./relaticle-horizon.js";
+export { relaticleSchedulerDefinition } from "./relaticle-scheduler.js";
 export { remotionDefinition } from "./remotion.js";
 export { resticDefinition } from "./restic.js";
 export { revoltDefinition } from "./revolt.js";
@@ -170,6 +183,7 @@ export { textGenWebuiDefinition } from "./text-gen-webui.js";
 export { timescaledbDefinition } from "./timescaledb.js";
 export { traefikDefinition } from "./traefik.js";
 export { twentyDefinition } from "./twenty.js";
+export { twentyWorkerDefinition } from "./twenty-worker.js";
 export { umamiDefinition } from "./umami.js";
 export { uptimeKumaDefinition } from "./uptime-kuma.js";
 export { usesendDefinition } from "./usesend.js";
@@ -184,10 +198,12 @@ export { whisperDefinition } from "./whisper.js";
 export { wireguardDefinition } from "./wireguard.js";
 export { woodpeckerCiDefinition } from "./woodpecker-ci.js";
 export { xyopsDefinition } from "./xyops.js";
+export { zeroclawDefinition } from "./zeroclaw.js";
 export { zulipDefinition } from "./zulip.js";
 
 import type { ServiceDefinition } from "../../types.js";
 import { adguardHomeDefinition } from "./adguard-home.js";
+import { agentBrowserDefinition } from "./agent-browser.js";
 import { airbyteDefinition } from "./airbyte.js";
 import { airflowDefinition } from "./airflow.js";
 import { anythingLlmDefinition } from "./anything-llm.js";
@@ -202,6 +218,7 @@ import { baserowDefinition } from "./baserow.js";
 import { beszelDefinition } from "./beszel.js";
 import { boxyhqSaasDefinition } from "./boxyhq-saas.js";
 import { browserlessDefinition } from "./browserless.js";
+import { burnlinkDefinition } from "./burnlink.js";
 import { caddyDefinition } from "./caddy.js";
 import { calComDefinition } from "./cal-com.js";
 import { calibreWebDefinition } from "./calibre-web.js";
@@ -209,6 +226,7 @@ import { chatwootDefinition } from "./chatwoot.js";
 import { chatwootWorkerDefinition } from "./chatwoot-worker.js";
 import { chromadbDefinition } from "./chromadb.js";
 import { claudeCodeDefinition } from "./claude-code.js";
+import { clawrouterDefinition } from "./clawrouter.js";
 import { clickhouseDefinition } from "./clickhouse.js";
 import { cloudflaredDefinition } from "./cloudflared.js";
 import { cmsaasStarterDefinition } from "./cmsaas-starter.js";
@@ -220,6 +238,7 @@ import { comfyuiDefinition } from "./comfyui.js";
 import { convexDefinition } from "./convex.js";
 import { convexDashboardDefinition } from "./convex-dashboard.js";
 import { coolifyDefinition } from "./coolify.js";
+import { copawDefinition } from "./copaw.js";
 import { crowdsecDefinition } from "./crowdsec.js";
 import { dagsterDefinition } from "./dagster.js";
 import { desktopEnvironmentDefinition } from "./desktop-environment.js";
@@ -252,6 +271,7 @@ import { headscaleDefinition } from "./headscale.js";
 import { hedgedocDefinition } from "./hedgedoc.js";
 import { hexstrikeDefinition } from "./hexstrike.js";
 import { heyformDefinition } from "./heyform.js";
+import { hindsightDefinition } from "./hindsight.js";
 import { homeassistantDefinition } from "./homeassistant.js";
 import { hoppscotchDefinition } from "./hoppscotch.js";
 import { immichDefinition } from "./immich.js";
@@ -287,6 +307,8 @@ import { mattermostDefinition } from "./mattermost.js";
 import { mauticDefinition } from "./mautic.js";
 import { medusaDefinition } from "./medusa.js";
 import { meilisearchDefinition } from "./meilisearch.js";
+import { mem0Definition } from "./mem0.js";
+import { memuDefinition } from "./memu.js";
 import { metabaseDefinition } from "./metabase.js";
 import { milvusDefinition } from "./milvus.js";
 import { minioDefinition } from "./minio.js";
@@ -296,6 +318,8 @@ import { mosquittoDefinition } from "./mosquitto.js";
 import { motionCanvasDefinition } from "./motion-canvas.js";
 import { mysqlDefinition } from "./mysql.js";
 import { n8nDefinition } from "./n8n.js";
+import { nanobotDefinition } from "./nanobot.js";
+import { nanoclawDefinition } from "./nanoclaw.js";
 import { navidromeDefinition } from "./navidrome.js";
 import { neo4jDefinition } from "./neo4j.js";
 import { nextcloudDefinition } from "./nextcloud.js";
@@ -310,6 +334,7 @@ import { openWebuiDefinition } from "./open-webui.js";
 import { opencodeDefinition } from "./opencode.js";
 import { openhandsDefinition } from "./openhands.js";
 import { openpanelDefinition } from "./openpanel.js";
+import { opensandboxDefinition } from "./opensandbox.js";
 import { opensearchDefinition } from "./opensearch.js";
 import { outlineDefinition } from "./outline.js";
 import { paperlessNgxDefinition } from "./paperless-ngx.js";
@@ -332,6 +357,9 @@ import { qdrantDefinition } from "./qdrant.js";
 import { rabbitmqDefinition } from "./rabbitmq.js";
 import { ragflowDefinition } from "./ragflow.js";
 import { redisDefinition } from "./redis.js";
+import { relaticleDefinition } from "./relaticle.js";
+import { relaticleHorizonDefinition } from "./relaticle-horizon.js";
+import { relaticleSchedulerDefinition } from "./relaticle-scheduler.js";
 import { remotionDefinition } from "./remotion.js";
 import { resticDefinition } from "./restic.js";
 import { revoltDefinition } from "./revolt.js";
@@ -359,6 +387,7 @@ import { textGenWebuiDefinition } from "./text-gen-webui.js";
 import { timescaledbDefinition } from "./timescaledb.js";
 import { traefikDefinition } from "./traefik.js";
 import { twentyDefinition } from "./twenty.js";
+import { twentyWorkerDefinition } from "./twenty-worker.js";
 import { umamiDefinition } from "./umami.js";
 import { uptimeKumaDefinition } from "./uptime-kuma.js";
 import { usesendDefinition } from "./usesend.js";
@@ -373,6 +402,7 @@ import { whisperDefinition } from "./whisper.js";
 import { wireguardDefinition } from "./wireguard.js";
 import { woodpeckerCiDefinition } from "./woodpecker-ci.js";
 import { xyopsDefinition } from "./xyops.js";
+import { zeroclawDefinition } from "./zeroclaw.js";
 import { zulipDefinition } from "./zulip.js";
 
 export const allServiceDefinitions: ServiceDefinition[] = [
@@ -457,6 +487,12 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	claudeCodeDefinition,
 	opencodeDefinition,
 	codexDefinition,
+	copawDefinition,
+	nanoclawDefinition,
+	nanobotDefinition,
+	zeroclawDefinition,
+	mem0Definition,
+	memuDefinition,
 	geminiCliDefinition,
 	kimiDefinition,
 	postizDefinition,
@@ -499,6 +535,7 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	dagsterDefinition,
 	lagoDefinition,
 	twentyDefinition,
+	twentyWorkerDefinition,
 	mauticDefinition,
 	formbricksDefinition,
 	heyformDefinition,
@@ -559,6 +596,18 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	vikunjaDefinition,
 	wireguardDefinition,
 	woodpeckerCiDefinition,
+	// ── CRM ────────────────────────────────────────────────────────────────
+	relaticleDefinition,
+	relaticleHorizonDefinition,
+	relaticleSchedulerDefinition,
+	// ── LLM Routing ────────────────────────────────────────────────────────
+	clawrouterDefinition,
+	// ── New Integrations ────────────────────────────────────────────────────
+	hindsightDefinition,
+	burnlinkDefinition,
+	opensandboxDefinition,
+	// ── AI-Native Browser ──────────────────────────────────────────────────
+	agentBrowserDefinition,
 	// ── SaaS Boilerplates ────────────────────────────────────────────────────
 	openSaasDefinition,
 	apptensionSaasDefinition,

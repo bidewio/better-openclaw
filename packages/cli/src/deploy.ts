@@ -10,7 +10,8 @@
  * the core deployer API.
  */
 
-import { resolve } from "node:path";
+import { homedir } from "node:os";
+import { join, resolve } from "node:path";
 import pc from "picocolors";
 
 /** Options accepted by the non-interactive deploy flow. */
@@ -30,8 +31,10 @@ export interface DeployOptions {
  */
 export async function runDeploy(options: DeployOptions): Promise<void> {
 	const { existsSync, readFileSync } = await import("node:fs");
-	const { join } = await import("node:path");
-	const { getDeployer, getAvailableDeployers } = await import("@better-openclaw/core");
+	const { getDeployer, getAvailableDeployers, OperationsLogger } = await import(
+		"@better-openclaw/core"
+	);
+	const { FileSink } = await import("@better-openclaw/core/logger/sinks/file-sink");
 
 	const dir = resolve(options.dir);
 
@@ -115,6 +118,17 @@ export async function runDeploy(options: DeployOptions): Promise<void> {
 		console.log("");
 	}
 
+	// Create operations logger
+	const logger = new OperationsLogger({
+		source: "cli",
+		sinks: [
+			new FileSink({
+				logDir: join(homedir(), ".better-openclaw", "logs"),
+			}),
+		],
+		minLevel: "info",
+	});
+
 	// Deploy
 	const result = await deployer.deploy({
 		target: {
@@ -124,6 +138,7 @@ export async function runDeploy(options: DeployOptions): Promise<void> {
 		projectName,
 		composeYaml,
 		envContent,
+		logger,
 	});
 
 	if (options.json) {

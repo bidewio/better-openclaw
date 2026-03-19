@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { chmod, mkdir, readdir, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
+import type { OperationsLogger } from "@better-openclaw/core";
 import pc from "picocolors";
 
 /**
@@ -17,7 +18,7 @@ import pc from "picocolors";
 export async function writeProject(
 	projectDir: string,
 	files: Record<string, string>,
-	options?: { dryRun?: boolean; outputFormat?: string; force?: boolean },
+	options?: { dryRun?: boolean; outputFormat?: string; force?: boolean; logger?: OperationsLogger },
 ): Promise<void> {
 	const sortedPaths = Object.keys(files).sort();
 
@@ -61,6 +62,8 @@ export async function writeProject(
 		await mkdir(dir, { recursive: true });
 	}
 
+	options?.logger?.info("file_operation", `Writing ${sortedPaths.length} files to ${projectDir}`);
+
 	// Write all files
 	for (const filePath of sortedPaths) {
 		const fullPath = join(projectDir, filePath);
@@ -79,6 +82,14 @@ export async function writeProject(
 			}
 		}
 	}
+
+	options?.logger?.log({
+		level: "info",
+		category: "file_operation",
+		message: `Written ${sortedPaths.length} files to ${projectDir}`,
+		outcome: "success",
+		filesAffected: { created: sortedPaths },
+	});
 
 	// Create archive if requested
 	const fmt = options?.outputFormat;

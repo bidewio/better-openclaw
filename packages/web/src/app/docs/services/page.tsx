@@ -15,7 +15,8 @@ export default function ServiceReferencePage() {
 			<p>
 				Complete catalog of {allServices.length} companion services across{" "}
 				{SERVICE_CATEGORIES.length} categories. Each service is a Docker container that integrates
-				with OpenClaw via skills and environment variables.
+				with your chosen agent framework via skills and environment variables. Services work across
+				all 8 supported frameworks.
 			</p>
 
 			<p>

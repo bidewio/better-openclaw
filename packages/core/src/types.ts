@@ -1,6 +1,11 @@
 import type { z } from "zod";
 import type {
 	AddedDependencySchema,
+	AddonStackInputSchema,
+	AddonStackResultSchema,
+	AddonStackUpdateInputSchema,
+	AddonStackUpdateResultSchema,
+	AgentFrameworkSchema,
 	AiProviderSchema,
 	ApiErrorSchema,
 	BuildContextSchema,
@@ -9,6 +14,8 @@ import type {
 	DeploymentTypeSchema,
 	DeploySchema,
 	DeployTargetSchema,
+	EnvQuirkFixSchema,
+	EnvQuirkSchema,
 	EnvVariableSchema,
 	ErrorSchema,
 	GenerationInputSchema,
@@ -24,6 +31,7 @@ import type {
 	PlatformSchema,
 	PortMappingSchema,
 	PresetSchema,
+	ProxyRouteSchema,
 	ProxyTypeSchema,
 	ResolvedServiceSchema,
 	ResolverOutputSchema,
@@ -33,6 +41,7 @@ import type {
 	ServiceDefinitionSchema,
 	SkillBindingSchema,
 	SkillPackSchema,
+	SkippedServiceSchema,
 	ValidateRequestSchema,
 	ValidateResponseSchema,
 	VolumeMappingSchema,
@@ -41,6 +50,7 @@ import type {
 
 // ─── Inferred Types ─────────────────────────────────────────────────────────
 
+export type AgentFramework = z.infer<typeof AgentFrameworkSchema>;
 export type AiProvider = z.infer<typeof AiProviderSchema>;
 export type GsdRuntime = z.infer<typeof GsdRuntimeSchema>;
 export type ServiceCategory = z.infer<typeof ServiceCategorySchema>;
@@ -86,6 +96,16 @@ export type ValidateRequest = z.infer<typeof ValidateRequestSchema>;
 export type ValidateResponse = z.infer<typeof ValidateResponseSchema>;
 export type ApiError = z.infer<typeof ApiErrorSchema>;
 
+// Addon Stack (Clawexa)
+export type EnvQuirkFix = z.infer<typeof EnvQuirkFixSchema>;
+export type EnvQuirk = z.infer<typeof EnvQuirkSchema>;
+export type ProxyRoute = z.infer<typeof ProxyRouteSchema>;
+export type SkippedService = z.infer<typeof SkippedServiceSchema>;
+export type AddonStackInput = z.infer<typeof AddonStackInputSchema>;
+export type AddonStackResult = z.infer<typeof AddonStackResultSchema>;
+export type AddonStackUpdateInput = z.infer<typeof AddonStackUpdateInputSchema>;
+export type AddonStackUpdateResult = z.infer<typeof AddonStackUpdateResultSchema>;
+
 // ─── Additional Types ───────────────────────────────────────────────────────
 
 export interface ResolverInput {
@@ -93,6 +113,7 @@ export interface ResolverInput {
 	skillPacks: string[];
 	aiProviders?: AiProvider[];
 	gsdRuntimes?: GsdRuntime[];
+	primaryFramework?: AgentFramework;
 	proxy?: ProxyType;
 	gpu?: boolean;
 	platform?: Platform;
@@ -128,6 +149,13 @@ export interface CategoryInfo {
 }
 
 export const SERVICE_CATEGORIES: CategoryInfo[] = [
+	{
+		id: "agent-framework",
+		name: "Agent Frameworks",
+		description: "AI agent orchestrators that can serve as primary or companion runtimes",
+		label: "Agent Frameworks",
+		icon: "🤖",
+	},
 	{
 		id: "coding-agent",
 		name: "AI Coding Agents",

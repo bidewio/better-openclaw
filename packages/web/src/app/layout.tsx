@@ -3,7 +3,6 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ThemeProvider } from "@/components/theme-provider";
-import { docsStats } from "@/lib/docs-stats";
 import "./globals.css";
 
 const fontInter = Inter({
@@ -18,17 +17,14 @@ const fontMono = JetBrains_Mono({
 	variable: "--font-mono",
 });
 
-const stackSummary = `${docsStats.serviceCount} services, ${docsStats.skillPackCount} skill packs, one command`;
-const stackDescription = `CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks with Docker Compose. ${stackSummary}. Or deploy instantly with Clawexa Cloud.`;
-const stackOgDescription = `Generate Docker Compose stacks with ${docsStats.serviceCount} companion services pre-wired with OpenClaw skills`;
-
 export const metadata: Metadata = {
 	metadataBase: new URL("https://better-openclaw.dev"),
 	title: {
-		default: "better-openclaw — Build your OpenClaw superstack",
+		default: "better-openclaw — Build your AI agent superstack",
 		template: "%s | better-openclaw",
 	},
-	description: stackDescription,
+	description:
+		"CLI tool, REST API, and web UI for scaffolding production-ready AI agent stacks with Docker Compose. 94+ services, 8 agent frameworks, 10 skill packs, one command. Or deploy instantly with Clawexa Cloud.",
 	keywords: [
 		"OpenClaw",
 		"docker-compose",
@@ -39,21 +35,28 @@ export const metadata: Metadata = {
 		"Clawexa",
 		"Clawexa cloud",
 		"hosted OpenClaw",
+		"multi-agent",
+		"agent framework",
+		"CoPaw",
+		"NanoClaw",
+		"ZeroClaw",
 		"n8n",
 		"qdrant",
 		"ollama",
 	],
 	openGraph: {
-		title: "better-openclaw — Build your OpenClaw superstack",
-		description: stackOgDescription,
+		title: "better-openclaw — Build your AI agent superstack",
+		description:
+			"Generate Docker Compose stacks with 94+ services, 8 agent frameworks, pre-wired with AI agent skills",
 		type: "website",
 		siteName: "better-openclaw",
 		images: [{ url: "/og/og-image.svg", width: 1200, height: 630 }],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "better-openclaw — Build your OpenClaw superstack",
-		description: stackOgDescription,
+		title: "better-openclaw — Build your AI agent superstack",
+		description:
+			"Generate Docker Compose stacks with 94+ services, 8 agent frameworks, pre-wired with AI agent skills",
 		images: ["/og/og-image.svg"],
 	},
 	alternates: {
@@ -90,7 +93,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		"@context": "https://schema.org",
 		"@type": "WebSite",
 		name: "better-openclaw",
-		description: stackDescription,
+		description:
+			"CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks with Docker Compose. 58+ services, 10 skill packs, one command.",
 		url: "https://better-openclaw.dev",
 		potentialAction: {
 			"@type": "SearchAction",
@@ -108,7 +112,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		name: "better-openclaw",
 		applicationCategory: "DeveloperApplication",
 		operatingSystem: "Linux, macOS, Windows",
-		description: stackOgDescription,
+		description:
+			"Generate Docker Compose stacks with 58+ companion services pre-wired with OpenClaw skills",
 		url: "https://better-openclaw.dev",
 		offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 		isRelatedTo: {

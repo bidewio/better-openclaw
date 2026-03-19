@@ -1,6 +1,6 @@
 {
   "name": "better-openclaw",
-  "version": "1.0.24",
+  "version": "1.0.31",
   "private": true,
   "description": "CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks",
   "author": "bachir@bidew.io",

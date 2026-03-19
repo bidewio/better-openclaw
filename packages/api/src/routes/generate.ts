@@ -1,4 +1,5 @@
 import { Writable } from "node:stream";
+import type { OperationsLogger } from "@better-openclaw/core";
 import { buildAnalyticsPayload, GenerationInputSchema, generate } from "@better-openclaw/core";
 import { analyticsEvent, db } from "@better-openclaw/db";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
@@ -13,12 +14,10 @@ const route = new OpenAPIHono({
 					error: {
 						code: "VALIDATION_ERROR" as const,
 						message: "Invalid generation input",
-						details: result.error.issues.map(
-							(issue: { path: Array<string | number>; message: string }) => ({
-								field: issue.path.join("."),
-								message: issue.message,
-							}),
-						),
+						details: result.error.issues.map((issue: any) => ({
+							field: issue.path.join("."),
+							message: issue.message,
+						})),
 					},
 				},
 				400,
@@ -130,7 +129,8 @@ const generatePost = createRoute({
 route.openapi(generatePost, async (c: any) => {
 	try {
 		const input = c.req.valid("json");
-		const result = generate(input);
+		const logger = c.get("logger" as never) as OperationsLogger | undefined;
+		const result = generate(input, { logger });
 
 		// Fire-and-forget analytics tracking
 		const analyticsPayload = buildAnalyticsPayload(input, result.metadata, "api");

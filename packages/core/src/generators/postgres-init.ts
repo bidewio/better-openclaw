@@ -52,6 +52,17 @@ const DB_REQUIREMENTS: Record<string, Omit<DbRequirement, "serviceId" | "service
 	openpanel: { dbName: "openpanel", dbUser: "openpanel", passwordEnvVar: "OPENPANEL_DB_PASSWORD" },
 	usesend: { dbName: "usesend", dbUser: "usesend", passwordEnvVar: "USESEND_DB_PASSWORD" },
 	nextcloud: { dbName: "nextcloud", dbUser: "nextcloud", passwordEnvVar: "NEXTCLOUD_DB_PASSWORD" },
+	// ── CRM ────────────────────────────────────────────────────────────────
+	twenty: { dbName: "twenty", dbUser: "twenty", passwordEnvVar: "TWENTY_DB_PASSWORD" },
+	relaticle: {
+		dbName: "relaticle",
+		dbUser: "relaticle",
+		passwordEnvVar: "RELATICLE_DB_PASSWORD",
+	},
+	// ── Agent Memory ────────────────────────────────────────────────────────
+	mem0: { dbName: "mem0", dbUser: "mem0", passwordEnvVar: "MEM0_DB_PASSWORD" },
+	memu: { dbName: "memu", dbUser: "memu", passwordEnvVar: "MEMU_DB_PASSWORD" },
+	hindsight: { dbName: "hindsight", dbUser: "hindsight", passwordEnvVar: "HINDSIGHT_DB_PASSWORD" },
 	// ── SaaS Boilerplates ────────────────────────────────────────────────────
 	"open-saas": { dbName: "opensaas", dbUser: "opensaas", passwordEnvVar: "OPENSAAS_DB_PASSWORD" },
 	"apptension-saas": {

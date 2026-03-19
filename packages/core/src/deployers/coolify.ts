@@ -151,6 +151,11 @@ export class CoolifyDeployer implements PaasDeployer {
 	}
 
 	async deploy(input: DeployInput): Promise<DeployResult> {
+		input.logger?.info("deployment", `Starting deployment to Coolify`, {
+			projectName: input.projectName,
+			instanceUrl: input.target.instanceUrl,
+		});
+
 		const step1: DeployStep = { step: "Discover server", status: "pending" };
 		const step2: DeployStep = {
 			step: "Find or create project",
@@ -321,6 +326,29 @@ export class CoolifyDeployer implements PaasDeployer {
 
 			result.dashboardUrl = `${base}/project/${project.uuid}`;
 
+			input.logger?.log({
+				level: "info",
+				category: "deployment",
+				message: `Deployment to Coolify succeeded`,
+				outcome: "success",
+				context: {
+					projectId: project.uuid,
+					serviceId: service.uuid,
+					dashboardUrl: result.dashboardUrl,
+				},
+				steps: steps.map((s) => ({
+					name: s.step,
+					status:
+						s.status === "done"
+							? ("success" as const)
+							: s.status === "error"
+								? ("failure" as const)
+								: ("in_progress" as const),
+					detail: s.detail,
+					startedAt: new Date().toISOString(),
+				})),
+			});
+
 			return result;
 		} catch (err) {
 			const running = steps.find((s) => s.status === "running");
@@ -331,6 +359,16 @@ export class CoolifyDeployer implements PaasDeployer {
 			}
 
 			result.error = err instanceof Error ? err.message : String(err);
+
+			input.logger?.error(
+				"deployment",
+				`Deployment to Coolify failed`,
+				err instanceof Error ? err : null,
+				{
+					projectName: input.projectName,
+					failedStep: running?.step,
+				},
+			);
 
 			return result;
 		}

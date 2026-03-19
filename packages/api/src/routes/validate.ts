@@ -85,7 +85,7 @@ const validatePost = createRoute({
 // biome-ignore lint/suspicious/noExplicitAny: Hono OpenAPI handler typing workaround
 route.openapi(validatePost, (c: any) => {
 	try {
-		const { services, skillPacks, proxy, gpu, platform } = c.req.valid("json");
+		const { services, skillPacks, proxy, gpu, platform, primaryFramework } = c.req.valid("json");
 
 		const resolved = resolve({
 			services,
@@ -93,6 +93,7 @@ route.openapi(validatePost, (c: any) => {
 			proxy,
 			gpu,
 			platform,
+			primaryFramework,
 		});
 
 		return c.json({

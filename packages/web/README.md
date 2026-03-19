@@ -4,7 +4,7 @@ The primary front-end platform for the Better OpenClaw ecosystem. Built entirely
 
 ## Platform Features
 
-- **Interactive Visual Stack Builder (`/new`):** The graphical equivalent of the CLI wizard. Users interactively click, categorize, and filter Docker services and AI skills, select architecture targets, and generate entire deployments to standard Zip or JSON configurations instantly.
+- **Interactive Visual Stack Builder (`/new`):** The graphical equivalent of the CLI wizard. Users choose from 8 agent frameworks via the FrameworkSelector component, interactively pick Docker services and AI skills, select architecture targets, and generate entire deployments to standard Zip or JSON configurations instantly.
 - **Showcase Gallery (`/showcase`):** Features community examples, verified combinations, and high-impact AI tool chaining templates for deployment.
 - **Core Documentation (`/docs`):** Statically generated and easily updatable guides on deploying, tuning, and contributing to OpenClaw architectures.
 - **MCP Server Documentation (`/docs/mcp`):** Comprehensive guides on using better-openclaw as an MCP server — setup for Claude, Cursor, and VS Code, plus a full tools reference.

@@ -110,3 +110,8 @@ PROMPT_CLAUDE_CODE.md
 purpose_.txt
 trinity_identity.txt
 fixup.js
+packages/promo-video/
+packages/promo-video/src/
+packages/promo-video/src/scenes/
+packages/promo-video/scripts/
+packages/promo-video/dist/

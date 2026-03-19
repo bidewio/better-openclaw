@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { docsStats } from "@/lib/docs-stats";
 
 export const metadata = {
 	title: "Skill Packs — better-openclaw Docs",
 	description:
-		"Reference for better-openclaw skill packs. Descriptions, required services, and included skills.",
+		"Complete reference for all 10 better-openclaw skill packs. Each pack's description, required services, and included skills.",
 };
 
 const skillPacks = [
@@ -14,7 +13,7 @@ const skillPacks = [
 		description:
 			"Web search, content extraction, and citation skills for knowledge gathering and RAG pipelines.",
 		requiredServices: ["searxng", "browserless"],
-		optionalServices: ["qdrant"],
+		optionalServices: ["qdrant", "agent-browser"],
 		skills: [
 			{ name: "web-search", desc: "Query SearXNG for web search results" },
 			{ name: "content-extract", desc: "Extract clean text from web pages via Browserless" },
@@ -63,13 +62,16 @@ const skillPacks = [
 	{
 		id: "code",
 		name: "Code Execution",
-		description: "Sandboxed code execution for Python, JavaScript, and shell scripts.",
-		requiredServices: ["code-sandbox"],
-		optionalServices: [],
+		description:
+			"Sandboxed code execution and GUI desktop environments via OpenSandbox. Run Python, JavaScript, Go, and Bash safely with resource limits, network isolation, and live VNC desktop preview.",
+		requiredServices: ["opensandbox"],
+		optionalServices: ["desktop-environment"],
 		skills: [
 			{ name: "code-run", desc: "Execute code in an isolated sandbox" },
 			{ name: "code-install", desc: "Install packages in the sandbox" },
 			{ name: "code-file", desc: "Read/write files in the sandbox filesystem" },
+			{ name: "create-desktop", desc: "Launch a VNC desktop sandbox with noVNC browser access" },
+			{ name: "get-preview-url", desc: "Get the noVNC preview URL for an active sandbox" },
 		],
 	},
 	{
@@ -137,15 +139,14 @@ const skillPacks = [
 ];
 
 export default function SkillPacksPage() {
-	const { skillPackCount } = docsStats;
-
 	return (
 		<>
 			<h1>Skill Packs</h1>
 			<p>
-				Skill packs are curated bundles of OpenClaw skills that work together with specific
-				companion services. Each pack provides a coherent set of capabilities for a particular use
-				case. There are currently <strong>{skillPackCount} skill packs</strong> available.
+				Skill packs are curated bundles of agent skills that work together with specific companion
+				services. Each pack provides a coherent set of capabilities for a particular use case. There
+				are currently <strong>10 skill packs</strong> available. Skill packs work across all 8
+				supported agent frameworks.
 			</p>
 
 			<h2>How Skill Packs Work</h2>

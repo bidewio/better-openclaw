@@ -47,6 +47,42 @@ const ROADMAP: { quarter: string; items: RoadmapItem[] }[] = [
 					"Animated Data Visualization in Blog Posts",
 				],
 			},
+			{
+				title: "Multi-Agent Framework Support",
+				description:
+					"Users can choose from 8 agent frameworks as their primary orchestrator, with optional companion frameworks for hybrid stacks.",
+				status: "completed",
+				features: [
+					"8 pluggable frameworks (OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex)",
+					"Companion framework multi-select for hybrid stacks",
+					"Framework-aware CLI wizard, Web UI, MCP tools, and API",
+					"Per-framework gateway containers, configs, env vars, and network names",
+				],
+			},
+			{
+				title: "Sandboxed AI Code Execution",
+				description:
+					"Enabling AI agents to execute code safely in isolated containers with OpenSandbox integration, supporting multi-language runtimes and VNC desktop preview.",
+				status: "current",
+				features: [
+					"OpenSandbox service with gVisor secure runtime and Docker socket management",
+					"Multi-language sandboxes (Python, JS/TS, Java, Go, Bash) with resource limits",
+					"VNC desktop preview for live GUI sandboxes (XFCE, Chrome, VS Code Web)",
+					"Pre-pull image system with 3-tier priority for optimized deployment",
+				],
+			},
+			{
+				title: "Centralized Operations Logger",
+				description:
+					"A unified structured logging system across all packages (CLI, API, MCP) for full observability into generation pipelines, deployments, and server interactions.",
+				status: "completed",
+				features: [
+					"OperationsLogger with pluggable sinks (Console, File/NDJSON, Callback)",
+					"Correlation IDs linking related operations across packages",
+					"StepTracker for multi-step operations with per-step timing and outcomes",
+					"Automatic sensitive data redaction and size-based log rotation",
+				],
+			},
 		],
 	},
 	{

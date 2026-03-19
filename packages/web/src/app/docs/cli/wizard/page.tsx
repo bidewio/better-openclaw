@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { docsStats } from "@/lib/docs-stats";
 
 export const metadata = {
 	title: "Interactive Wizard — better-openclaw Docs",
@@ -8,8 +7,6 @@ export const metadata = {
 };
 
 export default function WizardPage() {
-	const { serviceCount, categoryCount, skillPackCount } = docsStats;
-
 	return (
 		<>
 			<h1>Interactive Wizard</h1>
@@ -61,6 +58,24 @@ export default function WizardPage() {
 				individually.
 			</p>
 
+			<h2>Step 2b: Agent Framework</h2>
+			<pre>
+				<code>{`? Primary agent framework:
+  ● openclaw   — Full-featured with gateway, mission control, and Tailscale
+  ○ copaw      — Cooperative multi-agent with shared memory
+  ○ nanoclaw   — Lightweight single-agent runtime
+  ○ nanobot    — Minimal bot framework with plugin architecture
+  ○ zeroclaw   — Zero-config convention-over-configuration
+  ○ memu       — Memory-first with persistent context (PostgreSQL)
+  ○ claude-code — Anthropic's CLI agent for software engineering
+  ○ codex      — OpenAI's CLI agent for code generation`}</code>
+			</pre>
+			<p>
+				Choose your primary agent orchestrator. OpenClaw is the default. Non-OpenClaw frameworks
+				skip Convex, Mission Control, and Tailscale. You can optionally add companion frameworks to
+				run side-by-side.
+			</p>
+
 			<h2>Step 3: Select Services (Custom Only)</h2>
 			<pre>
 				<code>{`? Select companion services (space to toggle, enter to confirm):
@@ -70,7 +85,7 @@ export default function WizardPage() {
   ◻ n8n            — Workflow automation
   ◻ searxng        — Privacy-respecting search
   ◻ browserless    — Headless browser for web scraping
-  ... (${serviceCount} services across ${categoryCount} categories)`}</code>
+  ... (94+ services across 21 categories)`}</code>
 			</pre>
 			<p>
 				This step only appears if you chose <strong>custom</strong> in Step 2. Services are
@@ -100,7 +115,7 @@ export default function WizardPage() {
   ◻ memory         — Long-term memory with vector storage
   ◻ local-ai       — Local LLM inference with Ollama
   ◻ code           — Code execution sandbox
-  ... (${skillPackCount} skill packs)`}</code>
+  ... (10 skill packs)`}</code>
 			</pre>
 			<p>
 				Skill packs are curated bundles of OpenClaw skills that work with specific services. The

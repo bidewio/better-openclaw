@@ -1,4 +1,4 @@
-export const CURRENT_CONFIG_VERSION = 2;
+export const CURRENT_CONFIG_VERSION = 3;
 
 type MigrationFn = (input: Record<string, unknown>) => Record<string, unknown>;
 
@@ -8,6 +8,13 @@ const migrations: Record<number, MigrationFn> = {
 		...input,
 		configVersion: 2,
 		deploymentType: (input.deploymentType as string) ?? "docker",
+	}),
+	// v2 → v3: add primaryFramework (defaults to "openclaw" for existing configs)
+	2: (input) => ({
+		...input,
+		configVersion: 3,
+		primaryFramework: (input.primaryFramework as string) ?? "openclaw",
+		companionFrameworks: (input.companionFrameworks as string[]) ?? [],
 	}),
 };
 

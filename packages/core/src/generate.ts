@@ -5,6 +5,7 @@ import {
 } from "./bare-metal-partition.js";
 import { composeMultiFile } from "./composer.js";
 import { StackConfigError, ValidationError } from "./errors.js";
+import { getFrameworkById } from "./frameworks/index.js";
 import { generateBareMetalInstall } from "./generators/bare-metal-install.js";
 import { generateCaddyfile } from "./generators/caddy.js";
 import { generateCloneScripts } from "./generators/clone-repos.js";
@@ -16,7 +17,6 @@ import { generateHealthCheck } from "./generators/health-check.js";
 import { generateN8nWorkflows } from "./generators/n8n-workflows.js";
 import { generateNativeInstallScripts } from "./generators/native-services.js";
 import { generateOpenclawInstallScript } from "./generators/openclaw-install-script.js";
-import { generateOpenClawConfig } from "./generators/openclaw-json.js";
 import { generatePostgresInit } from "./generators/postgres-init.js";
 import { generatePrometheusConfig } from "./generators/prometheus.js";
 import { generateReadme } from "./generators/readme.js";
@@ -24,6 +24,7 @@ import { generateScripts } from "./generators/scripts.js";
 import { generateSkillFiles } from "./generators/skills.js";
 import { generateStackManifest } from "./generators/stack-manifest.js";
 import { generateTraefikConfig } from "./generators/traefik.js";
+import type { OperationsLogger } from "./logger/logger.js";
 import { migrateConfig } from "./migrations.js";
 import { resolve } from "./resolver.js";
 import type {
@@ -45,29 +46,51 @@ function getComposePlatform(platform: Platform): "linux/amd64" | "linux/arm64" {
  * Main orchestration function: takes generation input, resolves dependencies,
  * generates all files, validates, and returns the complete file tree.
  */
-export function generate(rawInput: GenerationInput): GenerationResult {
+export function generate(
+	rawInput: GenerationInput,
+	options?: { logger?: OperationsLogger },
+): GenerationResult {
+	const logger = options?.logger;
+
 	// Apply config migrations if needed
 	const input = migrateConfig(rawInput as Record<string, unknown>) as GenerationInput;
 
 	const composePlatform = getComposePlatform(input.platform);
+
+	logger?.info("generation", "Starting stack generation", {
+		projectName: input.projectName,
+		services: input.services,
+		platform: input.platform,
+		proxy: input.proxy,
+		deploymentType: input.deploymentType,
+	});
 
 	// 1. Resolve dependencies
 	const resolverInput: ResolverInput = {
 		services: input.services,
 		skillPacks: input.skillPacks,
 		aiProviders: input.aiProviders,
+		primaryFramework: input.primaryFramework,
 		proxy: input.proxy,
 		gpu: input.gpu,
 		platform: composePlatform,
 		monitoring: input.monitoring,
 	};
+	logger?.debug("resolution", "Resolving dependencies");
 	const resolved = resolve(resolverInput);
 
 	if (!resolved.isValid) {
-		throw new StackConfigError(
-			`Invalid stack configuration: ${resolved.errors.map((e) => e.message).join("; ")}`,
-		);
+		const errMsg = `Invalid stack configuration: ${resolved.errors.map((e) => e.message).join("; ")}`;
+		logger?.error("resolution", errMsg);
+		throw new StackConfigError(errMsg);
 	}
+
+	logger?.info("resolution", `Resolved ${resolved.services.length} services`, {
+		serviceCount: resolved.services.length,
+		addedDeps: resolved.addedDependencies.length,
+		warnings: resolved.warnings.length,
+		estimatedMemoryMB: resolved.estimatedMemoryMB,
+	});
 
 	const isBareMetal = input.deploymentType === "bare-metal";
 	let resolvedForCompose = resolved;
@@ -85,6 +108,8 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		}
 	}
 
+	logger?.debug("generation", "Generating Docker Compose YAML");
+
 	// 2. Generate Docker Compose YAML (multi-file)
 	// Compute Traefik labels before composing (labels get injected into docker-compose services)
 	let traefikOutput: ReturnType<typeof generateTraefikConfig> | undefined;
@@ -94,6 +119,8 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 
 	const composeOptions = {
 		projectName: input.projectName,
+		primaryFramework: input.primaryFramework,
+		companionFrameworks: input.companionFrameworks,
 		proxy: input.proxy,
 		proxyHttpPort: input.proxyHttpPort,
 		proxyHttpsPort: input.proxyHttpsPort,
@@ -110,6 +137,7 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		openclawInstallMethod: input.openclawInstallMethod ?? "docker",
 	};
 	const composeResult = composeMultiFile(resolvedForCompose, composeOptions);
+	logger?.info("generation", `Generated ${Object.keys(composeResult.files).length} compose files`);
 
 	// 3. Validate (using the base docker-compose.yml)
 	const validation = validate(resolvedForCompose, composeResult.files["docker-compose.yml"] ?? "", {
@@ -117,10 +145,11 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		generateSecrets: input.generateSecrets,
 	});
 	if (!validation.valid) {
-		throw new ValidationError(
-			`Validation failed: ${validation.errors.map((e) => e.message).join("; ")}`,
-		);
+		const errMsg = `Validation failed: ${validation.errors.map((e) => e.message).join("; ")}`;
+		logger?.error("validation", errMsg);
+		throw new ValidationError(errMsg);
 	}
+	logger?.debug("validation", "Stack validation passed");
 
 	// 4. Generate all files
 	const files: GeneratedFiles = {};
@@ -139,6 +168,7 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		composeFiles: Object.keys(composeResult.files),
 		composeProfiles: composeResult.profiles,
 		openclawImage: input.openclawImage,
+		primaryFramework: input.primaryFramework,
 	});
 	files[".env.example"] = envFiles.envExample;
 	files[".env"] = envFiles.env;
@@ -165,12 +195,18 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		files[path] = content;
 	}
 
-	// OpenClaw Core Configuration
-	files["openclaw/config/openclaw.json"] = generateOpenClawConfig(resolved, {
-		deploymentType: input.deploymentType,
-		gatewayPort: 18789,
-		openclawVersion: input.openclawVersion,
-	});
+	// Framework-specific configuration
+	const framework = getFrameworkById(input.primaryFramework ?? "openclaw");
+	if (framework) {
+		const fwConfig = framework.generateConfig(resolved, {
+			deploymentType: input.deploymentType,
+			gatewayPort: 18789,
+			frameworkVersion: input.openclawVersion,
+		});
+		if (fwConfig) {
+			files[fwConfig.path] = fwConfig.content;
+		}
+	}
 
 	// README
 	files["README.md"] = generateReadme(resolved, {
@@ -180,6 +216,7 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 		deploymentType: input.deploymentType,
 		hasNativeServices: isBareMetal && nativeServices.length > 0,
 		openclawInstallMethod: input.openclawInstallMethod,
+		primaryFramework: input.primaryFramework,
 	});
 
 	// Scripts
@@ -309,6 +346,22 @@ export function generate(rawInput: GenerationInput): GenerationResult {
 
 	// 5. Calculate metadata
 	const skillCount = resolved.services.reduce((sum, s) => sum + s.definition.skills.length, 0);
+
+	const fileCount = Object.keys(files).length;
+
+	logger?.log({
+		level: "info",
+		category: "generation",
+		message: `Stack generation complete: ${fileCount} files, ${resolved.services.length} services`,
+		outcome: "success",
+		context: {
+			fileCount,
+			serviceCount: resolved.services.length,
+			skillCount,
+			estimatedMemoryMB: resolved.estimatedMemoryMB,
+		},
+		filesAffected: { created: Object.keys(files) },
+	});
 
 	return {
 		files,

@@ -35,6 +35,8 @@ export interface DeployInput {
 	description?: string;
 	/** Optional server ID to deploy to (for PaaS platforms managing multiple servers) */
 	serverId?: string;
+	/** Optional operations logger for persistent audit logging */
+	logger?: import("../logger/logger.js").OperationsLogger;
 }
 
 /** Step-level status for deploy progress. */

@@ -50,4 +50,7 @@ export const uptimeKumaDefinition: ServiceDefinition = {
 
 	minMemoryMB: 256,
 	gpuRequired: false,
+	capDropCompatible: false,
+	proxyPath: "/uptime-kuma",
+	firstBootCapabilities: ["CHOWN", "SETGID", "SETUID"],
 };

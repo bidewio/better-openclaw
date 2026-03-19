@@ -36,9 +36,7 @@ export const generateStandup = mutation({
 		// Build per-agent reports
 		const agentReports = agents.map((agent) => {
 			const agentTasks = tasks.filter((t) => t.assigneeIds.includes(agent._id));
-			const agentActivities = recentActivities.filter(
-				(a) => a.agentId === agent._id,
-			);
+			const agentActivities = recentActivities.filter((a) => a.agentId === agent._id);
 
 			return {
 				agent: { name: agent.name, role: agent.role, status: agent.status, avatar: agent.avatar },

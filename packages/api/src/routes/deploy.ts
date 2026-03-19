@@ -11,10 +11,27 @@
  *   GET  /deploy/providers — List available PaaS providers
  */
 
+import { isIP } from "node:net";
 import { getAvailableDeployers, getDeployer } from "@better-openclaw/core";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 
 const route = new OpenAPIHono();
+
+function isPrivateOrLocalIPv4(hostname: string): boolean {
+	const ipv4 = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+	if (!ipv4) {
+		return false;
+	}
+
+	const a = Number.parseInt(ipv4[1] ?? "", 10);
+	const b = Number.parseInt(ipv4[2] ?? "", 10);
+	return (
+		a === 10 || // 10.0.0.0/8
+		(a === 172 && b >= 16 && b <= 31) || // 172.16.0.0/12
+		(a === 192 && b === 168) || // 192.168.0.0/16
+		(a === 169 && b === 254) // 169.254.0.0/16 (link-local)
+	);
+}
 
 /**
  * SSRF protection: reject URLs that point to localhost, private networks,
@@ -38,31 +55,46 @@ function validateInstanceUrl(url: string): string | null {
 		return "URL must use HTTPS in production";
 	}
 
-	const hostname = parsed.hostname.toLowerCase();
+	// URL.hostname for IPv6 can be bracketed ("[::1]"), normalize it.
+	const hostname = parsed.hostname.toLowerCase().replace(/^\[(.*)\]$/, "$1");
 
 	// Block localhost and loopback
 	if (
 		hostname === "localhost" ||
 		hostname === "127.0.0.1" ||
 		hostname === "::1" ||
+		hostname === "::" ||
 		hostname === "0.0.0.0" ||
 		hostname.endsWith(".localhost")
 	) {
 		return "URL must not point to localhost";
 	}
 
-	// Block private/internal IP ranges
-	const ipv4 = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
-	if (ipv4) {
-		const a = Number.parseInt(ipv4[1] ?? "", 10);
-		const b = Number.parseInt(ipv4[2] ?? "", 10);
+	// Block private/internal IPv4 ranges
+	if (isPrivateOrLocalIPv4(hostname)) {
+		return "URL must not point to a private network address";
+	}
+
+	// Block loopback/link-local/ULA IPv6 and IPv4-mapped private ranges.
+	if (isIP(hostname) === 6) {
 		if (
-			a === 10 || // 10.0.0.0/8
-			(a === 172 && b >= 16 && b <= 31) || // 172.16.0.0/12
-			(a === 192 && b === 168) || // 192.168.0.0/16
-			(a === 169 && b === 254) // 169.254.0.0/16 (link-local)
+			hostname === "::1" ||
+			hostname === "::" ||
+			hostname.startsWith("fe80:") || // link-local
+			hostname.startsWith("fc") || // unique local (fc00::/7)
+			hostname.startsWith("fd")
 		) {
 			return "URL must not point to a private network address";
+		}
+		if (hostname.startsWith("::ffff:")) {
+			const mappedIpv4 = hostname.slice("::ffff:".length);
+			if (
+				mappedIpv4 === "127.0.0.1" ||
+				mappedIpv4 === "0.0.0.0" ||
+				isPrivateOrLocalIPv4(mappedIpv4)
+			) {
+				return "URL must not point to a private network address";
+			}
 		}
 	}
 

@@ -60,7 +60,9 @@ export const listMessages = query({
 				}
 				return {
 					...msg,
-					fromAgent: fromAgent ? { name: fromAgent.name, avatar: fromAgent.avatar, role: fromAgent.role } : null,
+					fromAgent: fromAgent
+						? { name: fromAgent.name, avatar: fromAgent.avatar, role: fromAgent.role }
+						: null,
 					toAgent: toAgent ? { name: toAgent.name, avatar: toAgent.avatar } : null,
 				};
 			}),
@@ -83,7 +85,13 @@ export const listConversations = query({
 		// Group by conversationId
 		const convMap = new Map<
 			string,
-			{ id: string; lastMessageAt: number; messageCount: number; lastMessage: string; participants: Set<string> }
+			{
+				id: string;
+				lastMessageAt: number;
+				messageCount: number;
+				lastMessage: string;
+				participants: Set<string>;
+			}
 		>();
 
 		for (const msg of allMessages) {

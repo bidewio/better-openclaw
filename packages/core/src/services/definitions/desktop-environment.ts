@@ -16,6 +16,7 @@ export const desktopEnvironmentDefinition: ServiceDefinition = {
 			container: 6901,
 			description: "KasmVNC web interface (browser-based desktop access)",
 			exposed: true,
+			websocket: true,
 		},
 		{
 			host: 5900,

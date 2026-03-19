@@ -33,6 +33,11 @@ const faqs = [
 		answer:
 			"Since you own the `docker-compose.yml` file, you can update service images manually or use the `better-openclaw update` command to regenerate your stack with the latest best practices.",
 	},
+	{
+		question: "Can I use a different agent framework besides OpenClaw?",
+		answer:
+			"Yes! We support 8 agent frameworks: OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, and Codex. Choose your primary framework in the CLI wizard, web builder, or API. You can even run multiple frameworks side-by-side as companion frameworks.",
+	},
 ];
 
 export function FaqSection() {

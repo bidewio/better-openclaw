@@ -60,7 +60,7 @@ export const milvusDefinition: ServiceDefinition = {
 	restartPolicy: "unless-stopped",
 	networks: ["openclaw-network"],
 
-	skills: [],
+	skills: [{ skillId: "milvus-vectors", autoInstall: true }],
 	openclawEnvVars: [
 		{
 			key: "MILVUS_URI",

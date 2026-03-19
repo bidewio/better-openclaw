@@ -154,6 +154,8 @@ export async function generateStack(config: {
 	skillPacks?: string[];
 	aiProviders?: string[];
 	gsdRuntimes?: string[];
+	primaryFramework?: string;
+	companionFrameworks?: string[];
 	proxy?: string;
 	domain?: string;
 	gpu?: boolean;

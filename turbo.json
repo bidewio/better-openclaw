@@ -5,19 +5,19 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "@better-openclaw/web": {
+    "@better-openclaw/web#build": {
+      "dependsOn": ["^build", "@better-openclaw/core#build"],
+      "outputs": [".next/**"]
+    },
+    "@better-openclaw/api#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "@better-openclaw/api": {
+    "@better-openclaw/core#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "@better-openclaw/core": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
-    },
-    "create-better-openclaw": {
+    "create-better-openclaw#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },

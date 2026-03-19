@@ -187,8 +187,12 @@ servicesCmd
 		const grouped = new Map<string, typeof services>();
 		for (const s of services) {
 			const cat = s.category;
-			if (!grouped.has(cat)) grouped.set(cat, []);
-			grouped.get(cat)!.push(s);
+			let categoryServices = grouped.get(cat);
+			if (!categoryServices) {
+				categoryServices = [];
+				grouped.set(cat, categoryServices);
+			}
+			categoryServices.push(s);
 		}
 
 		for (const [category, categoryServices] of [...grouped.entries()].sort((a, b) =>
@@ -728,10 +732,16 @@ const deployCmd = new Command("deploy")
 
 		if (isNonInteractive) {
 			const { runDeploy } = await import("./deploy.js");
+			const provider = options.provider;
+			const instanceUrl = options.url;
+			const apiKey = options.apiKey;
+			if (!provider || !instanceUrl || !apiKey) {
+				throw new Error("Missing deploy options: provider, url, and api-key are required");
+			}
 			await runDeploy({
-				provider: options.provider!,
-				instanceUrl: options.url!,
-				apiKey: options.apiKey!,
+				provider,
+				instanceUrl,
+				apiKey,
 				dir: options.dir,
 				json: parentJson.json,
 			});

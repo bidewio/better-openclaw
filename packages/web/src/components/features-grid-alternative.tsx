@@ -4,59 +4,63 @@ import { motion } from "framer-motion";
 import { Bot, Globe, LayoutDashboard, Package, Terminal } from "lucide-react";
 
 /* ── Feature Data ──────────────────────────────────────────────────────────── */
-const features = [
-	{
-		colSpan: "lg:col-span-2",
-		icon: Terminal,
-		title: "Interactive CLI",
-		description:
-			"Build your stack interactively. Our wizard handles dependency resolution, secret generation, and configuration for you.",
-		bg: "bg-gradient-to-br from-surface to-background",
-	},
-	{
-		colSpan: "lg:col-span-1",
-		icon: Globe,
-		title: "REST API",
-		description: "Programmatic generation for CI/CD pipelines.",
-		bg: "bg-surface",
-	},
-	{
-		colSpan: "lg:col-span-1",
-		icon: LayoutDashboard,
-		title: "Visual Builder",
-		description: "Drag-and-drop service selection with instant preview.",
-		bg: "bg-surface",
-	},
-	{
-		colSpan: "lg:col-span-2",
-		icon: Bot,
-		title: "AI Coding Agents",
-		description:
-			"First-class support for running autonomous agents. Pre-configured environments for Claude Code, OpenCode, and Gemini - sandboxed and ready to code.",
-		bg: "bg-gradient-to-tr from-primary/5 via-surface to-surface",
-	},
-	{
-		colSpan: "lg:col-span-3",
-		icon: Package,
-		title: "186+ Production-Ready Services",
-		description:
-			"Databases (Postgres, Redis, Qdrant), Browsers (Steel, Browserless), Workflow Engines (n8n, Activepieces), Media (FFmpeg), and more. All wired together with correct networking and secrets.",
-		bg: "bg-surface border-primary/20",
-		extra: (
-			<div className="mt-4 flex flex-wrap gap-2">
-				{["Postgres", "Redis", "Qdrant", "n8n", "Browserless", "Ollama", "vLLM"].map((tag) => (
-					<span
-						key={tag}
-						className="rounded-md bg-background/50 px-2 py-1 text-xs font-mono text-muted-foreground border border-border/50"
-					>
-						{tag}
-					</span>
-				))}
-				<span className="text-xs text-muted-foreground py-1">+179 more</span>
-			</div>
-		),
-	},
-];
+function getFeatures(serviceCount: number) {
+	const additionalCount = Math.max(0, serviceCount - 7);
+
+	return [
+		{
+			colSpan: "lg:col-span-2",
+			icon: Terminal,
+			title: "Interactive CLI",
+			description:
+				"Build your stack interactively. Our wizard handles dependency resolution, secret generation, and configuration for you.",
+			bg: "bg-gradient-to-br from-surface to-background",
+		},
+		{
+			colSpan: "lg:col-span-1",
+			icon: Globe,
+			title: "REST API",
+			description: "Programmatic generation for CI/CD pipelines.",
+			bg: "bg-surface",
+		},
+		{
+			colSpan: "lg:col-span-1",
+			icon: LayoutDashboard,
+			title: "Visual Builder",
+			description: "Drag-and-drop service selection with instant preview.",
+			bg: "bg-surface",
+		},
+		{
+			colSpan: "lg:col-span-2",
+			icon: Bot,
+			title: "AI Coding Agents",
+			description:
+				"First-class support for running autonomous agents. Pre-configured environments for Claude Code, OpenCode, and Gemini - sandboxed and ready to code.",
+			bg: "bg-gradient-to-tr from-primary/5 via-surface to-surface",
+		},
+		{
+			colSpan: "lg:col-span-3",
+			icon: Package,
+			title: `${serviceCount}+ Production-Ready Services`,
+			description:
+				"Databases (Postgres, Redis, Qdrant), Browsers (Steel, Browserless), Workflow Engines (n8n, Activepieces), Media (FFmpeg), and more. All wired together with correct networking and secrets.",
+			bg: "bg-surface border-primary/20",
+			extra: (
+				<div className="mt-4 flex flex-wrap gap-2">
+					{["Postgres", "Redis", "Qdrant", "n8n", "Browserless", "Ollama", "vLLM"].map((tag) => (
+						<span
+							key={tag}
+							className="rounded-md bg-background/50 px-2 py-1 text-xs font-mono text-muted-foreground border border-border/50"
+						>
+							{tag}
+						</span>
+					))}
+					<span className="text-xs text-muted-foreground py-1">+{additionalCount} more</span>
+				</div>
+			),
+		},
+	];
+}
 
 /* ── Animation Variants ────────────────────────────────────────────────────── */
 const container = {
@@ -74,7 +78,13 @@ const item = {
 };
 
 /* ── Component ─────────────────────────────────────────────────────────────── */
-export function FeaturesGridAlternative() {
+interface FeaturesGridAlternativeProps {
+	serviceCount?: number;
+}
+
+export function FeaturesGridAlternative({ serviceCount = 186 }: FeaturesGridAlternativeProps) {
+	const features = getFeatures(serviceCount);
+
 	return (
 		<section id="features" className="py-24 relative overflow-hidden">
 			{/* Background decoration */}

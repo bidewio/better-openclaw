@@ -188,9 +188,9 @@ export default function RoadmapPage() {
 										</p>
 
 										<ul className="grid sm:grid-cols-2 gap-3">
-											{item.features.map((feature, fIdx) => (
+											{item.features.map((feature) => (
 												<li
-													key={fIdx}
+													key={feature}
 													className="flex items-start gap-2 text-sm text-foreground/80"
 												>
 													<div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />

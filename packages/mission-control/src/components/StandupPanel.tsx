@@ -10,6 +10,46 @@ import { useMutation, useQuery } from "convex/react";
 import { useCallback, useState } from "react";
 import { api } from "../../convex/_generated/api";
 
+interface StandupTask {
+	id?: string | number;
+	title: string;
+}
+
+interface StandupAgent {
+	name: string;
+	avatar: string;
+	role: string;
+	status: string;
+}
+
+interface StandupAgentReport {
+	agent: StandupAgent;
+	completedToday: StandupTask[];
+	inProgress: StandupTask[];
+	review: StandupTask[];
+	blocked: StandupTask[];
+	activityCount: number;
+}
+
+interface StandupSummary {
+	totalAgents: number;
+	totalCompleted: number;
+	totalInProgress: number;
+	totalAssigned: number;
+	totalReview: number;
+	totalBlocked: number;
+}
+
+interface StandupReportData {
+	_id: string;
+	date: string;
+	generatedAt: number;
+	summary: StandupSummary;
+	agentReports: StandupAgentReport[];
+	teamAccomplishments: StandupTask[];
+	teamBlockers: StandupTask[];
+}
+
 function formatDate(ts: number): string {
 	return new Date(ts).toLocaleDateString("en-US", {
 		weekday: "short",
@@ -120,7 +160,7 @@ export default function StandupPanel() {
 	);
 }
 
-function StandupReport({ report }: { report: any }) {
+function StandupReport({ report }: { report: StandupReportData }) {
 	const { summary, agentReports, teamAccomplishments, teamBlockers } = report;
 
 	return (
@@ -163,7 +203,7 @@ function StandupReport({ report }: { report: any }) {
 						Completed Today
 					</h4>
 					<ul className="space-y-1">
-						{teamAccomplishments.map((task: any, i: number) => (
+						{teamAccomplishments.map((task, i) => (
 							<li
 								key={task.id || i}
 								className="text-sm text-muted-foreground flex items-start gap-2"
@@ -184,7 +224,7 @@ function StandupReport({ report }: { report: any }) {
 						Blockers
 					</h4>
 					<ul className="space-y-1">
-						{teamBlockers.map((task: any, i: number) => (
+						{teamBlockers.map((task, i) => (
 							<li
 								key={task.id || i}
 								className="text-sm text-muted-foreground flex items-start gap-2"
@@ -205,7 +245,7 @@ function StandupReport({ report }: { report: any }) {
 						Per-Agent Breakdown
 					</h4>
 					<div className="space-y-3">
-						{agentReports.map((ar: any) => (
+						{agentReports.map((ar) => (
 							<div key={ar.agent.name} className="border border-border/50 rounded-md p-3">
 								<div className="flex items-center gap-2 mb-2">
 									<span>{ar.agent.avatar}</span>

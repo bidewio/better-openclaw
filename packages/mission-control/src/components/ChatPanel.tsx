@@ -1,8 +1,7 @@
-import { IconLoader2, IconMessage, IconSend, IconX } from "@tabler/icons-react";
+import { IconLoader2, IconMessage, IconSend } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
 
 // Agent color themes for message bubbles
 const AGENT_COLORS: Record<string, { bg: string; text: string; border: string }> = {
@@ -226,7 +225,7 @@ function MessageList({ conversationId }: { conversationId: string }) {
 
 	return (
 		<>
-			{messages.map((msg, i) => {
+			{messages.map((msg) => {
 				const isFromUser = !!msg.fromUser;
 				const agentInfo = msg.fromAgent;
 				const colors = agentInfo

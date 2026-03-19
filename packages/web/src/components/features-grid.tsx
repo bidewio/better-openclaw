@@ -4,36 +4,37 @@ import { motion } from "framer-motion";
 import { Database, Layers, Shield, TerminalSquare } from "lucide-react";
 import Link from "next/link";
 
-const features = [
-	{
-		id: "01",
-		icon: TerminalSquare,
-		title: "STACK GENERATION",
-		description:
-			"Instant provisioning of 186+ companion services and automated docker-compose configurations across distributed environments.",
-	},
-	{
-		id: "02",
-		icon: Layers,
-		title: "SKILL INTEGRATION",
-		description:
-			"Pre-wired skill packs injecting core capabilities directly into your autonomous agents in sub-millisecond timeframes.",
-	},
-	{
-		id: "03",
-		icon: Shield,
-		title: "PRODUCTION READY",
-		description:
-			"Secure-by-default environment with automated network isolation, persistent volume management, and TLS-ready ingress.",
-	},
-	{
-		id: "04",
-		icon: Database,
-		title: "OPEN INFRASTRUCTURE",
-		description:
-			"100% open-source architecture ensuring zero vendor lock-in and complete data sovereignty for enterprise stacks.",
-	},
-];
+function getFeatures(serviceCount: number) {
+	return [
+		{
+			id: "01",
+			icon: TerminalSquare,
+			title: "STACK GENERATION",
+			description: `Instant provisioning of ${serviceCount}+ companion services and automated docker-compose configurations across distributed environments.`,
+		},
+		{
+			id: "02",
+			icon: Layers,
+			title: "SKILL INTEGRATION",
+			description:
+				"Pre-wired skill packs injecting core capabilities directly into your autonomous agents in sub-millisecond timeframes.",
+		},
+		{
+			id: "03",
+			icon: Shield,
+			title: "PRODUCTION READY",
+			description:
+				"Secure-by-default environment with automated network isolation, persistent volume management, and TLS-ready ingress.",
+		},
+		{
+			id: "04",
+			icon: Database,
+			title: "OPEN INFRASTRUCTURE",
+			description:
+				"100% open-source architecture ensuring zero vendor lock-in and complete data sovereignty for enterprise stacks.",
+		},
+	];
+}
 
 const container = {
 	hidden: { opacity: 0 },
@@ -49,7 +50,13 @@ const card = {
 	},
 };
 
-export function FeaturesGrid() {
+interface FeaturesGridProps {
+	serviceCount?: number;
+}
+
+export function FeaturesGrid({ serviceCount = 186 }: FeaturesGridProps) {
+	const features = getFeatures(serviceCount);
+
 	return (
 		<section className="relative w-full py-20 lg:py-32 overflow-hidden border-t border-border/50">
 			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">

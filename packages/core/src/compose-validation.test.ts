@@ -23,7 +23,7 @@ describe("docker compose config integration tests", () => {
 				monitoring: false,
 			});
 
-			const composeContent = result.files["docker-compose.yml"]!;
+			const composeContent = result.files["docker-compose.yml"] ?? "";
 			const parsed = yaml.parse(composeContent);
 
 			it("parses as valid YAML", () => {
@@ -78,7 +78,7 @@ describe("docker compose config integration tests", () => {
 						// Named volumes follow the pattern "name:path" (no leading . or /)
 						// Bind mounts start with . or / or use an absolute path
 						const parts = volStr.split(":");
-						const source = parts[0]!;
+						const source = parts[0] ?? "";
 						const isNamedVolume =
 							source.length > 0 &&
 							!source.startsWith(".") &&

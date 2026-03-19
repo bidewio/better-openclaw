@@ -23,7 +23,7 @@ describe("generate (end-to-end)", () => {
 		expect(result.files).toHaveProperty("README.md");
 
 		// docker-compose.yml must be valid YAML
-		const composed = parse(result.files["docker-compose.yml"]!);
+		const composed = parse(result.files["docker-compose.yml"] ?? "");
 		expect(composed).toHaveProperty("services");
 
 		// .env.example should reference REDIS_PASSWORD
@@ -55,7 +55,7 @@ describe("generate (end-to-end)", () => {
 		expect(result.files).toHaveProperty("openclaw/workspace/skills/browserless-browse/SKILL.md");
 
 		// docker-compose.yml should contain the expected services
-		const composed = parse(result.files["docker-compose.yml"]!);
+		const composed = parse(result.files["docker-compose.yml"] ?? "");
 		expect(composed.services).toHaveProperty("qdrant");
 		expect(composed.services).toHaveProperty("searxng");
 		expect(composed.services).toHaveProperty("browserless");
@@ -128,7 +128,7 @@ describe("generate (end-to-end)", () => {
 		});
 
 		expect(result.files).toHaveProperty("caddy/Caddyfile");
-		expect(result.files["caddy/Caddyfile"]!.length).toBeGreaterThan(0);
+		expect((result.files["caddy/Caddyfile"] ?? "").length).toBeGreaterThan(0);
 	});
 
 	it("generates prometheus config when monitoring enabled", () => {
@@ -147,7 +147,7 @@ describe("generate (end-to-end)", () => {
 
 		expect(result.files).toHaveProperty("prometheus/prometheus.yml");
 		// Verify it's valid YAML
-		const promConfig = parse(result.files["prometheus/prometheus.yml"]!);
+		const promConfig = parse(result.files["prometheus/prometheus.yml"] ?? "");
 		expect(promConfig).toBeDefined();
 	});
 
@@ -246,7 +246,7 @@ describe("generate (end-to-end)", () => {
 		expect(result.files["native/install-linux.sh"]).toContain("redis");
 
 		// Docker compose must NOT include redis (native); only gateway/openclaw
-		const composed = parse(result.files["docker-compose.yml"]!);
+		const composed = parse(result.files["docker-compose.yml"] ?? "");
 		expect(composed.services).not.toHaveProperty("redis");
 		expect(composed.services).toHaveProperty("openclaw-gateway");
 
@@ -303,7 +303,7 @@ describe("generate (end-to-end)", () => {
 
 		for (const script of expectedScripts) {
 			expect(result.files).toHaveProperty(script);
-			expect(result.files[script]!.length).toBeGreaterThan(0);
+			expect((result.files[script] ?? "").length).toBeGreaterThan(0);
 		}
 	});
 
@@ -320,13 +320,13 @@ describe("generate (end-to-end)", () => {
 			openclawVersion: "latest",
 		});
 
-		const envExample = result.files[".env.example"]!;
+		const envExample = result.files[".env.example"] ?? "";
 		const lines = envExample.split("\n");
 
 		// Walk through lines: every non-empty, non-comment KEY=VALUE line should
 		// have a preceding comment line (starting with #).
 		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i]!.trim();
+			const line = lines[i]?.trim() ?? "";
 			if (line === "" || line.startsWith("#")) continue;
 
 			// This line looks like KEY=VALUE
@@ -334,7 +334,7 @@ describe("generate (end-to-end)", () => {
 				// There must be a comment somewhere before it (look backwards for a # line)
 				let foundComment = false;
 				for (let j = i - 1; j >= 0; j--) {
-					const prev = lines[j]!.trim();
+					const prev = lines[j]?.trim() ?? "";
 					if (prev === "") continue; // skip blank lines
 					if (prev.startsWith("#")) {
 						foundComment = true;

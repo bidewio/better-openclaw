@@ -31,12 +31,6 @@ const container = {
 	},
 };
 
-const techBullets = [
-	"GLOBAL DISTRIBUTED INFRASTRUCTURE",
-	"AUTONOMOUS AGENT ORCHESTRATION",
-	"SUB-10MS EXECUTION LATENCY",
-];
-
 const INSTALL_PRESETS = ["researcher", "devops", "full", "coding-team", "ai-playground"] as const;
 
 const COMMAND_TABS = ["CLI", "Install", "MCP", "Skills"] as const;
@@ -217,6 +211,7 @@ export function HeroContent() {
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 										strokeWidth={2}
+										aria-hidden="true"
 									>
 										<path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
 									</svg>
@@ -273,6 +268,7 @@ export function HeroContent() {
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 										strokeWidth={2}
+										aria-hidden="true"
 									>
 										<path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
 									</svg>
@@ -371,9 +367,7 @@ export function HeroContent() {
 										</>
 									)}
 									{activeTab === "MCP" && (
-										<>
-											<span className="text-foreground/90">{MCP_PKG_COMMANDS[pkgManager]}</span>
-										</>
+										<span className="text-foreground/90">{MCP_PKG_COMMANDS[pkgManager]}</span>
 									)}
 									{activeTab === "Skills" && (
 										<>
@@ -392,6 +386,7 @@ export function HeroContent() {
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 								strokeWidth={1.5}
+								aria-hidden="true"
 							>
 								<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
 								<path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
@@ -503,6 +498,7 @@ export function HeroHUD() {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
+							{/* biome-ignore lint/performance/noImgElement: Product Hunt provides a fixed third-party embed badge URL. */}
 							<img
 								alt="better-openclaw - Build your openclaw superstack under a minute | Product Hunt"
 								width="250"

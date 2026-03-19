@@ -6,7 +6,6 @@ import {
 	IconLoader2,
 	IconPlugConnected,
 	IconPlugConnectedX,
-	IconTrash,
 } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
 import {

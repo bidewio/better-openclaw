@@ -220,13 +220,13 @@ describe("resolve", () => {
 		expect(ids).toContain("convex");
 		expect(ids).toContain("tailscale");
 		const mc = result.services.find((s) => s.definition.id === "mission-control");
-		expect(mc!.addedBy).toBe("mandatory");
+		expect(mc?.addedBy).toBe("mandatory");
 	});
 
 	it("marks user-selected mandatory services as 'user' not 'mandatory'", () => {
 		const result = resolve({ services: ["mission-control"], skillPacks: [] });
 		const mc = result.services.find((s) => s.definition.id === "mission-control");
-		expect(mc!.addedBy).toBe("user");
+		expect(mc?.addedBy).toBe("user");
 		// convex should still be auto-added as dependency of mission-control
 		const convex = result.services.find((s) => s.definition.id === "convex");
 		expect(convex).toBeDefined();

@@ -6,11 +6,17 @@ import type { NextConfig } from "next";
 const cwd = process.cwd();
 const coreDistFromRoot = path.join(cwd, "packages", "core", "dist");
 const coreDistFromWeb = path.resolve(cwd, "..", "core", "dist");
-const coreDist = fs.existsSync(coreDistFromRoot)
-	? coreDistFromRoot
-	: fs.existsSync(coreDistFromWeb)
-		? coreDistFromWeb
-		: null;
+const coreSrcFromRoot = path.join(cwd, "packages", "core", "src");
+const coreSrcFromWeb = path.resolve(cwd, "..", "core", "src");
+const coreWorkspacePath = fs.existsSync(coreSrcFromRoot)
+	? coreSrcFromRoot
+	: fs.existsSync(coreSrcFromWeb)
+		? coreSrcFromWeb
+		: fs.existsSync(coreDistFromRoot)
+			? coreDistFromRoot
+			: fs.existsSync(coreDistFromWeb)
+				? coreDistFromWeb
+				: null;
 
 const nextConfig: NextConfig = {
 	transpilePackages: ["@better-openclaw/core"],
@@ -60,10 +66,11 @@ const nextConfig: NextConfig = {
 	// fallback logic, then set `crypto: false` to resolve it to an empty module.
 	webpack: (config, { isServer }) => {
 		config.resolve = config.resolve ?? {};
-		// Resolve workspace package to built output only when local core dist exists (monorepo); otherwise use node_modules (e.g. published @better-openclaw/core on Railpack)
+		// Resolve workspace package to local core source/dist in monorepo; otherwise use node_modules (e.g. published @better-openclaw/core on Railpack).
+		// Source fallback avoids transient module-not-found during parallel turbo builds when dist is being rebuilt.
 		config.resolve.alias = {
 			...(config.resolve.alias ?? {}),
-			...(coreDist ? { "@better-openclaw/core": coreDist } : {}),
+			...(coreWorkspacePath ? { "@better-openclaw/core": coreWorkspacePath } : {}),
 		};
 		if (!isServer) {
 			config.resolve.fallback = {

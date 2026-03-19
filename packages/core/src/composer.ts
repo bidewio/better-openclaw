@@ -631,10 +631,12 @@ export function composeMultiFile(resolved: ResolverOutput, options: ComposeOptio
 	for (const info of serviceInfos) {
 		const mapping = CATEGORY_PROFILE_MAP[info.category];
 		if (mapping) {
-			if (!profileFileMap[mapping.file]) {
-				profileFileMap[mapping.file] = { profile: mapping.profile, services: [] };
+			let profileFile = profileFileMap[mapping.file];
+			if (!profileFile) {
+				profileFile = { profile: mapping.profile, services: [] };
+				profileFileMap[mapping.file] = profileFile;
 			}
-			profileFileMap[mapping.file]!.services.push(info);
+			profileFile.services.push(info);
 		} else {
 			baseServiceIds.add(info.id);
 		}

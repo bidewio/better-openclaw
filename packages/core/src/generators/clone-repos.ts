@@ -1,13 +1,22 @@
-import type { ResolverOutput } from "../types.js";
+import type { ResolvedService, ResolverOutput } from "../types.js";
+
+type GitService = ResolvedService & {
+	definition: ResolvedService["definition"] & {
+		gitSource: NonNullable<ResolvedService["definition"]["gitSource"]>;
+		buildContext: NonNullable<ResolvedService["definition"]["buildContext"]>;
+	};
+};
+
+function hasGitSourceAndBuildContext(service: ResolvedService): service is GitService {
+	return Boolean(service.definition.gitSource && service.definition.buildContext);
+}
 
 /**
  * Generates clone scripts for git-based services (SaaS boilerplates).
  * Returns empty object if no git-based services exist in the resolved stack.
  */
 export function generateCloneScripts(resolved: ResolverOutput): Record<string, string> {
-	const gitServices = resolved.services.filter(
-		(s) => s.definition.gitSource && s.definition.buildContext,
-	);
+	const gitServices = resolved.services.filter(hasGitSourceAndBuildContext);
 
 	if (gitServices.length === 0) return {};
 
@@ -17,7 +26,7 @@ export function generateCloneScripts(resolved: ResolverOutput): Record<string, s
 
 	const bashEntries = gitServices
 		.map((s) => {
-			const gs = s.definition.gitSource!;
+			const gs = s.definition.gitSource;
 			const branchArg = gs.branch ? `"${gs.branch}"` : '""';
 			let block = `clone_or_update "${s.definition.id}" "${gs.repoUrl}" ${branchArg}`;
 			if (gs.postCloneCommands && gs.postCloneCommands.length > 0) {
@@ -93,7 +102,7 @@ ok "All repositories ready."
 
 	const psEntries = gitServices
 		.map((s) => {
-			const gs = s.definition.gitSource!;
+			const gs = s.definition.gitSource;
 			const branchArg = gs.branch ? ` -Branch "${gs.branch}"` : "";
 			let block = `Clone-OrUpdate -Name "${s.definition.id}" -Url "${gs.repoUrl}"${branchArg}`;
 			if (gs.postCloneCommands && gs.postCloneCommands.length > 0) {

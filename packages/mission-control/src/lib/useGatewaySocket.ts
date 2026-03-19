@@ -47,11 +47,22 @@ interface GatewayFrame {
 	event?: string;
 	method?: string;
 	id?: string;
-	payload?: any;
+	payload?: unknown;
 	ok?: boolean;
-	result?: any;
-	error?: any;
-	params?: any;
+	result?: unknown;
+	error?: unknown;
+	params?: unknown;
+}
+
+interface ConnectParams {
+	version: number;
+	client: { id: string; mode: "ui" };
+	auth: { token: string };
+	device?: {
+		id: string;
+		publicKey: string;
+		token?: string;
+	};
 }
 
 export interface UseGatewaySocketReturn {
@@ -97,6 +108,26 @@ function getErrorHelp(message: string): string {
 		return "Gateway authentication is rate limited. Wait briefly, then reconnect.";
 	}
 	return "Gateway handshake failed. Check gateway origin and device identity settings.";
+}
+
+function getErrorMessage(error: unknown, fallback = "Unknown error"): string {
+	if (typeof error === "string" && error.length > 0) {
+		return error;
+	}
+	if (error instanceof Error && error.message) {
+		return error.message;
+	}
+	if (error && typeof error === "object" && "message" in error) {
+		const message = (error as { message?: unknown }).message;
+		if (typeof message === "string" && message.length > 0) {
+			return message;
+		}
+	}
+	return fallback;
+}
+
+function asObject(value: unknown): Record<string, unknown> | null {
+	return value && typeof value === "object" ? (value as Record<string, unknown>) : null;
 }
 
 export function useGatewaySocket(): UseGatewaySocketReturn {
@@ -228,7 +259,7 @@ export function useGatewaySocket(): UseGatewaySocketReturn {
 					addLog("info", "WebSocket open, starting handshake...");
 
 					// Build connect frame
-					const connectParams: Record<string, any> = {
+					const connectParams: ConnectParams = {
 						version: PROTOCOL_VERSION,
 						client: { id: DEFAULT_CLIENT_ID, mode: "ui" },
 						auth: { token: authTokenRef.current },
@@ -261,8 +292,45 @@ export function useGatewaySocket(): UseGatewaySocketReturn {
 						return;
 					}
 
-					// Handle connect response
-					if (frame.type === "res" && frame.id === "connect-1") {
+					// Handle connect responses (initial + signed challenge step)
+					if (frame.type === "res" && (frame.id === "connect-1" || frame.id === "connect-2")) {
+						const result = asObject(frame.result);
+						const challenge = asObject(result?.challenge);
+
+						if (challenge) {
+							const nonce = challenge.nonce;
+							if (typeof nonce !== "string" || nonce.length === 0) {
+								addLog("error", "Gateway challenge payload is missing a valid nonce");
+								ws.close(4002, "Invalid challenge");
+								return;
+							}
+
+							try {
+								const identity = await getOrCreateDeviceIdentity();
+								const { signature, signedAt } = await signPayload(identity.privateKey, nonce);
+								ws.send(
+									JSON.stringify({
+										type: "req",
+										method: "connect",
+										id: "connect-2",
+										params: {
+											device: {
+												id: identity.deviceId,
+												publicKey: identity.publicKeyBase64,
+												signature,
+												signedAt,
+												nonce,
+											},
+										},
+									}),
+								);
+							} catch (err: unknown) {
+								addLog("error", `Challenge signing failed: ${getErrorMessage(err)}`);
+								ws.close(4002, "Challenge failed");
+							}
+							return;
+						}
+
 						if (frame.ok) {
 							handshakeCompleteRef.current = true;
 							reconnectAttemptsRef.current = 0;
@@ -270,13 +338,14 @@ export function useGatewaySocket(): UseGatewaySocketReturn {
 							addLog("info", "Connected to gateway");
 
 							// Cache device token if provided
-							if (frame.result?.device_token) {
-								cacheDeviceToken(frame.result.device_token);
+							const deviceToken = result?.device_token;
+							if (typeof deviceToken === "string" && deviceToken.length > 0) {
+								cacheDeviceToken(deviceToken);
 							}
 
 							startHeartbeat();
 						} else {
-							const errMsg = frame.error?.message || frame.error || "Handshake rejected";
+							const errMsg = getErrorMessage(frame.error, "Handshake rejected");
 							addLog("error", `Handshake failed: ${errMsg}`);
 
 							if (isNonRetryableError(String(errMsg))) {
@@ -285,35 +354,6 @@ export function useGatewaySocket(): UseGatewaySocketReturn {
 								ws.close(4001, "Non-retryable error");
 								return;
 							}
-						}
-						return;
-					}
-
-					// Handle challenge (device signing)
-					if (frame.type === "res" && frame.id === "connect-1" && frame.result?.challenge) {
-						try {
-							const identity = await getOrCreateDeviceIdentity();
-							const nonce = frame.result.challenge.nonce;
-							const { signature, signedAt } = await signPayload(identity.privateKey, nonce);
-							ws.send(
-								JSON.stringify({
-									type: "req",
-									method: "connect",
-									id: "connect-2",
-									params: {
-										device: {
-											id: identity.deviceId,
-											publicKey: identity.publicKeyBase64,
-											signature,
-											signedAt,
-											nonce,
-										},
-									},
-								}),
-							);
-						} catch (err: any) {
-							addLog("error", `Challenge signing failed: ${err.message}`);
-							ws.close(4002, "Challenge failed");
 						}
 						return;
 					}
@@ -369,8 +409,8 @@ export function useGatewaySocket(): UseGatewaySocketReturn {
 				ws.onerror = () => {
 					addLog("error", "WebSocket error");
 				};
-			} catch (err: any) {
-				addLog("error", `Failed to create WebSocket: ${err.message}`);
+			} catch (err: unknown) {
+				addLog("error", `Failed to create WebSocket: ${getErrorMessage(err)}`);
 				setConnectionState("disconnected");
 			}
 		},

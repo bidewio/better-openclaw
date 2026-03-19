@@ -28,6 +28,12 @@ const STATUS_CONFIG: Record<string, { color: string; bg: string; icon: React.Rea
 	},
 };
 
+const FALLBACK_STATUS_CONFIG = {
+	color: "text-red-400",
+	bg: "bg-red-500/20",
+	icon: <IconCircleX size={14} />,
+};
+
 export default function FleetPage() {
 	const overview = useQuery(api.fleet.getFleetOverview);
 	const instances = useQuery(api.fleet.listFleetInstances);
@@ -157,7 +163,8 @@ export default function FleetPage() {
 					<tbody>
 						{instances && instances.length > 0 ? (
 							instances.map((inst) => {
-								const cfg = (STATUS_CONFIG[inst.status] ?? STATUS_CONFIG.offline)!;
+								const cfg =
+									STATUS_CONFIG[inst.status] ?? STATUS_CONFIG.offline ?? FALLBACK_STATUS_CONFIG;
 								return (
 									<tr key={inst._id} className="border-b border-border/10 hover:bg-secondary/20">
 										<td className="p-3">

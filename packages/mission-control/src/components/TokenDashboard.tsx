@@ -66,11 +66,13 @@ export default function TokenDashboard() {
 	const toolChartData = useMemo(() => {
 		if (!toolUsage) return [];
 		return toolUsage.slice(0, 8).map((t) => ({
-			name: t.tool.length > 12 ? t.tool.slice(0, 12) + "..." : t.tool,
+			name: t.tool.length > 12 ? `${t.tool.slice(0, 12)}...` : t.tool,
 			count: t.count,
 			fullName: t.tool,
 		}));
 	}, [toolUsage]);
+
+	const fallbackChartColor = CHART_COLORS[0] ?? "var(--accent-blue)";
 
 	// Cost timeline chart data
 	const timelineData = useMemo(() => {
@@ -238,7 +240,7 @@ export default function TokenDashboard() {
 											{toolChartData.map((entry, i) => (
 												<Cell
 													key={`tool-${entry.name}`}
-													fill={CHART_COLORS[i % CHART_COLORS.length]!}
+													fill={CHART_COLORS[i % CHART_COLORS.length] ?? fallbackChartColor}
 												/>
 											))}
 										</Bar>

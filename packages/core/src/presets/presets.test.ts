@@ -20,10 +20,10 @@ describe("preset smoke tests", () => {
 		it(`getPresetById returns correct preset for "${preset.id}"`, () => {
 			const found = getPresetById(preset.id);
 			expect(found).toBeDefined();
-			expect(found!.id).toBe(preset.id);
-			expect(found!.name).toBe(preset.name);
-			expect(found!.services).toEqual(preset.services);
-			expect(found!.skillPacks).toEqual(preset.skillPacks);
+			expect(found?.id).toBe(preset.id);
+			expect(found?.name).toBe(preset.name);
+			expect(found?.services).toEqual(preset.services);
+			expect(found?.skillPacks).toEqual(preset.skillPacks);
 		});
 	}
 
@@ -53,7 +53,11 @@ describe("preset smoke tests", () => {
 			expect(result.files[".env.example"]).toBeDefined();
 			expect(result.metadata.serviceCount).toBeGreaterThan(0);
 
-			const composeContent = result.files["docker-compose.yml"]!;
+			const composeContent = result.files["docker-compose.yml"];
+			expect(composeContent).toBeDefined();
+			if (!composeContent) {
+				throw new Error("docker-compose.yml is missing");
+			}
 			const parsed = yaml.parse(composeContent);
 			expect(parsed).toBeDefined();
 			expect(parsed.services).toBeDefined();

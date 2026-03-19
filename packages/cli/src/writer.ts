@@ -64,7 +64,10 @@ export async function writeProject(
 	// Write all files
 	for (const filePath of sortedPaths) {
 		const fullPath = join(projectDir, filePath);
-		const content = files[filePath]!;
+		const content = files[filePath];
+		if (content === undefined) {
+			continue;
+		}
 		await writeFile(fullPath, content, "utf-8");
 
 		// Make shell scripts executable
@@ -90,7 +93,7 @@ export async function writeProject(
 async function createArchive(projectDir: string, format: "tar" | "zip"): Promise<void> {
 	const absDir = resolve(projectDir);
 	const parentDir = dirname(absDir);
-	const baseName = absDir.split(/[\\/]/).pop()!;
+	const baseName = absDir.split(/[\\/]/).filter(Boolean).pop() ?? "openclaw-stack";
 
 	try {
 		if (format === "tar") {

@@ -20,6 +20,16 @@ export function CommonSetups() {
 	const [throughput, setThroughput] = useState("1.2");
 	const [compute, setCompute] = useState(80);
 	const [memory, setMemory] = useState(42);
+	const logTickerLines = [
+		...logLines.map((line) => ({
+			...line,
+			renderKey: `cycle-a-${line.ts}-${line.text}`,
+		})),
+		...logLines.map((line) => ({
+			...line,
+			renderKey: `cycle-b-${line.ts}-${line.text}`,
+		})),
+	];
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -261,8 +271,8 @@ export function CommonSetups() {
 							className="flex gap-8 whitespace-nowrap"
 							style={{ animation: "ticker-scroll 30s linear infinite" }}
 						>
-							{[...logLines, ...logLines].map((line, i) => (
-								<span key={i} className="font-mono text-xs">
+							{logTickerLines.map((line) => (
+								<span key={line.renderKey} className="font-mono text-xs">
 									<span className="text-muted-foreground/60">[{line.ts}]</span>{" "}
 									<span
 										className={

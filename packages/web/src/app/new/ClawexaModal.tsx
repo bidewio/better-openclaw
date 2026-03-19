@@ -32,7 +32,6 @@ export function ClawexaModal() {
 		selectedServices,
 		isGenerating,
 		setIsGenerating,
-		generateError,
 		setGenerateError,
 		showClawexaModal,
 		setShowClawexaModal,

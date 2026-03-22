@@ -994,6 +994,56 @@ curl -X POST "http://{{WEAVIATE_HOST}}:{{WEAVIATE_PORT}}/v1/graphql" \\
 - Use the alpha parameter to balance between keyword (0.0) and vector (1.0) search.
 - GraphQL API provides flexible querying with filters, aggregations, and cross-references.
 `,
+
+	"hermes-agent": `---
+name: hermes-agent
+description: "Interact with Hermes Agent's OpenAI-compatible API"
+metadata:
+  openclaw:
+    emoji: "☤"
+---
+
+# Hermes Agent
+
+Self-improving AI agent by Nous Research. The API server is available at \`http://{{HERMES_HOST}}:{{HERMES_API_PORT}}\`.
+
+## API Server (OpenAI-Compatible)
+
+### Chat Completions
+
+\`\`\`bash
+curl http://{{HERMES_HOST}}:{{HERMES_API_PORT}}/v1/chat/completions \\
+  -H "Authorization: Bearer $HERMES_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{"model": "default", "messages": [{"role": "user", "content": "Hello"}]}'
+\`\`\`
+
+### Health Check
+
+\`\`\`bash
+curl http://{{HERMES_HOST}}:{{HERMES_API_PORT}}/health
+\`\`\`
+
+## Connecting OpenAI-Compatible Frontends
+
+- **Base URL:** \`http://{{HERMES_HOST}}:{{HERMES_API_PORT}}/v1\`
+- **API Key:** Use the value of \`HERMES_API_KEY\`
+- **Model:** \`default\` (routes to the configured LLM)
+
+## MCP Bridge
+
+Connect better-openclaw as an MCP server to generate infrastructure from natural language:
+
+\`\`\`bash
+hermes mcp add better-openclaw -- npx -y @better-openclaw/mcp
+\`\`\`
+
+## Tips for AI Agents
+
+- Use \`/v1/chat/completions\` for stateless interactions, \`/v1/responses\` for stateful
+- The \`model\` field is informational — Hermes routes to its configured provider
+- Hermes has persistent memory and self-improving skills across sessions
+`,
 };
 
 /**

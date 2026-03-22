@@ -98,6 +98,7 @@ export const AgentFrameworkSchema = z.enum([
 	"memu",
 	"claude-code",
 	"codex",
+	"hermes",
 ]);
 
 // ─── Sub-Schemas ────────────────────────────────────────────────────────────

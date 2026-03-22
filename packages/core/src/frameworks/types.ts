@@ -10,7 +10,8 @@ export type AgentFrameworkId =
 	| "zeroclaw"
 	| "memu"
 	| "claude-code"
-	| "codex";
+	| "codex"
+	| "hermes";
 
 // ─── Gateway Build Types ────────────────────────────────────────────────────
 

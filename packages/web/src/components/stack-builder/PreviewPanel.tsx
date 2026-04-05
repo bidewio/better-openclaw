@@ -1,12 +1,8 @@
 "use client";
 
-import type { ResolverOutput } from "@better-openclaw/core";
-import {
-	type ComposeResult,
-	composeMultiFile,
-	type EnvVarGroup,
-	getStructuredEnvVars,
-} from "@better-openclaw/core";
+import { type ComposeResult, composeMultiFile } from "@better-openclaw/core/composer";
+import { type EnvVarGroup, getStructuredEnvVars } from "@better-openclaw/core/generators/env";
+import type { ResolverOutput } from "@better-openclaw/core/types";
 import {
 	AlertTriangle,
 	Box,

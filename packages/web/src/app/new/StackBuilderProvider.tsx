@@ -1,19 +1,19 @@
 "use client";
 
-import {
-	type AgentFramework,
-	type AiProvider,
-	composeMultiFile,
-	type GsdRuntime,
-	generateEnvFiles,
-	getAllPresets,
-	getAllServices,
-	getAllSkillPacks,
-	type ResolverOutput,
-	resolve,
-	type ServiceDefinition,
-	type SkillPack,
-} from "@better-openclaw/core";
+import { composeMultiFile } from "@better-openclaw/core/composer";
+import { generateEnvFiles } from "@better-openclaw/core/generators/env";
+import { getAllPresets } from "@better-openclaw/core/presets/registry";
+import { resolve } from "@better-openclaw/core/resolver";
+import { getAllServices } from "@better-openclaw/core/services/registry";
+import { getAllSkillPacks } from "@better-openclaw/core/skills/registry";
+import type {
+	AgentFramework,
+	AiProvider,
+	GsdRuntime,
+	ResolverOutput,
+	ServiceDefinition,
+	SkillPack,
+} from "@better-openclaw/core/types";
 import JSZip from "jszip";
 import { useSearchParams } from "next/navigation";
 import {

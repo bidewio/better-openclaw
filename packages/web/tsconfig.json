@@ -28,6 +28,9 @@
       ],
       "@better-openclaw/core": [
         "../core/dist"
+      ],
+      "@better-openclaw/core/*": [
+        "../core/dist/*"
       ]
     }
   },

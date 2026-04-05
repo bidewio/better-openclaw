@@ -1,6 +1,6 @@
 "use client";
 
-import { SERVICE_CATEGORIES } from "@better-openclaw/core";
+import { SERVICE_CATEGORIES } from "@better-openclaw/core/types";
 import { Layers, Package, Send } from "lucide-react";
 import { useState } from "react";
 import { Footer } from "@/components/footer";

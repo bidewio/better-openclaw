@@ -1,7 +1,8 @@
 "use client";
 
-import type { AgentFramework, AgentFrameworkDefinition } from "@better-openclaw/core";
-import { getAllFrameworks } from "@better-openclaw/core";
+import { getAllFrameworks } from "@better-openclaw/core/frameworks/registry";
+import type { AgentFrameworkDefinition } from "@better-openclaw/core/frameworks/types";
+import type { AgentFramework } from "@better-openclaw/core/types";
 import { Check } from "lucide-react";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";

@@ -47,7 +47,6 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "handlebars": "^4.7.8",
     "yaml": "^2.8.2",
     "zod": "^4.3.6"
   },

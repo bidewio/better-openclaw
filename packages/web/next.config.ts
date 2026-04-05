@@ -8,14 +8,14 @@ const coreDistFromRoot = path.join(cwd, "packages", "core", "dist");
 const coreDistFromWeb = path.resolve(cwd, "..", "core", "dist");
 const coreSrcFromRoot = path.join(cwd, "packages", "core", "src");
 const coreSrcFromWeb = path.resolve(cwd, "..", "core", "src");
-const coreWorkspacePath = fs.existsSync(coreSrcFromRoot)
-	? coreSrcFromRoot
-	: fs.existsSync(coreSrcFromWeb)
-		? coreSrcFromWeb
-		: fs.existsSync(coreDistFromRoot)
-			? coreDistFromRoot
-			: fs.existsSync(coreDistFromWeb)
-				? coreDistFromWeb
+const coreWorkspacePath = fs.existsSync(coreDistFromRoot)
+	? coreDistFromRoot
+	: fs.existsSync(coreDistFromWeb)
+		? coreDistFromWeb
+		: fs.existsSync(coreSrcFromRoot)
+			? coreSrcFromRoot
+			: fs.existsSync(coreSrcFromWeb)
+				? coreSrcFromWeb
 				: null;
 
 const nextConfig: NextConfig = {

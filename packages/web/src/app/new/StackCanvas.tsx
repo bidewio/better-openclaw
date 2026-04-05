@@ -1,6 +1,6 @@
 "use client";
 
-import { type AiProvider, type GsdRuntime, SERVICE_CATEGORIES } from "@better-openclaw/core";
+import { type AiProvider, type GsdRuntime, SERVICE_CATEGORIES } from "@better-openclaw/core/types";
 import { Search, X } from "lucide-react";
 import { FrameworkSelector } from "@/components/stack-builder/FrameworkSelector";
 import { ServiceGrid } from "@/components/stack-builder/ServiceGrid";

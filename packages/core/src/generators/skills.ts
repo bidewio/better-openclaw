@@ -1,10 +1,9 @@
-import Handlebars from "handlebars";
 import type { ResolverOutput } from "../types.js";
 
 /**
  * Basic skill templates keyed by skillId.
  *
- * Templates use Handlebars `{{VAR}}` syntax. Variables are resolved from the
+ * Templates use `{{VAR}}` syntax. Variables are resolved from the
  * service's `openclawEnvVars` array at generation time.
  */
 const skillTemplates: Record<string, string> = {
@@ -1000,7 +999,7 @@ curl -X POST "http://{{WEAVIATE_HOST}}:{{WEAVIATE_PORT}}/v1/graphql" \\
  * Generates SKILL.md files for each service that has skills defined.
  *
  * Returns a map of file paths (relative to project root) to file contents.
- * Handlebars is used to replace `{{VAR}}` placeholders with actual values
+ * A lightweight placeholder renderer replaces `{{VAR}}` with actual values
  * from each service's `openclawEnvVars`.
  */
 export function generateSkillFiles(resolved: ResolverOutput): Record<string, string> {
@@ -1034,13 +1033,16 @@ export function generateSkillFiles(resolved: ResolverOutput): Record<string, str
 				continue;
 			}
 
-			const compiled = Handlebars.compile(template, { noEscape: true });
-			const rendered = compiled(vars);
+			const rendered = renderSkillTemplate(template, vars);
 			files[`openclaw/workspace/skills/${skill.skillId}/SKILL.md`] = rendered;
 		}
 	}
 
 	return files;
+}
+
+function renderSkillTemplate(template: string, vars: Record<string, string>): string {
+	return template.replace(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g, (_match, key: string) => vars[key] ?? "");
 }
 
 /**

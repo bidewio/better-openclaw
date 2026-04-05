@@ -69,7 +69,7 @@ export const OpenclawImageVariantSchema = z.enum(["official", "coolify", "alpine
 
 export const OpenclawInstallMethodSchema = z.enum(["docker", "direct"]);
 
-export const DeployTargetSchema = z.enum(["local", "cloud-init"]);
+export const DeployTargetSchema = z.enum(["local", "cloud-init", "nemoclaw"]);
 
 export const AiProviderSchema = z.enum([
 	"openai",
@@ -85,6 +85,17 @@ export const AiProviderSchema = z.enum([
 	"ollama-cloud",
 	"lmstudio",
 	"vllm",
+	"nvidia",
+]);
+
+export const NotificationProviderSchema = z.enum([
+	"discord",
+	"slack",
+	"telegram",
+	"email",
+	"ntfy",
+	"pushover",
+	"gotify",
 ]);
 
 export const GsdRuntimeSchema = z.enum(["claude", "opencode", "gemini", "codex"]);
@@ -350,6 +361,7 @@ export const GenerationInputSchema = z.object({
 	openclawInstallMethod: OpenclawInstallMethodSchema.default("docker"),
 	deployTarget: DeployTargetSchema.default("local"),
 	hardened: z.boolean().default(true),
+	notificationProviders: NotificationProviderSchema.array().default([]),
 });
 
 // ─── Resolver Output ────────────────────────────────────────────────────────

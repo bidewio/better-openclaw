@@ -92,4 +92,29 @@ http.route({
 	}),
 });
 
+// ─── Bridge Sidecar Endpoints ───────────────────────────────────────────
+
+import { heartbeat, taskApprove, taskDispatch } from "./bridge";
+
+// Bridge heartbeat — receives periodic status updates from the bridge sidecar
+http.route({
+	path: "/bridge/heartbeat",
+	method: "POST",
+	handler: heartbeat,
+});
+
+// Bridge task approval relay
+http.route({
+	path: "/bridge/task-approve",
+	method: "POST",
+	handler: taskApprove,
+});
+
+// Bridge task dispatch relay
+http.route({
+	path: "/bridge/task-dispatch",
+	method: "POST",
+	handler: taskDispatch,
+});
+
 export default http;

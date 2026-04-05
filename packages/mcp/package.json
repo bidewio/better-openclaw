@@ -42,17 +42,17 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@better-openclaw/core": "^1.0.31",
-    "@modelcontextprotocol/sdk": "^1.27.1",
-    "@sentry/node": "^10.43.0",
+    "@better-openclaw/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.28.0",
+    "@sentry/node": "^10.46.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/node": "^25.3.5",
-    "tsdown": "^0.21.1",
+    "@types/node": "^25.5.0",
+    "tsdown": "^0.21.6",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.2"
   },
   "engines": {
     "node": ">=22"

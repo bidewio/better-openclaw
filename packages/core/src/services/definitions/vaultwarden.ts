@@ -9,7 +9,7 @@ export const vaultwardenDefinition: ServiceDefinition = {
 	icon: "🔐",
 
 	image: "vaultwarden/server",
-	imageTag: "1.33.2-alpine",
+	imageTag: "1.35.4-alpine",
 	ports: [
 		{
 			host: 8843,

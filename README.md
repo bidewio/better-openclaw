@@ -112,6 +112,7 @@ npx create-better-openclaw \
 - **Environment files** -- secure `.env` generation with random secrets
 - **One-click deploy** -- deploy generated stacks to self-hosted Dokploy or Coolify directly from the web UI or CLI
 - **Centralized operations logging** -- structured NDJSON logs across all packages (CLI, API, MCP) with correlation IDs, step tracking, duration measurement, and automatic sensitive data redaction
+- **Bridge sidecar** -- REST API for live stack management (service status, logs, restart/stop/scale commands) with Convex heartbeat sync to Mission Control
 - **Validation engine** -- port conflicts, resource limits, and configuration checks
 - **Multi-platform support** -- linux/amd64 and linux/arm64
 - **Bare-metal deployment** -- hybrid native + Docker: run supported services natively on the host and use Docker only for the rest (see [Deployment](#deployment))
@@ -145,7 +146,7 @@ Only services with a native recipe run on the host; others remain in Docker. Cur
 | **Analytics** | Matomo, OpenPanel, Umami |
 | **Knowledge & Documents** | AppFlowy, DocsGPT, NocoDB, Outline, Paperless-ngx |
 | **Object Storage** | MinIO, Nextcloud |
-| **Developer Tools** | Beszel, Code Server, Convex Dashboard, Coolify, Dokploy, Dozzle, Gitea, Headscale, Jenkins, Mission Control, Portainer, Tailscale, Watchtower |
+| **Developer Tools** | Beszel, Bridge, Code Server, Convex Dashboard, Coolify, Dokploy, Dozzle, Gitea, Headscale, Jenkins, Mission Control, Portainer, Tailscale, Watchtower |
 | **Reverse Proxy** | Caddy, Traefik |
 | **Monitoring** | Grafana, Loki, Prometheus, SigNoz, Uptime Kuma |
 | **Browser Automation** | Browserless, LightPanda, Playwright Server, Scrapling, Steel Browser |

@@ -22,6 +22,48 @@ interface Release {
 
 const RELEASES: Release[] = [
 	{
+		version: "v1.5.0",
+		date: "March 2026",
+		title: "Bridge Sidecar",
+		changes: [
+			{
+				type: "feature",
+				description:
+					"New @better-openclaw/bridge package — lightweight TypeScript (Hono) sidecar deployed alongside the stack for live management via REST API.",
+			},
+			{
+				type: "feature",
+				description:
+					"Data endpoints: GET /health, /stack/services, /stack/services/:id/logs, /containers/:id/stats, /config/env (redacted), /config/compose.",
+			},
+			{
+				type: "feature",
+				description:
+					"Command endpoints: POST /commands/restart, /stop, /start, /scale, /pull, /recreate, /prune — full Docker container lifecycle management.",
+			},
+			{
+				type: "feature",
+				description:
+					"Convex heartbeat sync (30s interval) pushes overall stack status, per-service health, and config hash to Mission Control's fleet dashboard.",
+			},
+			{
+				type: "feature",
+				description:
+					"Command relay: Mission Control UI can send management commands to the bridge via Convex actions, enabling remote stack management.",
+			},
+			{
+				type: "improvement",
+				description:
+					"BRIDGE_TOKEN auth with timing-safe comparison on all write endpoints. Dev-mode bypass when no token is set.",
+			},
+			{
+				type: "improvement",
+				description:
+					"Bridge is now a recommended service in the OpenClaw framework — automatically suggested during stack generation.",
+			},
+		],
+	},
+	{
 		version: "v1.4.0",
 		date: "March 2026",
 		title: "Centralized Operations Logger",

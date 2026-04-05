@@ -47,6 +47,7 @@ export {
 } from "./frameworks/index.js";
 export { generate, generateServicesDoc } from "./generate.js";
 export { generateCaddyfile } from "./generators/caddy.js";
+export { generateClaudeMd } from "./generators/claude-md.js";
 export { generateCloneScripts } from "./generators/clone-repos.js";
 export type { EnvVarGroup } from "./generators/env.js";
 export { generateEnvFiles, getStructuredEnvVars } from "./generators/env.js";
@@ -56,6 +57,7 @@ export {
 } from "./generators/grafana.js";
 export { generateHealthCheck } from "./generators/health-check.js";
 export { generateN8nWorkflows } from "./generators/n8n-workflows.js";
+export { generateNemoClaw } from "./generators/nemoclaw.js";
 export {
 	generatePostgresInit,
 	getDbRequirements,

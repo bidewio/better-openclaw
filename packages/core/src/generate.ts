@@ -8,6 +8,7 @@ import { StackConfigError, ValidationError } from "./errors.js";
 import { getFrameworkById } from "./frameworks/index.js";
 import { generateBareMetalInstall } from "./generators/bare-metal-install.js";
 import { generateCaddyfile } from "./generators/caddy.js";
+import { generateClaudeMd } from "./generators/claude-md.js";
 import { generateCloneScripts } from "./generators/clone-repos.js";
 import { generateCloudInit } from "./generators/cloud-init.js";
 import { generateEnvFiles } from "./generators/env.js";
@@ -16,6 +17,7 @@ import { generateGrafanaConfig, generateGrafanaDashboard } from "./generators/gr
 import { generateHealthCheck } from "./generators/health-check.js";
 import { generateN8nWorkflows } from "./generators/n8n-workflows.js";
 import { generateNativeInstallScripts } from "./generators/native-services.js";
+import { generateNemoClaw } from "./generators/nemoclaw.js";
 import { generateOpenclawInstallScript } from "./generators/openclaw-install-script.js";
 import { generatePostgresInit } from "./generators/postgres-init.js";
 import { generatePrometheusConfig } from "./generators/prometheus.js";
@@ -54,6 +56,14 @@ export function generate(
 
 	// Apply config migrations if needed
 	const input = migrateConfig(rawInput as Record<string, unknown>) as GenerationInput;
+
+	// NemoClaw deploy target: force hardened mode and inject nvidia AI provider
+	if (input.deployTarget === "nemoclaw") {
+		input.hardened = true;
+		if (!input.aiProviders.includes("nvidia" as any)) {
+			input.aiProviders = [...input.aiProviders, "nvidia" as any];
+		}
+	}
 
 	const composePlatform = getComposePlatform(input.platform);
 
@@ -169,6 +179,8 @@ export function generate(
 		composeProfiles: composeResult.profiles,
 		openclawImage: input.openclawImage,
 		primaryFramework: input.primaryFramework,
+		deployTarget: input.deployTarget,
+		notificationProviders: input.notificationProviders,
 	});
 	files[".env.example"] = envFiles.envExample;
 	files[".env"] = envFiles.env;
@@ -181,6 +193,7 @@ export function generate(
 		"*.log",
 		"docker-compose.override.yml",
 		"repos/",
+		".openclaw-bootstrapped",
 	].join("\n");
 
 	// Stack manifest (consumed by Mission Control)
@@ -195,6 +208,18 @@ export function generate(
 		files[path] = content;
 	}
 
+	// CLAUDE.md — stack-aware context for Claude Code sessions inside the container
+	files["openclaw/workspace/CLAUDE.md"] = generateClaudeMd(resolved, {
+		projectName: input.projectName,
+		primaryFramework: input.primaryFramework,
+		companionFrameworks: input.companionFrameworks,
+		aiProviders: input.aiProviders,
+		proxy: input.proxy,
+		domain: input.domain,
+		deployTarget: input.deployTarget,
+		notificationProviders: input.notificationProviders,
+	});
+
 	// Framework-specific configuration
 	const framework = getFrameworkById(input.primaryFramework ?? "openclaw");
 	if (framework) {
@@ -202,6 +227,8 @@ export function generate(
 			deploymentType: input.deploymentType,
 			gatewayPort: 18789,
 			frameworkVersion: input.openclawVersion,
+			deployTarget: input.deployTarget,
+			notificationProviders: input.notificationProviders,
 		});
 		if (fwConfig) {
 			files[fwConfig.path] = fwConfig.content;
@@ -217,6 +244,8 @@ export function generate(
 		hasNativeServices: isBareMetal && nativeServices.length > 0,
 		openclawInstallMethod: input.openclawInstallMethod,
 		primaryFramework: input.primaryFramework,
+		deployTarget: input.deployTarget,
+		notificationProviders: input.notificationProviders,
 	});
 
 	// Scripts
@@ -342,6 +371,17 @@ export function generate(
 			projectName: input.projectName,
 			gatewayPort: 18789,
 		});
+	}
+
+	// NemoClaw deploy target (NVIDIA hardened sandbox)
+	if (input.deployTarget === "nemoclaw") {
+		const nemoFiles = generateNemoClaw({
+			projectName: input.projectName,
+			gatewayPort: 18789,
+		});
+		for (const [path, content] of Object.entries(nemoFiles)) {
+			files[path] = content;
+		}
 	}
 
 	// 5. Calculate metadata

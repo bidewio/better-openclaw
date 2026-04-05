@@ -9,7 +9,7 @@ export const meilisearchDefinition: ServiceDefinition = {
 	icon: "🔎",
 
 	image: "getmeili/meilisearch",
-	imageTag: "v1.35.1",
+	imageTag: "v1.40.0",
 	ports: [
 		{
 			host: 7700,

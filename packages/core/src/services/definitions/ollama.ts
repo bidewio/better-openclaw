@@ -9,7 +9,7 @@ export const ollamaDefinition: ServiceDefinition = {
 	icon: "🦙",
 
 	image: "ollama/ollama",
-	imageTag: "0.17.0",
+	imageTag: "0.18.3",
 	ports: [
 		{
 			host: 11434,

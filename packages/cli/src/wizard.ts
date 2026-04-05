@@ -422,6 +422,7 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 				{ value: "ollama-cloud", label: "Ollama Cloud" },
 				{ value: "lmstudio", label: "LM Studio (Local)" },
 				{ value: "vllm", label: "vLLM (Local)" },
+				{ value: "nvidia", label: "NVIDIA (Nemotron)", hint: "required for NemoClaw" },
 			],
 			initialValues: ["openai"],
 			required: false,
@@ -447,6 +448,49 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 	const selectedGsdRuntimes = (gsdRuntimesChoice as string[]).filter(
 		Boolean,
 	) as GenerationInput["gsdRuntimes"];
+
+	// ── Deploy Target ───────────────────────────────────────────────────────
+
+	const deployTarget = ensureNotCancelled(
+		await select({
+			message: "Deploy target:",
+			options: [
+				{ value: "local" as const, label: "Standard", hint: "Docker Compose stack" },
+				{ value: "cloud-init" as const, label: "Cloud-init", hint: "VPS one-click deploy" },
+				{
+					value: "nemoclaw" as const,
+					label: "NemoClaw",
+					hint: "NVIDIA hardened sandbox (Landlock + seccomp + network isolation)",
+				},
+			],
+		}),
+	);
+
+	// Auto-include nvidia provider when NemoClaw is selected
+	if (deployTarget === "nemoclaw" && !selectedAiProviders.includes("nvidia" as any)) {
+		selectedAiProviders.push("nvidia" as any);
+	}
+
+	// ── Notification Providers ──────────────────────────────────────────────
+
+	const notificationChoice = ensureNotCancelled(
+		await multiselect({
+			message: "Notification providers for task completion & error alerts (optional):",
+			options: [
+				{ value: "discord", label: "Discord", hint: "webhook URL" },
+				{ value: "slack", label: "Slack", hint: "webhook URL" },
+				{ value: "telegram", label: "Telegram", hint: "bot token + chat ID" },
+				{ value: "email", label: "Email", hint: "SMTP" },
+				{ value: "ntfy", label: "ntfy", hint: "topic URL" },
+				{ value: "pushover", label: "Pushover", hint: "app token + user key" },
+				{ value: "gotify", label: "Gotify", hint: "server URL + token" },
+			],
+			required: false,
+		}),
+	);
+	const selectedNotificationProviders = (notificationChoice as string[]).filter(
+		Boolean,
+	) as GenerationInput["notificationProviders"];
 
 	const proxy = ensureNotCancelled(
 		await select({
@@ -680,10 +724,11 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 		monitoring: enableMonitoring,
 		openclawImage: openclawImage as "official" | "coolify" | "alpine",
 		openclawInstallMethod: openclawInstallMethod as "docker" | "direct",
-		deployTarget: "local",
+		deployTarget: deployTarget as GenerationInput["deployTarget"],
 		hardened: true,
 		primaryFramework,
 		companionFrameworks: companionFrameworks.length > 0 ? companionFrameworks : undefined,
+		notificationProviders: selectedNotificationProviders,
 	};
 
 	const logger = new OperationsLogger({
@@ -730,10 +775,18 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 	const nextSteps = [
 		`cd ${String(projectDir)}`,
 		"cp .env.example .env  # review and customize",
-		startCommand,
-		...(openclawInstallMethod === "direct"
-			? ["docker compose up -d  # start companion services"]
-			: []),
+		...(deployTarget === "nemoclaw"
+			? [
+					"export NVIDIA_API_KEY=\"your-key-here\"",
+					"chmod +x scripts/nemoclaw-setup.sh",
+					"./scripts/nemoclaw-setup.sh",
+				]
+			: [
+					startCommand,
+					...(openclawInstallMethod === "direct"
+						? ["docker compose up -d  # start companion services"]
+						: []),
+				]),
 	].join("\n");
 
 	note(nextSteps, "Next steps");

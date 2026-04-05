@@ -4,6 +4,7 @@ export interface OpenClawConfigOptions {
 	deploymentType: DeploymentType;
 	gatewayPort: number;
 	openclawVersion: string;
+	notificationProviders?: string[];
 }
 
 const PROVIDER_CONFIGS: Record<AiProvider, any> = {
@@ -338,6 +339,33 @@ const PROVIDER_CONFIGS: Record<AiProvider, any> = {
 			},
 		],
 	},
+	nvidia: {
+		baseUrl: "https://integrate.api.nvidia.com/v1",
+		api: "openai-completions",
+		auth: "api-key",
+		models: [
+			{
+				id: "nvidia/nemotron-3-super-120b-a12b",
+				name: "Nemotron 3 Super 120B",
+				api: "openai-completions",
+				reasoning: true,
+				input: ["text"],
+				cost: { input: 0.3, output: 0.3 },
+				contextWindow: 131072,
+				maxTokens: 8192,
+			},
+			{
+				id: "nvidia/nemotron-mini-4b-instruct",
+				name: "Nemotron Mini 4B",
+				api: "openai-completions",
+				reasoning: false,
+				input: ["text"],
+				cost: { input: 0, output: 0 },
+				contextWindow: 8192,
+				maxTokens: 4096,
+			},
+		],
+	},
 };
 
 /** Default ports for local inference providers (ollama, lmstudio, vllm). */
@@ -410,6 +438,7 @@ export function generateOpenClawConfig(
 	resolved: ResolverOutput,
 	options: OpenClawConfigOptions,
 ): string {
+	const notificationProviders = options.notificationProviders ?? [];
 	const isDocker = options.deploymentType === "docker";
 	// Docker containers reach host services via host.docker.internal; bare-metal uses localhost
 	const localInferenceHost = isDocker ? "host.docker.internal" : "localhost";
@@ -561,6 +590,16 @@ export function generateOpenClawConfig(
 					"session-memory": { enabled: true },
 				},
 			},
+			...(notificationProviders.length > 0
+				? {
+						notifications: {
+							enabled: true,
+							onStop: true,
+							onError: true,
+							providers: notificationProviders,
+						},
+					}
+				: {}),
 		},
 		web: {
 			enabled: true,

@@ -22,6 +22,12 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 cd "$PROJECT_DIR"
 
+# ── Auto-detect host UID/GID for bind-mount ownership ────────────────────
+if [ -f .env ] && ! grep -q "^PUID=" .env 2>/dev/null; then
+  echo "PUID=$(id -u)" >> .env
+  echo "PGID=$(id -g)" >> .env
+fi
+
 echo "🐾 OpenClaw — Starting services..."
 echo ""
 
@@ -183,6 +189,21 @@ if [ $RETRIES -ge $MAX_RETRIES ]; then
   warn "Some services may still be starting. Check: docker compose ps"
 else
   ok "All services are running!"
+fi
+
+# ── First-boot onboarding ────────────────────────────────────────────────────
+
+SENTINEL="$PROJECT_DIR/.openclaw-bootstrapped"
+if [ ! -f "$SENTINEL" ]; then
+  echo ""
+  info "First boot detected — running OpenClaw onboarding..."
+  docker compose exec -T openclaw-gateway node dist/index.js onboard \\
+    --bind lan --auth token --no-install-daemon 2>/dev/null || {
+    warn "Auto-onboarding skipped. Run manually:"
+    echo "  docker compose run --rm openclaw-cli onboard --no-install-daemon"
+  }
+  touch "$SENTINEL"
+  ok "Onboarding complete. Delete .openclaw-bootstrapped to re-run."
 fi
 
 # ── Print service URLs & token ───────────────────────────────────────────────

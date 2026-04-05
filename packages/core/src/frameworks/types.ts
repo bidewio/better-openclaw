@@ -60,6 +60,8 @@ export interface FrameworkConfigOptions {
 	deploymentType: string;
 	gatewayPort: number;
 	frameworkVersion: string;
+	deployTarget?: string;
+	notificationProviders?: string[];
 }
 
 export interface FrameworkConfigResult {

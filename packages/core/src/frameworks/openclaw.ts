@@ -38,6 +38,7 @@ const PROVIDER_ENV_KEYS = [
 	"MISTRAL_API_KEY",
 	"TOGETHER_API_KEY",
 	"OLLAMA_API_KEY",
+	"NVIDIA_API_KEY",
 ];
 
 // ─── OpenClaw Framework Definition ──────────────────────────────────────────
@@ -71,11 +72,33 @@ export const openclawFramework: AgentFrameworkDefinition = {
 			CLAUDE_AI_SESSION_KEY: "${CLAUDE_AI_SESSION_KEY:-}",
 			CLAUDE_WEB_SESSION_KEY: "${CLAUDE_WEB_SESSION_KEY:-}",
 			CLAUDE_WEB_COOKIE: "${CLAUDE_WEB_COOKIE:-}",
+			// Container user/group ID for bind-mount ownership
+			PUID: "${PUID:-1000}",
+			PGID: "${PGID:-1000}",
 		};
 
 		// Add AI provider API keys to gateway environment
 		for (const key of PROVIDER_ENV_KEYS) {
 			gatewayEnv[key] = `\${${key}}`;
+		}
+
+		// Add notification webhook env vars to gateway environment
+		const notifyEnvKeys = [
+			"NOTIFY_DISCORD",
+			"NOTIFY_SLACK",
+			"NOTIFY_TELEGRAM_TOKEN",
+			"NOTIFY_TELEGRAM_CHAT",
+			"NOTIFY_EMAIL_TO",
+			"NOTIFY_EMAIL_FROM",
+			"NOTIFY_EMAIL_SMTP",
+			"NOTIFY_NTFY_TOPIC",
+			"NOTIFY_PUSHOVER_TOKEN",
+			"NOTIFY_PUSHOVER_USER",
+			"NOTIFY_GOTIFY_URL",
+			"NOTIFY_GOTIFY_TOKEN",
+		];
+		for (const key of notifyEnvKeys) {
+			gatewayEnv[key] = `\${${key}:-}`;
 		}
 
 		// Gateway volumes (bind-mount style matching real docker-setup.sh)
@@ -193,6 +216,7 @@ export const openclawFramework: AgentFrameworkDefinition = {
 			deploymentType: options.deploymentType as any,
 			gatewayPort: options.gatewayPort,
 			openclawVersion: options.frameworkVersion,
+			notificationProviders: options.notificationProviders,
 		});
 		return {
 			path: "openclaw/config/openclaw.json",
@@ -312,7 +336,7 @@ export const openclawFramework: AgentFrameworkDefinition = {
 	},
 
 	getRecommendedServices(): string[] {
-		return ["clawrouter"];
+		return ["clawrouter", "bridge"];
 	},
 
 	getProviderEnvKeys(): string[] {

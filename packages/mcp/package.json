@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@better-openclaw/core": "workspace:*",
-    "@modelcontextprotocol/sdk": "^1.28.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@sentry/node": "^10.46.0",
     "zod": "^4.3.6"
   },

@@ -24,7 +24,7 @@
     "@convex-dev/auth": "^0.0.91",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/utilities": "^3.2.2",
-    "@tabler/icons-react": "^3.41.0",
+    "@tabler/icons-react": "^3.41.1",
     "@tailwindcss/typography": "^0.5.19",
     "convex": "^1.34.1",
     "react": "^19.2.4",

@@ -66,7 +66,7 @@ jobs:
             echo "Tag v$VERSION already exists, skipping"
           fi
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: steps.check-version.outputs.exists == 'false'
 
       - uses: actions/setup-node@v6

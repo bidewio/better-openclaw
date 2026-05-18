@@ -49,11 +49,11 @@
         "postgres": "^3.4.8"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.4.9",
-        "@types/node": "^25.5.0",
+        "@biomejs/biome": "^2.4.15",
+        "@types/node": "^25.8.0",
         "drizzle-kit": "^0.31.10",
-        "tsdown": "^0.21.6",
+        "tsdown": "^0.22.0",
         "typescript": "^5.9.3",
-        "vitest": "^4.1.2"
+        "vitest": "^4.1.6"
     }
 }

@@ -66,11 +66,11 @@
     "picocolors": "^1.1.1"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "dotenv": "^17.3.1",
-    "tsdown": "^0.21.6",
+    "@types/node": "^25.8.0",
+    "dotenv": "^17.4.2",
+    "tsdown": "^0.22.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.6"
   },
   "engines": {
     "node": ">=22"

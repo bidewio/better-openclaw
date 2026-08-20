@@ -14,19 +14,17 @@
     "packageManager": "pnpm@10.30.3",
     "sideEffects": false,
     "main": "dist/index.mjs",
-    "types": "dist/index.d.ts",
+    "types": "./dist/index.d.mts",
     "type": "module",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.cjs",
+            "import": { "types": "./dist/index.d.mts", "default": "./dist/index.mjs" },
+            "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" },
             "default": "./dist/index.mjs"
         },
         "./*": {
-            "types": "./dist/*.d.ts",
-            "import": "./dist/*.mjs",
-            "require": "./dist/*.cjs",
+            "import": { "types": "./dist/*.d.mts", "default": "./dist/*.mjs" },
+            "require": { "types": "./dist/*.d.cts", "default": "./dist/*.cjs" },
             "default": "./dist/*.mjs"
         }
     },

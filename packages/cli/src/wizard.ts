@@ -8,6 +8,7 @@ import type {
 	SkillPack,
 } from "@better-openclaw/core";
 import {
+	analyticsDisabled,
 	buildAnalyticsPayload,
 	formatPortConflicts,
 	generate,
@@ -737,6 +738,25 @@ export async function runWizard(initialProjectDir?: string): Promise<void> {
 	].join("\n");
 
 	note(nextSteps, "Next steps");
+
+	note(
+		[
+			"Would you rather not run this yourself?",
+			"We can deploy and operate this stack for you on a dedicated VPS.",
+			"Reply with what you are trying to run: bachir@bidew.io",
+		].join("\n"),
+		"Managed hosting",
+	);
+
+	if (!analyticsDisabled()) {
+		console.log(
+			pc.dim(
+				"\n  Anonymous usage data (services chosen, preset, service count) helps decide what to\n" +
+					"  build next. No paths, hostnames, secrets, or personal data are sent.\n" +
+					"  Opt out any time with DISABLE_ANALYTICS=true.",
+			),
+		);
+	}
 
 	outro(
 		pc.green(

@@ -11,6 +11,7 @@ import type {
 	SkillPack,
 } from "@better-openclaw/core";
 import {
+	analyticsDisabled,
 	buildAnalyticsPayload,
 	formatPortConflicts,
 	generate,
@@ -330,6 +331,21 @@ export async function runNonInteractive(options: NonInteractiveOptions): Promise
 			console.log(pc.dim(platform === "windows/amd64" ? "  .\\install.ps1" : "  ./install.sh"));
 		} else {
 			console.log(pc.dim("  docker compose up -d"));
+		}
+
+		console.log("");
+		console.log(
+			pc.dim("Would rather not run this yourself? We can host and operate it: bachir@bidew.io"),
+		);
+
+		if (!analyticsDisabled()) {
+			console.log("");
+			console.log(
+				pc.dim(
+					"Anonymous usage data (services, preset, counts) is sent to guide what gets built next.\n" +
+						"No paths, hostnames, secrets, or personal data. Opt out with DISABLE_ANALYTICS=true.",
+				),
+			);
 		}
 	}
 }

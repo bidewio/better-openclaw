@@ -176,7 +176,7 @@ export {
 } from "./skills/skill-manifest.js";
 // ─── Analytics ─────────────────────────────────────────────────────────────
 export type { AnalyticsPayload } from "./track-analytics.js";
-export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
+export { analyticsDisabled, buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 // ─── Types ──────────────────────────────────────────────────────────────────
 export type {
 	AddedDependency,

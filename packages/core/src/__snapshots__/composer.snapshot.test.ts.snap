@@ -12,6 +12,8 @@ exports[`compose snapshot tests > creator preset (ffmpeg + remotion + minio + re
       CLAUDE_AI_SESSION_KEY: \${CLAUDE_AI_SESSION_KEY:-}
       CLAUDE_WEB_SESSION_KEY: \${CLAUDE_WEB_SESSION_KEY:-}
       CLAUDE_WEB_COOKIE: \${CLAUDE_WEB_COOKIE:-}
+      PUID: \${PUID:-1000}
+      PGID: \${PGID:-1000}
       OPENAI_API_KEY: \${OPENAI_API_KEY}
       ANTHROPIC_API_KEY: \${ANTHROPIC_API_KEY}
       GOOGLE_API_KEY: \${GOOGLE_API_KEY}
@@ -22,6 +24,19 @@ exports[`compose snapshot tests > creator preset (ffmpeg + remotion + minio + re
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
+      NOTIFY_DISCORD: \${NOTIFY_DISCORD:-}
+      NOTIFY_SLACK: \${NOTIFY_SLACK:-}
+      NOTIFY_TELEGRAM_TOKEN: \${NOTIFY_TELEGRAM_TOKEN:-}
+      NOTIFY_TELEGRAM_CHAT: \${NOTIFY_TELEGRAM_CHAT:-}
+      NOTIFY_EMAIL_TO: \${NOTIFY_EMAIL_TO:-}
+      NOTIFY_EMAIL_FROM: \${NOTIFY_EMAIL_FROM:-}
+      NOTIFY_EMAIL_SMTP: \${NOTIFY_EMAIL_SMTP:-}
+      NOTIFY_NTFY_TOPIC: \${NOTIFY_NTFY_TOPIC:-}
+      NOTIFY_PUSHOVER_TOKEN: \${NOTIFY_PUSHOVER_TOKEN:-}
+      NOTIFY_PUSHOVER_USER: \${NOTIFY_PUSHOVER_USER:-}
+      NOTIFY_GOTIFY_URL: \${NOTIFY_GOTIFY_URL:-}
+      NOTIFY_GOTIFY_TOKEN: \${NOTIFY_GOTIFY_TOKEN:-}
       FFMPEG_SHARED_DIR: /home/node/.openclaw/workspace/media
       MINIO_HOST: minio
       MINIO_PORT: "9000"
@@ -164,6 +179,7 @@ exports[`compose snapshot tests > creator preset (ffmpeg + remotion + minio + re
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
     volumes:
       - \${OPENCLAW_CONFIG_DIR:-./openclaw/config}:/home/node/.openclaw
       - \${OPENCLAW_WORKSPACE_DIR:-./openclaw/workspace}:/home/node/.openclaw/workspace
@@ -228,6 +244,8 @@ exports[`compose snapshot tests > devops preset (n8n + postgresql + redis + moni
       CLAUDE_AI_SESSION_KEY: \${CLAUDE_AI_SESSION_KEY:-}
       CLAUDE_WEB_SESSION_KEY: \${CLAUDE_WEB_SESSION_KEY:-}
       CLAUDE_WEB_COOKIE: \${CLAUDE_WEB_COOKIE:-}
+      PUID: \${PUID:-1000}
+      PGID: \${PGID:-1000}
       OPENAI_API_KEY: \${OPENAI_API_KEY}
       ANTHROPIC_API_KEY: \${ANTHROPIC_API_KEY}
       GOOGLE_API_KEY: \${GOOGLE_API_KEY}
@@ -238,6 +256,19 @@ exports[`compose snapshot tests > devops preset (n8n + postgresql + redis + moni
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
+      NOTIFY_DISCORD: \${NOTIFY_DISCORD:-}
+      NOTIFY_SLACK: \${NOTIFY_SLACK:-}
+      NOTIFY_TELEGRAM_TOKEN: \${NOTIFY_TELEGRAM_TOKEN:-}
+      NOTIFY_TELEGRAM_CHAT: \${NOTIFY_TELEGRAM_CHAT:-}
+      NOTIFY_EMAIL_TO: \${NOTIFY_EMAIL_TO:-}
+      NOTIFY_EMAIL_FROM: \${NOTIFY_EMAIL_FROM:-}
+      NOTIFY_EMAIL_SMTP: \${NOTIFY_EMAIL_SMTP:-}
+      NOTIFY_NTFY_TOPIC: \${NOTIFY_NTFY_TOPIC:-}
+      NOTIFY_PUSHOVER_TOKEN: \${NOTIFY_PUSHOVER_TOKEN:-}
+      NOTIFY_PUSHOVER_USER: \${NOTIFY_PUSHOVER_USER:-}
+      NOTIFY_GOTIFY_URL: \${NOTIFY_GOTIFY_URL:-}
+      NOTIFY_GOTIFY_TOKEN: \${NOTIFY_GOTIFY_TOKEN:-}
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: "5432"
       REDIS_HOST: redis
@@ -453,6 +484,7 @@ exports[`compose snapshot tests > devops preset (n8n + postgresql + redis + moni
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
     volumes:
       - \${OPENCLAW_CONFIG_DIR:-./openclaw/config}:/home/node/.openclaw
       - \${OPENCLAW_WORKSPACE_DIR:-./openclaw/workspace}:/home/node/.openclaw/workspace
@@ -482,7 +514,7 @@ networks:
 exports[`compose snapshot tests > devops preset (n8n + postgresql + redis + monitoring) 2`] = `
 "services:
   prometheus:
-    image: prom/prometheus:v3.9.1
+    image: prom/prometheus:v3.10.0
     ports:
       - \${PROMETHEUS_EXTERNAL_PORT:-9090}:9090
     volumes:
@@ -521,7 +553,7 @@ exports[`compose snapshot tests > devops preset (n8n + postgresql + redis + moni
     profiles:
       - monitoring
   grafana:
-    image: grafana/grafana:12.4.0
+    image: grafana/grafana:12.4.2
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: \${GF_SECURITY_ADMIN_PASSWORD}
@@ -564,6 +596,8 @@ exports[`compose snapshot tests > full preset (many services) 1`] = `
       CLAUDE_AI_SESSION_KEY: \${CLAUDE_AI_SESSION_KEY:-}
       CLAUDE_WEB_SESSION_KEY: \${CLAUDE_WEB_SESSION_KEY:-}
       CLAUDE_WEB_COOKIE: \${CLAUDE_WEB_COOKIE:-}
+      PUID: \${PUID:-1000}
+      PGID: \${PGID:-1000}
       OPENAI_API_KEY: \${OPENAI_API_KEY}
       ANTHROPIC_API_KEY: \${ANTHROPIC_API_KEY}
       GOOGLE_API_KEY: \${GOOGLE_API_KEY}
@@ -574,6 +608,19 @@ exports[`compose snapshot tests > full preset (many services) 1`] = `
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
+      NOTIFY_DISCORD: \${NOTIFY_DISCORD:-}
+      NOTIFY_SLACK: \${NOTIFY_SLACK:-}
+      NOTIFY_TELEGRAM_TOKEN: \${NOTIFY_TELEGRAM_TOKEN:-}
+      NOTIFY_TELEGRAM_CHAT: \${NOTIFY_TELEGRAM_CHAT:-}
+      NOTIFY_EMAIL_TO: \${NOTIFY_EMAIL_TO:-}
+      NOTIFY_EMAIL_FROM: \${NOTIFY_EMAIL_FROM:-}
+      NOTIFY_EMAIL_SMTP: \${NOTIFY_EMAIL_SMTP:-}
+      NOTIFY_NTFY_TOPIC: \${NOTIFY_NTFY_TOPIC:-}
+      NOTIFY_PUSHOVER_TOKEN: \${NOTIFY_PUSHOVER_TOKEN:-}
+      NOTIFY_PUSHOVER_USER: \${NOTIFY_PUSHOVER_USER:-}
+      NOTIFY_GOTIFY_URL: \${NOTIFY_GOTIFY_URL:-}
+      NOTIFY_GOTIFY_TOKEN: \${NOTIFY_GOTIFY_TOKEN:-}
       BROWSERLESS_HOST: browserless
       BROWSERLESS_PORT: "3000"
       BROWSERLESS_TOKEN: \${BROWSERLESS_TOKEN}
@@ -679,7 +726,7 @@ exports[`compose snapshot tests > full preset (many services) 1`] = `
     networks:
       - openclaw-network
   caddy:
-    image: caddy:2.11.1
+    image: caddy:2.11.2
     ports:
       - \${CADDY_EXTERNAL_PORT_0:-80}:80
       - \${CADDY_EXTERNAL_PORT_1:-443}:443
@@ -726,7 +773,7 @@ exports[`compose snapshot tests > full preset (many services) 1`] = `
     networks:
       - openclaw-network
   meilisearch:
-    image: getmeili/meilisearch:v1.35.1
+    image: getmeili/meilisearch:v1.40.0
     environment:
       MEILI_MASTER_KEY: \${MEILI_MASTER_KEY}
     ports:
@@ -790,7 +837,7 @@ exports[`compose snapshot tests > full preset (many services) 1`] = `
     networks:
       - openclaw-network
   qdrant:
-    image: qdrant/qdrant:v1.12.1
+    image: qdrant/qdrant:v1.17.1
     environment:
       QDRANT__SERVICE__GRPC_PORT: "6334"
     ports:
@@ -941,6 +988,7 @@ exports[`compose snapshot tests > full preset (many services) 1`] = `
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
     volumes:
       - \${OPENCLAW_CONFIG_DIR:-./openclaw/config}:/home/node/.openclaw
       - \${OPENCLAW_WORKSPACE_DIR:-./openclaw/workspace}:/home/node/.openclaw/workspace
@@ -988,6 +1036,8 @@ exports[`compose snapshot tests > minimal preset (redis only) 1`] = `
       CLAUDE_AI_SESSION_KEY: \${CLAUDE_AI_SESSION_KEY:-}
       CLAUDE_WEB_SESSION_KEY: \${CLAUDE_WEB_SESSION_KEY:-}
       CLAUDE_WEB_COOKIE: \${CLAUDE_WEB_COOKIE:-}
+      PUID: \${PUID:-1000}
+      PGID: \${PGID:-1000}
       OPENAI_API_KEY: \${OPENAI_API_KEY}
       ANTHROPIC_API_KEY: \${ANTHROPIC_API_KEY}
       GOOGLE_API_KEY: \${GOOGLE_API_KEY}
@@ -998,6 +1048,19 @@ exports[`compose snapshot tests > minimal preset (redis only) 1`] = `
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
+      NOTIFY_DISCORD: \${NOTIFY_DISCORD:-}
+      NOTIFY_SLACK: \${NOTIFY_SLACK:-}
+      NOTIFY_TELEGRAM_TOKEN: \${NOTIFY_TELEGRAM_TOKEN:-}
+      NOTIFY_TELEGRAM_CHAT: \${NOTIFY_TELEGRAM_CHAT:-}
+      NOTIFY_EMAIL_TO: \${NOTIFY_EMAIL_TO:-}
+      NOTIFY_EMAIL_FROM: \${NOTIFY_EMAIL_FROM:-}
+      NOTIFY_EMAIL_SMTP: \${NOTIFY_EMAIL_SMTP:-}
+      NOTIFY_NTFY_TOPIC: \${NOTIFY_NTFY_TOPIC:-}
+      NOTIFY_PUSHOVER_TOKEN: \${NOTIFY_PUSHOVER_TOKEN:-}
+      NOTIFY_PUSHOVER_USER: \${NOTIFY_PUSHOVER_USER:-}
+      NOTIFY_GOTIFY_URL: \${NOTIFY_GOTIFY_URL:-}
+      NOTIFY_GOTIFY_TOKEN: \${NOTIFY_GOTIFY_TOKEN:-}
       REDIS_HOST: redis
       REDIS_PORT: "6379"
       REDIS_PASSWORD: \${REDIS_PASSWORD}
@@ -1108,6 +1171,7 @@ exports[`compose snapshot tests > minimal preset (redis only) 1`] = `
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
     volumes:
       - \${OPENCLAW_CONFIG_DIR:-./openclaw/config}:/home/node/.openclaw
       - \${OPENCLAW_WORKSPACE_DIR:-./openclaw/workspace}:/home/node/.openclaw/workspace
@@ -1141,6 +1205,8 @@ exports[`compose snapshot tests > researcher preset (qdrant + searxng + browserl
       CLAUDE_AI_SESSION_KEY: \${CLAUDE_AI_SESSION_KEY:-}
       CLAUDE_WEB_SESSION_KEY: \${CLAUDE_WEB_SESSION_KEY:-}
       CLAUDE_WEB_COOKIE: \${CLAUDE_WEB_COOKIE:-}
+      PUID: \${PUID:-1000}
+      PGID: \${PGID:-1000}
       OPENAI_API_KEY: \${OPENAI_API_KEY}
       ANTHROPIC_API_KEY: \${ANTHROPIC_API_KEY}
       GOOGLE_API_KEY: \${GOOGLE_API_KEY}
@@ -1151,6 +1217,19 @@ exports[`compose snapshot tests > researcher preset (qdrant + searxng + browserl
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
+      NOTIFY_DISCORD: \${NOTIFY_DISCORD:-}
+      NOTIFY_SLACK: \${NOTIFY_SLACK:-}
+      NOTIFY_TELEGRAM_TOKEN: \${NOTIFY_TELEGRAM_TOKEN:-}
+      NOTIFY_TELEGRAM_CHAT: \${NOTIFY_TELEGRAM_CHAT:-}
+      NOTIFY_EMAIL_TO: \${NOTIFY_EMAIL_TO:-}
+      NOTIFY_EMAIL_FROM: \${NOTIFY_EMAIL_FROM:-}
+      NOTIFY_EMAIL_SMTP: \${NOTIFY_EMAIL_SMTP:-}
+      NOTIFY_NTFY_TOPIC: \${NOTIFY_NTFY_TOPIC:-}
+      NOTIFY_PUSHOVER_TOKEN: \${NOTIFY_PUSHOVER_TOKEN:-}
+      NOTIFY_PUSHOVER_USER: \${NOTIFY_PUSHOVER_USER:-}
+      NOTIFY_GOTIFY_URL: \${NOTIFY_GOTIFY_URL:-}
+      NOTIFY_GOTIFY_TOKEN: \${NOTIFY_GOTIFY_TOKEN:-}
       BROWSERLESS_HOST: browserless
       BROWSERLESS_PORT: "3000"
       BROWSERLESS_TOKEN: \${BROWSERLESS_TOKEN}
@@ -1248,7 +1327,7 @@ exports[`compose snapshot tests > researcher preset (qdrant + searxng + browserl
     networks:
       - openclaw-network
   qdrant:
-    image: qdrant/qdrant:v1.12.1
+    image: qdrant/qdrant:v1.17.1
     environment:
       QDRANT__SERVICE__GRPC_PORT: "6334"
     ports:
@@ -1328,6 +1407,7 @@ exports[`compose snapshot tests > researcher preset (qdrant + searxng + browserl
       MISTRAL_API_KEY: \${MISTRAL_API_KEY}
       TOGETHER_API_KEY: \${TOGETHER_API_KEY}
       OLLAMA_API_KEY: \${OLLAMA_API_KEY}
+      NVIDIA_API_KEY: \${NVIDIA_API_KEY}
     volumes:
       - \${OPENCLAW_CONFIG_DIR:-./openclaw/config}:/home/node/.openclaw
       - \${OPENCLAW_WORKSPACE_DIR:-./openclaw/workspace}:/home/node/.openclaw/workspace

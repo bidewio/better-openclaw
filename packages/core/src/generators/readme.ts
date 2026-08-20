@@ -16,6 +16,10 @@ export interface ReadmeOptions {
 	openclawInstallMethod?: "docker" | "direct";
 	/** Primary agent framework (defaults to "openclaw"). */
 	primaryFramework?: string;
+	/** Deploy target (e.g. "nemoclaw" for NVIDIA hardened sandbox). */
+	deployTarget?: string;
+	/** Selected notification providers. */
+	notificationProviders?: string[];
 }
 
 /**
@@ -380,7 +384,36 @@ chmod +x scripts/*.sh     # Make scripts executable (first time only)
 | \`./scripts/update.sh\` | Pulls latest Docker images and restarts services |
 | \`./scripts/backup.sh\` | Backs up all named Docker volumes to timestamped archives |
 | \`./scripts/status.sh\` | Shows current service status, resource usage, and disk |
+
+> **First boot:** \`start.sh\` automatically runs OpenClaw onboarding on the first launch. Delete \`.openclaw-bootstrapped\` to re-trigger.
 `);
+
+	// ── File Ownership (PUID/PGID) ──────────────────────────────────────────
+
+	sections.push(`## File Ownership
+
+The \`PUID\` and \`PGID\` environment variables ensure bind-mounted files (\`openclaw/config/\`, \`openclaw/workspace/\`) have correct ownership. \`start.sh\` auto-detects your host UID/GID on first run.
+
+To override, set them in \`.env\`:
+
+\`\`\`bash
+PUID=1000
+PGID=1000
+\`\`\`
+`);
+
+	// ── Notifications ──────────────────────────────────────────────────────
+
+	if (options.notificationProviders && options.notificationProviders.length > 0) {
+		sections.push(`## Notifications
+
+This stack is configured to send notifications on task completion and errors.
+
+**Configured providers:** ${options.notificationProviders.join(", ")}
+
+Set the corresponding webhook URLs/tokens in \`.env\` to enable notifications. See \`.env.example\` for the required variables.
+`);
+	}
 
 	// ── Data & Volumes ──────────────────────────────────────────────────────
 
@@ -425,6 +458,73 @@ ${rows}
 		sections.push(`## Warnings
 
 ${warningList}
+`);
+	}
+
+	// ── NemoClaw Deploy Target ───────────────────────────────────────────────
+
+	if (options.deployTarget === "nemoclaw") {
+		sections.push(`## NemoClaw (NVIDIA Hardened Sandbox)
+
+This stack is configured for **NemoClaw**, NVIDIA's security-hardened wrapper for OpenClaw using the OpenShell runtime.
+
+### Prerequisites
+
+- Node.js 20+
+- Docker with Docker Compose v2
+- NVIDIA API key ([get one here](https://build.nvidia.com/))
+- 8GB+ RAM recommended
+
+### Automated Setup
+
+\`\`\`bash
+# Set your NVIDIA API key
+export NVIDIA_API_KEY="your-key-here"
+
+# Run the setup script
+chmod +x scripts/nemoclaw-setup.sh
+./scripts/nemoclaw-setup.sh
+\`\`\`
+
+### Manual Setup
+
+\`\`\`bash
+# Install NemoClaw CLI
+npm install -g @nvidia/nemoclaw
+
+# Onboard with your blueprint
+nemoclaw onboard --blueprint ./nemoclaw-blueprint
+
+# Start the stack
+docker compose up -d
+
+# Verify
+nemoclaw status
+\`\`\`
+
+### NemoClaw CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| \`nemoclaw status\` | Show sandbox and agent status |
+| \`nemoclaw connect\` | Connect to the running agent |
+| \`nemoclaw logs\` | Stream agent logs |
+| \`nemoclaw destroy\` | Tear down the sandbox |
+
+### Security Features
+
+- **Landlock** filesystem isolation — read-only root, writable sandbox only
+- **seccomp** syscall filtering — strict allowlist for Node.js runtime
+- **Network namespaces** — deny-by-default egress, NVIDIA API whitelisted
+- **Resource limits** — 512MB memory, 256 PIDs, all capabilities dropped
+
+### Blueprint Files
+
+| File | Description |
+|------|-------------|
+| \`nemoclaw-blueprint/policies/openclaw-sandbox.yaml\` | Sandbox isolation policy |
+| \`nemoclaw-blueprint/inference.yaml\` | NVIDIA Nemotron inference routing |
+| \`scripts/nemoclaw-setup.sh\` | Automated setup script |
 `);
 	}
 

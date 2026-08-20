@@ -83,6 +83,19 @@ const ROADMAP: { quarter: string; items: RoadmapItem[] }[] = [
 					"Automatic sensitive data redaction and size-based log rotation",
 				],
 			},
+			{
+				title: "Bridge Sidecar",
+				description:
+					"A lightweight management sidecar deployed alongside the stack, providing REST endpoints for live service inspection, log streaming, and container management commands with Mission Control integration.",
+				status: "completed",
+				features: [
+					"REST API for service status, logs, stats, and Docker Compose config",
+					"Container lifecycle commands (restart, stop, start, scale, pull, recreate, prune)",
+					"Convex heartbeat sync with per-service health and config drift detection",
+					"Command relay from Mission Control UI to deployed stack via Convex actions",
+					"BRIDGE_TOKEN authentication with timing-safe comparison",
+				],
+			},
 		],
 	},
 	{

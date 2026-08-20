@@ -9,7 +9,7 @@ export const qdrantDefinition: ServiceDefinition = {
 	icon: "🧠",
 
 	image: "qdrant/qdrant",
-	imageTag: "v1.12.1",
+	imageTag: "v1.17.1",
 	ports: [
 		{
 			host: 6333,

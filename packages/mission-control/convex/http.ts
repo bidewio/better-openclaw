@@ -21,6 +21,20 @@ http.route({
 	}),
 });
 
+// Hermes Agent webhook endpoint
+http.route({
+	path: "/hermes/event",
+	method: "POST",
+	handler: httpAction(async (ctx, request) => {
+		const body = await request.json();
+		await ctx.runMutation(api.hermes.receiveHermesEvent, body);
+		return new Response(JSON.stringify({ ok: true }), {
+			status: 200,
+			headers: { "Content-Type": "application/json" },
+		});
+	}),
+});
+
 // Stack registration endpoint — accepts a stack-manifest.json payload
 http.route({
 	path: "/stack/register",
@@ -76,6 +90,31 @@ http.route({
 			},
 		});
 	}),
+});
+
+// ─── Bridge Sidecar Endpoints ───────────────────────────────────────────
+
+import { heartbeat, taskApprove, taskDispatch } from "./bridge";
+
+// Bridge heartbeat — receives periodic status updates from the bridge sidecar
+http.route({
+	path: "/bridge/heartbeat",
+	method: "POST",
+	handler: heartbeat,
+});
+
+// Bridge task approval relay
+http.route({
+	path: "/bridge/task-approve",
+	method: "POST",
+	handler: taskApprove,
+});
+
+// Bridge task dispatch relay
+http.route({
+	path: "/bridge/task-dispatch",
+	method: "POST",
+	handler: taskDispatch,
 });
 
 export default http;

@@ -2,7 +2,7 @@
   <h1 align="center">better-openclaw</h1>
   <p align="center">
     <strong>Build your AI agent superstack in seconds.</strong><br/>
-    201 services. 8 agent frameworks. 44 skill packs. 21 presets. One command.
+    202 services. 9 agent frameworks. 45 skill packs. 21 presets. One command.
   </p>
 </p>
 
@@ -27,7 +27,7 @@
 
 ---
 
-**better-openclaw** is a CLI tool, REST API, and web UI for scaffolding production-ready AI agent stacks with Docker Compose. Choose from **8 agent frameworks** (OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex), pick your services, choose skill packs, and get a fully wired `docker-compose.yml`, `.env`, reverse proxy configs, monitoring dashboards, and agent skill files -- all in one command.
+**better-openclaw** is a CLI tool, REST API, and web UI for scaffolding production-ready AI agent stacks with Docker Compose. Choose from **9 agent frameworks** (OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex, Hermes), pick your services, choose skill packs, and get a fully wired `docker-compose.yml`, `.env`, reverse proxy configs, monitoring dashboards, and agent skill files -- all in one command.
 
 ## Quick Start
 
@@ -72,7 +72,7 @@ npx create-better-openclaw --preset minimal --yes --json
 
 ```bash
 npx create-better-openclaw generate [dir]       # Generate a stack (default command)
-npx create-better-openclaw services list        # List all 201 available services
+npx create-better-openclaw services list        # List all 202 available services
 npx create-better-openclaw presets list         # List all preset stacks
 npx create-better-openclaw presets info <id>    # Show preset details
 npx create-better-openclaw validate <dir>      # Validate an existing stack
@@ -104,7 +104,7 @@ npx create-better-openclaw \
 
 ## Features
 
-- **8 agent frameworks** -- choose OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, or Codex as your primary orchestrator, with optional companion frameworks for hybrid stacks
+- **9 agent frameworks** -- choose OpenClaw, CoPaw, NanoClaw, NanoBot, ZeroClaw, MemU, Claude Code, Codex, or Hermes as your primary orchestrator, with optional companion frameworks for hybrid stacks
 - **Interactive CLI wizard** -- guided service selection with dependency resolution
 - **Non-interactive mode** -- scriptable with presets and flags for CI/CD pipelines
 - **Automatic port conflict detection** -- scans your system for port conflicts and auto-reassigns services to available ports (interactive and non-interactive modes)
@@ -121,6 +121,7 @@ npx create-better-openclaw \
 - **Environment files** -- secure `.env` generation with random secrets
 - **One-click deploy** -- deploy generated stacks to self-hosted Dokploy or Coolify directly from the web UI or CLI
 - **Centralized operations logging** -- structured NDJSON logs across all packages (CLI, API, MCP) with correlation IDs, step tracking, duration measurement, and automatic sensitive data redaction
+- **Bridge sidecar** -- REST API for live stack management (service status, logs, restart/stop/scale commands) with Convex heartbeat sync to Mission Control
 - **Validation engine** -- port conflicts, resource limits, and configuration checks
 - **Multi-platform support** -- linux/amd64 and linux/arm64
 - **Bare-metal deployment** -- hybrid native + Docker: run supported services natively on the host and use Docker only for the rest (see [Deployment](#deployment))
@@ -139,7 +140,7 @@ Only services with a native recipe run on the host; others remain in Docker. Cur
 
 ## Service Catalog
 
-201 services across 37 categories, ready to compose. The table below is a selection;
+202 services across 37 categories, ready to compose. The table below is a selection;
 run `npx create-better-openclaw services list` for the full catalog:
 
 | Category | Services |
@@ -155,7 +156,7 @@ run `npx create-better-openclaw services list` for the full catalog:
 | **Analytics** | Matomo, OpenPanel, Umami |
 | **Knowledge & Documents** | AppFlowy, DocsGPT, NocoDB, Outline, Paperless-ngx |
 | **Object Storage** | MinIO, Nextcloud |
-| **Developer Tools** | Beszel, Code Server, Convex Dashboard, Coolify, Dokploy, Dozzle, Gitea, Headscale, Jenkins, Mission Control, Portainer, Tailscale, Watchtower |
+| **Developer Tools** | Beszel, Bridge, Code Server, Convex Dashboard, Coolify, Dokploy, Dozzle, Gitea, Headscale, Jenkins, Mission Control, Portainer, Tailscale, Watchtower |
 | **Reverse Proxy** | Caddy, Traefik |
 | **Monitoring** | Grafana, Loki, Prometheus, SigNoz, Uptime Kuma |
 | **Browser Automation** | Browserless, LightPanda, Playwright Server, Scrapling, Steel Browser |
@@ -169,7 +170,7 @@ Every service definition includes a pinned Docker image tag, ports, volumes, hea
 
 ## Skill Packs
 
-Skill packs bundle agent skills with their required infrastructure. 44 packs are
+Skill packs bundle agent skills with their required infrastructure. 45 packs are
 available; these are the most used:
 
 | Pack | Description | Services |
@@ -216,6 +217,7 @@ Choose your primary agent orchestrator and optionally add companion frameworks f
 | **MemU** | `memu` | Memory-first agent framework with persistent context and PostgreSQL backing |
 | **Claude Code** | `claude-code` | Anthropic's CLI agent for software engineering tasks |
 | **Codex** | `codex` | OpenAI's CLI agent for code generation and editing |
+| **Hermes Agent** | `hermes` | Nous Research's self-improving agent with a learning loop, skills, and multi-platform messaging |
 
 Non-OpenClaw frameworks skip Convex, Mission Control, and Tailscale. Each framework generates its own gateway container, CLI services, and network configuration.
 

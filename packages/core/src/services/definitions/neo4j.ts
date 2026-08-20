@@ -9,7 +9,7 @@ export const neo4jDefinition: ServiceDefinition = {
 	icon: "🔵",
 
 	image: "neo4j",
-	imageTag: "2026.01.4-community",
+	imageTag: "2026.02.3-community",
 	ports: [
 		{
 			host: 7474,

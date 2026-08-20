@@ -21,6 +21,10 @@ export interface EnvGeneratorOptions {
 	openclawImage?: "official" | "coolify" | "alpine";
 	/** Primary agent framework (defaults to "openclaw"). */
 	primaryFramework?: AgentFrameworkId;
+	/** Deploy target (e.g. "nemoclaw" for NVIDIA hardened sandbox). */
+	deployTarget?: string;
+	/** Selected notification providers for task completion/error alerts. */
+	notificationProviders?: string[];
 }
 
 /**
@@ -72,6 +76,40 @@ export function generateEnvFiles(
 			actualValue: profilesValue,
 		});
 	}
+
+	// ── Container User/Group ID ─────────────────────────────────────────────
+
+	lines.push({
+		comment:
+			"\n# ═══════════════════════════════════════════════════════════════════════════════\n# Container User/Group ID (bind-mount ownership)\n# ═══════════════════════════════════════════════════════════════════════════════",
+		key: "",
+		exampleValue: "",
+		actualValue: "",
+	});
+
+	lines.push({
+		comment: formatComment(
+			"Host user ID — ensures bind-mounted files have correct ownership (auto-detected by start.sh)",
+			"Docker",
+			false,
+			false,
+		),
+		key: "PUID",
+		exampleValue: "1000",
+		actualValue: "1000",
+	});
+
+	lines.push({
+		comment: formatComment(
+			"Host group ID — ensures bind-mounted files have correct ownership (auto-detected by start.sh)",
+			"Docker",
+			false,
+			false,
+		),
+		key: "PGID",
+		exampleValue: "1000",
+		actualValue: "1000",
+	});
 
 	// ── Framework-Specific Base Variables ────────────────────────────────────
 
@@ -230,6 +268,41 @@ export function generateEnvFiles(
 		}
 	}
 
+	// NemoClaw-specific env vars (when using NVIDIA hardened sandbox)
+	if (options.deployTarget === "nemoclaw") {
+		lines.push({
+			comment:
+				"\n# ═══════════════════════════════════════════════════════════════════════════════\n# NemoClaw (NVIDIA Hardened Sandbox)\n# ═══════════════════════════════════════════════════════════════════════════════",
+			key: "",
+			exampleValue: "",
+			actualValue: "",
+		});
+
+		lines.push({
+			comment: formatComment(
+				"Default inference model for NemoClaw agent sandbox",
+				"NemoClaw",
+				false,
+				true,
+			),
+			key: "NEMOCLAW_MODEL",
+			exampleValue: "nvidia/nemotron-3-super-120b-a12b",
+			actualValue: "nvidia/nemotron-3-super-120b-a12b",
+		});
+
+		lines.push({
+			comment: formatComment(
+				"Context window size for NemoClaw inference (tokens)",
+				"NemoClaw",
+				false,
+				true,
+			),
+			key: "NEMOCLAW_CONTEXT_WINDOW",
+			exampleValue: "131072",
+			actualValue: "131072",
+		});
+	}
+
 	// Claude web-provider session variables (optional)
 	lines.push({
 		comment:
@@ -274,6 +347,62 @@ export function generateEnvFiles(
 		exampleValue: "your_claude_web_cookie_here",
 		actualValue: "",
 	});
+
+	// ── Notification Webhooks ───────────────────────────────────────────────
+
+	const notifyProviders = options.notificationProviders ?? [];
+	if (notifyProviders.length > 0) {
+		lines.push({
+			comment:
+				"\n# ═══════════════════════════════════════════════════════════════════════════════\n# Notification Webhooks (task completion & error alerts)\n# ═══════════════════════════════════════════════════════════════════════════════",
+			key: "",
+			exampleValue: "",
+			actualValue: "",
+		});
+
+		const notifyEnvMap: Record<string, { key: string; desc: string }[]> = {
+			discord: [
+				{
+					key: "NOTIFY_DISCORD",
+					desc: "Discord webhook URL (https://discord.com/api/webhooks/...)",
+				},
+			],
+			slack: [
+				{ key: "NOTIFY_SLACK", desc: "Slack webhook URL (https://hooks.slack.com/services/...)" },
+			],
+			telegram: [
+				{ key: "NOTIFY_TELEGRAM_TOKEN", desc: "Telegram bot token" },
+				{ key: "NOTIFY_TELEGRAM_CHAT", desc: "Telegram chat ID" },
+			],
+			email: [
+				{ key: "NOTIFY_EMAIL_TO", desc: "Email recipient address" },
+				{ key: "NOTIFY_EMAIL_FROM", desc: "Email sender address" },
+				{ key: "NOTIFY_EMAIL_SMTP", desc: "SMTP server URL (smtp://user:pass@host:port)" },
+			],
+			ntfy: [{ key: "NOTIFY_NTFY_TOPIC", desc: "ntfy topic URL (https://ntfy.sh/your-topic)" }],
+			pushover: [
+				{ key: "NOTIFY_PUSHOVER_TOKEN", desc: "Pushover application token" },
+				{ key: "NOTIFY_PUSHOVER_USER", desc: "Pushover user key" },
+			],
+			gotify: [
+				{ key: "NOTIFY_GOTIFY_URL", desc: "Gotify server URL" },
+				{ key: "NOTIFY_GOTIFY_TOKEN", desc: "Gotify application token" },
+			],
+		};
+
+		for (const provider of notifyProviders) {
+			const envVars = notifyEnvMap[provider];
+			if (!envVars) continue;
+			for (const { key, desc } of envVars) {
+				lines.push({
+					comment: formatComment(desc, "Notifications", true, true),
+					key,
+					exampleValue: "",
+					actualValue: "",
+				});
+			}
+		}
+	}
 
 	// ── Per-Service Database Passwords ──────────────────────────────────────
 

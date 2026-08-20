@@ -9,7 +9,7 @@ export const prometheusDefinition: ServiceDefinition = {
 	icon: "🔥",
 
 	image: "prom/prometheus",
-	imageTag: "v3.9.1",
+	imageTag: "v3.10.0",
 	ports: [
 		{
 			host: 9090,

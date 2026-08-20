@@ -255,6 +255,16 @@ const skillPacks: SkillPack[] = [
 		icon: "🤖",
 		tags: ["ai-coding", "agents", "development", "ide"],
 	},
+	{
+		id: "hermes-research",
+		name: "Hermes Research Agent",
+		description:
+			"Self-improving AI research agent with Hermes, vector search, web crawling, and browser automation",
+		requiredServices: ["qdrant", "searxng", "browserless"],
+		skills: ["hermes-agent", "qdrant-memory", "searxng-search", "browserless-browse"],
+		icon: "☤",
+		tags: ["hermes", "research", "agent", "self-improving", "rag"],
+	},
 	// ── Internet-Verified Skill Packs ────────────────────────────────
 	{
 		id: "rag-pipeline",

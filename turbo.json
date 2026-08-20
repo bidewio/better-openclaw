@@ -21,6 +21,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "@better-openclaw/bridge": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
     "dev": {
       "cache": false,
       "persistent": true

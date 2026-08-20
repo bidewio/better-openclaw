@@ -34,32 +34,32 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@better-auth/infra": "^0.1.12",
     "@better-auth/drizzle-adapter": "^1.5.5",
+    "@better-auth/infra": "^0.1.12",
     "@better-auth/passkey": "^1.5.5",
     "@better-openclaw/core": "workspace:*",
     "@better-openclaw/db": "workspace:*",
     "@hono/node-server": "^1.19.11",
-    "@hono/zod-openapi": "^1.2.2",
+    "@hono/zod-openapi": "^1.2.4",
     "@simplewebauthn/server": "^13.3.0",
     "archiver": "^7.0.1",
     "better-auth": "^1.5.5",
-    "drizzle-orm": "^0.45.1",
+    "drizzle-orm": "^0.45.2",
     "hono": "^4.12.8",
-    "zod": "^4.3.6",
-    "ioredis": "^5.10.0",
+    "ioredis": "^5.10.1",
     "postgres": "^3.4.7",
-    "usesend-js": "^1.6.3"
+    "usesend-js": "^1.6.3",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/archiver": "^7.0.0",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^25.3.5",
-    "better-sqlite3": "^12.6.2",
+    "@types/node": "^25.5.0",
+    "better-sqlite3": "^12.8.0",
     "dotenv": "^17.3.1",
-    "tsdown": "^0.21.1",
+    "tsdown": "^0.21.6",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.2"
   }
 }

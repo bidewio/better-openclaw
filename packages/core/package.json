@@ -45,15 +45,16 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "yaml": "^2.8.2",
+    "handlebars": "^4.7.9",
+    "yaml": "^2.8.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.6",
-    "@types/node": "^25.3.5",
-    "tsdown": "^0.21.1",
+    "@biomejs/biome": "^2.4.9",
+    "@types/node": "^25.5.0",
+    "tsdown": "^0.21.6",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.2"
   },
   "engines": {
     "node": ">=22"

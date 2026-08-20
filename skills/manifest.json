@@ -1399,6 +1399,12 @@
       ]
     },
     {
+      "id": "hermes-agent",
+      "path": "hermes-agent/SKILL.md",
+      "emoji": "☤",
+      "services": []
+    },
+    {
       "id": "hexstrike-mcp",
       "path": "hexstrike-mcp/SKILL.md",
       "emoji": "⚔️",

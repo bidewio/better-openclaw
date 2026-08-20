@@ -1,0 +1,45 @@
+{
+  "name": "@better-openclaw/bridge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bridge sidecar for managing deployed better-openclaw stacks via REST endpoints",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsx watch src/index.ts",
+    "start": "NODE_ENV=production node dist/index.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@better-openclaw/core": "workspace:*",
+    "@hono/node-server": "^1.19.11",
+    "dockerode": "^4.0.4",
+    "hono": "^4.12.8",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^4.0.1",
+    "@types/node": "^25.5.0",
+    "tsdown": "^0.21.6",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

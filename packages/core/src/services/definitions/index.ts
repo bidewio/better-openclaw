@@ -13,6 +13,7 @@ export { axolotlDefinition } from "./axolotl.js";
 export { baserowDefinition } from "./baserow.js";
 export { beszelDefinition } from "./beszel.js";
 export { boxyhqSaasDefinition } from "./boxyhq-saas.js";
+export { bridgeDefinition } from "./bridge.js";
 export { browserlessDefinition } from "./browserless.js";
 export { burnlinkDefinition } from "./burnlink.js";
 export { caddyDefinition } from "./caddy.js";
@@ -217,6 +218,7 @@ import { axolotlDefinition } from "./axolotl.js";
 import { baserowDefinition } from "./baserow.js";
 import { beszelDefinition } from "./beszel.js";
 import { boxyhqSaasDefinition } from "./boxyhq-saas.js";
+import { bridgeDefinition } from "./bridge.js";
 import { browserlessDefinition } from "./browserless.js";
 import { burnlinkDefinition } from "./burnlink.js";
 import { caddyDefinition } from "./caddy.js";
@@ -608,6 +610,8 @@ export const allServiceDefinitions: ServiceDefinition[] = [
 	opensandboxDefinition,
 	// ── AI-Native Browser ──────────────────────────────────────────────────
 	agentBrowserDefinition,
+	// ── Stack Management ────────────────────────────────────────────────────
+	bridgeDefinition,
 	// ── SaaS Boilerplates ────────────────────────────────────────────────────
 	openSaasDefinition,
 	apptensionSaasDefinition,

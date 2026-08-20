@@ -10,7 +10,8 @@ export type AgentFrameworkId =
 	| "zeroclaw"
 	| "memu"
 	| "claude-code"
-	| "codex";
+	| "codex"
+	| "hermes";
 
 // ─── Gateway Build Types ────────────────────────────────────────────────────
 
@@ -59,6 +60,8 @@ export interface FrameworkConfigOptions {
 	deploymentType: string;
 	gatewayPort: number;
 	frameworkVersion: string;
+	deployTarget?: string;
+	notificationProviders?: string[];
 }
 
 export interface FrameworkConfigResult {

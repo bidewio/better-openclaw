@@ -10,11 +10,13 @@
 
 import type * as agents from "../agents.js";
 import type * as auth from "../auth.js";
+import type * as bridge from "../bridge.js";
 import type * as chat from "../chat.js";
 import type * as claudeSessions from "../claudeSessions.js";
 import type * as compliance from "../compliance.js";
 import type * as documents from "../documents.js";
 import type * as fleet from "../fleet.js";
+import type * as hermes from "../hermes.js";
 import type * as http from "../http.js";
 import type * as lib_tenant from "../lib/tenant.js";
 import type * as messages from "../messages.js";
@@ -33,11 +35,13 @@ import type { ApiFromModules, FilterApi, FunctionReference } from "convex/server
 declare const fullApi: ApiFromModules<{
 	agents: typeof agents;
 	auth: typeof auth;
+	bridge: typeof bridge;
 	chat: typeof chat;
 	claudeSessions: typeof claudeSessions;
 	compliance: typeof compliance;
 	documents: typeof documents;
 	fleet: typeof fleet;
+	hermes: typeof hermes;
 	http: typeof http;
 	"lib/tenant": typeof lib_tenant;
 	messages: typeof messages;

@@ -30,17 +30,32 @@ const LEVEL_ORDER: Record<LogLevel, number> = {
 	error: 3,
 };
 
-/** Strip sensitive keys from a context object (shallow). */
+/** Strip sensitive keys from a context object (deep recursive). */
 function sanitizeContext(
 	ctx: Record<string, unknown> | undefined,
 ): Record<string, unknown> | undefined {
 	if (!ctx) return ctx;
+	return sanitizeValue(ctx) as Record<string, unknown>;
+}
+
+function sanitizeValue(value: unknown, depth = 0): unknown {
+	// Prevent infinite recursion on deeply nested objects
+	if (depth > 10) return "[TRUNCATED]";
+
+	if (value === null || value === undefined) return value;
+	if (typeof value !== "object") return value;
+	if (value instanceof Date) return value.toISOString();
+
+	if (Array.isArray(value)) {
+		return value.map((item) => sanitizeValue(item, depth + 1));
+	}
+
 	const clean: Record<string, unknown> = {};
-	for (const [key, value] of Object.entries(ctx)) {
+	for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
 		if (SENSITIVE_KEYS.has(key.toLowerCase())) {
 			clean[key] = "[REDACTED]";
 		} else {
-			clean[key] = value;
+			clean[key] = sanitizeValue(val, depth + 1);
 		}
 	}
 	return clean;

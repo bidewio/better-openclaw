@@ -230,6 +230,7 @@ export async function runNonInteractive(options: NonInteractiveOptions): Promise
 		skillPacks: skillPackIds,
 		aiProviders: aiProvidersList as GenerationInput["aiProviders"],
 		gsdRuntimes: [],
+		notificationProviders: [],
 		proxy,
 		proxyHttpPort: options.proxyHttpPort,
 		proxyHttpsPort: options.proxyHttpsPort,

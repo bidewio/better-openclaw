@@ -5,9 +5,15 @@ RUN corepack enable && corepack prepare pnpm@10.30.3 --activate
 FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/core/package.json ./packages/core/
+# Every workspace package.json must be present: internal deps use
+# workspace:* and pnpm resolves them from the workspace, not the registry.
 COPY packages/api/package.json ./packages/api/
+COPY packages/bridge/package.json ./packages/bridge/
 COPY packages/cli/package.json ./packages/cli/
+COPY packages/core/package.json ./packages/core/
+COPY packages/db/package.json ./packages/db/
+COPY packages/mcp/package.json ./packages/mcp/
+COPY packages/mission-control/package.json ./packages/mission-control/
 COPY packages/web/package.json ./packages/web/
 RUN pnpm install --frozen-lockfile
 

@@ -2,7 +2,7 @@
   <h1 align="center">better-openclaw</h1>
   <p align="center">
     <strong>Build your AI agent superstack in seconds.</strong><br/>
-    94 services. 8 agent frameworks. 10 skill packs. 9 presets. One command.
+    201 services. 8 agent frameworks. 44 skill packs. 21 presets. One command.
   </p>
 </p>
 
@@ -37,6 +37,15 @@ npx create-better-openclaw@latest
 
 Follow the interactive wizard to select services, skill packs, and configuration options. Your complete stack will be generated in seconds.
 
+### Don't want to run it yourself?
+
+better-openclaw is free and AGPL-3.0, and always will be. But if you'd rather not operate
+the stack, we'll deploy and run it for you on a dedicated VPS.
+
+Self-serve signup isn't open yet — during early access instances are set up by hand.
+Email **bachir@bidew.io** with what you're trying to run and what you're doing today
+instead, and you'll get an honest answer about whether it's a fit.
+
 Or run non-interactively:
 
 ```bash
@@ -63,7 +72,7 @@ npx create-better-openclaw --preset minimal --yes --json
 
 ```bash
 npx create-better-openclaw generate [dir]       # Generate a stack (default command)
-npx create-better-openclaw services list        # List all 94 available services
+npx create-better-openclaw services list        # List all 201 available services
 npx create-better-openclaw presets list         # List all preset stacks
 npx create-better-openclaw presets info <id>    # Show preset details
 npx create-better-openclaw validate <dir>      # Validate an existing stack
@@ -130,7 +139,8 @@ Only services with a native recipe run on the host; others remain in Docker. Cur
 
 ## Service Catalog
 
-94 services across 21 categories, ready to compose:
+201 services across 37 categories, ready to compose. The table below is a selection;
+run `npx create-better-openclaw services list` for the full catalog:
 
 | Category | Services |
 |---|---|
@@ -159,7 +169,8 @@ Every service definition includes a pinned Docker image tag, ports, volumes, hea
 
 ## Skill Packs
 
-Skill packs bundle agent skills with their required infrastructure:
+Skill packs bundle agent skills with their required infrastructure. 44 packs are
+available; these are the most used:
 
 | Pack | Description | Services |
 |---|---|---|
@@ -176,7 +187,8 @@ Skill packs bundle agent skills with their required infrastructure:
 
 ## Presets
 
-Pre-configured stack templates for quick starts:
+Pre-configured stack templates for quick starts. 21 presets are available; these are
+the most used:
 
 | Preset | Services | Memory |
 |---|---|---|

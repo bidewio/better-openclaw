@@ -30,10 +30,14 @@ FROM base AS runner
 WORKDIR /app/packages/web
 ENV NODE_ENV=production
 ENV PORT=3654
+# pnpm keeps the real packages in /app/node_modules/.pnpm and exposes them to
+# each workspace member through packages/<pkg>/node_modules symlinks. Both must
+# be copied or nothing resolves at runtime; the root alone is not enough.
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/packages/core /app/packages/core
+COPY --from=builder /app/packages/web/node_modules ./node_modules
 COPY --from=builder /app/packages/web/.next ./.next
 COPY --from=builder /app/packages/web/public ./public
 COPY --from=builder /app/packages/web/package.json ./package.json
 EXPOSE 3654
-CMD ["node", "../../node_modules/next/dist/bin/next", "start"]
+CMD ["node", "./node_modules/next/dist/bin/next", "start"]

@@ -36,9 +36,7 @@ function parseHealth(status: string): ContainerInfo["health"] {
 	return "none";
 }
 
-function mapPorts(
-	ports: Docker.Port[],
-): ContainerInfo["ports"] {
+function mapPorts(ports: Docker.Port[]): ContainerInfo["ports"] {
 	return ports.map((p) => ({
 		host: p.PublicPort,
 		container: p.PrivatePort,
@@ -90,8 +88,7 @@ export class DockerClient {
 
 		return containers.map((c) => ({
 			id: c.Id,
-			serviceId:
-				c.Labels["com.docker.compose.service"] ?? "unknown",
+			serviceId: c.Labels["com.docker.compose.service"] ?? "unknown",
 			name: c.Names[0]?.replace(/^\//, "") ?? c.Id.slice(0, 12),
 			state: c.State,
 			status: c.Status,
@@ -108,31 +105,29 @@ export class DockerClient {
 
 		return {
 			id: info.Id,
-			serviceId:
-				info.Config.Labels["com.docker.compose.service"] ?? "unknown",
+			serviceId: info.Config.Labels["com.docker.compose.service"] ?? "unknown",
 			name: info.Name.replace(/^\//, ""),
 			state: info.State.Status,
 			status: info.State.Running
 				? `Up since ${info.State.StartedAt}`
 				: `Exited (${info.State.ExitCode})`,
 			image: info.Config.Image,
-			ports: Object.entries(info.NetworkSettings.Ports ?? {}).flatMap(
-				([key, bindings]) => {
-					const [portStr, protocol] = key.split("/");
-					return (bindings ?? []).map((b) => ({
-						host: b.HostPort ? Number(b.HostPort) : undefined,
-						container: Number(portStr),
-						protocol: protocol ?? "tcp",
-					}));
-				},
-			),
-			health: info.State.Health?.Status === "healthy"
-				? "healthy"
-				: info.State.Health?.Status === "unhealthy"
-					? "unhealthy"
-					: info.State.Health?.Status === "starting"
-						? "starting"
-						: "none",
+			ports: Object.entries(info.NetworkSettings.Ports ?? {}).flatMap(([key, bindings]) => {
+				const [portStr, protocol] = key.split("/");
+				return (bindings ?? []).map((b) => ({
+					host: b.HostPort ? Number(b.HostPort) : undefined,
+					container: Number(portStr),
+					protocol: protocol ?? "tcp",
+				}));
+			}),
+			health:
+				info.State.Health?.Status === "healthy"
+					? "healthy"
+					: info.State.Health?.Status === "unhealthy"
+						? "unhealthy"
+						: info.State.Health?.Status === "starting"
+							? "starting"
+							: "none",
 			created: info.Created,
 			startedAt: info.State.StartedAt,
 			env: info.Config.Env ?? [],
@@ -170,14 +165,10 @@ export class DockerClient {
 		const stats = (await container.stats({ stream: false })) as Docker.ContainerStats;
 
 		const cpuDelta =
-			stats.cpu_stats.cpu_usage.total_usage -
-			stats.precpu_stats.cpu_usage.total_usage;
-		const systemDelta =
-			stats.cpu_stats.system_cpu_usage -
-			stats.precpu_stats.system_cpu_usage;
+			stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
+		const systemDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
 		const cpuCount = stats.cpu_stats.online_cpus ?? 1;
-		const cpuPercent =
-			systemDelta > 0 ? (cpuDelta / systemDelta) * cpuCount * 100 : 0;
+		const cpuPercent = systemDelta > 0 ? (cpuDelta / systemDelta) * cpuCount * 100 : 0;
 
 		const memUsage = stats.memory_stats.usage ?? 0;
 		const memLimit = stats.memory_stats.limit ?? 1;
@@ -195,12 +186,9 @@ export class DockerClient {
 			cpuPercent: Math.round(cpuPercent * 100) / 100,
 			memoryUsageMB: Math.round((memUsage / 1024 / 1024) * 100) / 100,
 			memoryLimitMB: Math.round((memLimit / 1024 / 1024) * 100) / 100,
-			memoryPercent:
-				Math.round((memUsage / memLimit) * 100 * 100) / 100,
-			networkRxMB:
-				Math.round((networkRx / 1024 / 1024) * 100) / 100,
-			networkTxMB:
-				Math.round((networkTx / 1024 / 1024) * 100) / 100,
+			memoryPercent: Math.round((memUsage / memLimit) * 100 * 100) / 100,
+			networkRxMB: Math.round((networkRx / 1024 / 1024) * 100) / 100,
+			networkTxMB: Math.round((networkTx / 1024 / 1024) * 100) / 100,
 		};
 	}
 
@@ -227,25 +215,17 @@ export class DockerClient {
 		const containerResult = await this.docker.pruneContainers();
 		const imageResult = await this.docker.pruneImages();
 
-		const containerSpace =
-			containerResult.SpaceReclaimed ?? 0;
+		const containerSpace = containerResult.SpaceReclaimed ?? 0;
 		const imageSpace = imageResult.SpaceReclaimed ?? 0;
 
 		return {
-			containersDeleted:
-				containerResult.ContainersDeleted?.length ?? 0,
-			spaceReclaimedMB:
-				Math.round(
-					((containerSpace + imageSpace) / 1024 / 1024) * 100,
-				) / 100,
+			containersDeleted: containerResult.ContainersDeleted?.length ?? 0,
+			spaceReclaimedMB: Math.round(((containerSpace + imageSpace) / 1024 / 1024) * 100) / 100,
 		};
 	}
 
 	/** Find a container ID by compose service name within a project. */
-	async findContainerByService(
-		projectName: string,
-		serviceId: string,
-	): Promise<string | null> {
+	async findContainerByService(projectName: string, serviceId: string): Promise<string | null> {
 		const containers = await this.docker.listContainers({
 			all: true,
 			filters: {

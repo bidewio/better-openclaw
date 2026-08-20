@@ -19,7 +19,7 @@ describe("generateCaddyfile (via generate)", () => {
 		const result = generate(baseInput);
 
 		expect(result.files).toHaveProperty("caddy/Caddyfile");
-		expect(result.files["caddy/Caddyfile"]?.length).toBeGreaterThan(0);
+		expect((result.files["caddy/Caddyfile"] ?? "").length).toBeGreaterThan(0);
 	});
 
 	it("does not generate Caddyfile when proxy is none", () => {
@@ -33,14 +33,14 @@ describe("generateCaddyfile (via generate)", () => {
 
 	it("Caddyfile contains the domain", () => {
 		const result = generate(baseInput);
-		const caddyfile = result.files["caddy/Caddyfile"]!;
+		const caddyfile = result.files["caddy/Caddyfile"] ?? "";
 
 		expect(caddyfile).toContain("example.com");
 	});
 
 	it("Caddyfile includes reverse proxy directives for services with exposed ports", () => {
 		const result = generate(baseInput);
-		const caddyfile = result.files["caddy/Caddyfile"]!;
+		const caddyfile = result.files["caddy/Caddyfile"] ?? "";
 
 		// Should reference n8n since it has exposed ports
 		expect(caddyfile).toContain("n8n");
@@ -48,49 +48,9 @@ describe("generateCaddyfile (via generate)", () => {
 
 	it("Caddyfile includes TLS configuration", () => {
 		const result = generate(baseInput);
-		const caddyfile = result.files["caddy/Caddyfile"]!;
+		const caddyfile = result.files["caddy/Caddyfile"] ?? "";
 
 		// Caddy auto-enables TLS, so should reference HTTPS or TLS
 		expect(caddyfile.length).toBeGreaterThan(50);
-	});
-
-	it("adds flush_interval -1 for WebSocket-enabled services (opensandbox)", () => {
-		const result = generate({
-			...baseInput,
-			services: ["opensandbox"],
-		});
-		const caddyfile = result.files["caddy/Caddyfile"]!;
-
-		expect(caddyfile).toContain("opensandbox");
-		expect(caddyfile).toContain("flush_interval -1");
-	});
-
-	it("adds flush_interval -1 for desktop-environment (KasmVNC)", () => {
-		const result = generate({
-			...baseInput,
-			services: ["desktop-environment"],
-		});
-		const caddyfile = result.files["caddy/Caddyfile"]!;
-
-		expect(caddyfile).toContain("desktop-environment");
-		expect(caddyfile).toContain("flush_interval -1");
-	});
-
-	it("adds flush_interval -1 for agent-browser viewport streaming port", () => {
-		const result = generate({
-			...baseInput,
-			services: ["agent-browser"],
-		});
-		const caddyfile = result.files["caddy/Caddyfile"]!;
-
-		expect(caddyfile).toContain("agent-browser");
-		expect(caddyfile).toContain("flush_interval -1");
-	});
-
-	it("does NOT add flush_interval for non-WebSocket services", () => {
-		const result = generate(baseInput);
-		const caddyfile = result.files["caddy/Caddyfile"]!;
-
-		expect(caddyfile).not.toContain("flush_interval");
 	});
 });

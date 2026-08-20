@@ -4,7 +4,7 @@ The official Command Line Interface (CLI) for rapidly scaffolding production-rea
 
 ## Installation & Usage
 
-You can use the CLI seamlessly using `pnpx`, `npx`, or standard global installation mechanisms. Node.js >= 20 is required.
+You can use the CLI seamlessly using `pnpx`, `npx`, or standard global installation mechanisms. Node.js >= 22 is required.
 
 ```bash
 # Interactive interactive builder (Visual Wizard)

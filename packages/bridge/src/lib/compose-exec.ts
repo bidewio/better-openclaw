@@ -18,15 +18,11 @@ export async function composeExec(
 	args: string[],
 	timeoutMs = 120_000,
 ): Promise<ComposeExecResult> {
-	const { stdout, stderr } = await execFileAsync(
-		"docker",
-		["compose", ...args],
-		{
-			cwd: projectDir,
-			timeout: timeoutMs,
-			env: process.env,
-		},
-	);
+	const { stdout, stderr } = await execFileAsync("docker", ["compose", ...args], {
+		cwd: projectDir,
+		timeout: timeoutMs,
+		env: process.env,
+	});
 
 	return { stdout, stderr };
 }
@@ -37,13 +33,7 @@ export async function composeScale(
 	serviceId: string,
 	replicas: number,
 ): Promise<ComposeExecResult> {
-	return composeExec(projectDir, [
-		"up",
-		"-d",
-		"--scale",
-		`${serviceId}=${replicas}`,
-		serviceId,
-	]);
+	return composeExec(projectDir, ["up", "-d", "--scale", `${serviceId}=${replicas}`, serviceId]);
 }
 
 /** Pull latest images for specified services (or all). */
@@ -60,11 +50,6 @@ export async function composeRecreate(
 	projectDir: string,
 	serviceIds?: string[],
 ): Promise<ComposeExecResult> {
-	const args = [
-		"up",
-		"-d",
-		"--force-recreate",
-		...(serviceIds ?? []),
-	];
+	const args = ["up", "-d", "--force-recreate", ...(serviceIds ?? [])];
 	return composeExec(projectDir, args);
 }

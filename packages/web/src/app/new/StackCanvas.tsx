@@ -1,11 +1,14 @@
 "use client";
 
-import { type AiProvider, type GsdRuntime, SERVICE_CATEGORIES } from "@better-openclaw/core";
+import { type AiProvider, type GsdRuntime, SERVICE_CATEGORIES } from "@better-openclaw/core/types";
 import { Search, X } from "lucide-react";
 import { FrameworkSelector } from "@/components/stack-builder/FrameworkSelector";
 import { ServiceGrid } from "@/components/stack-builder/ServiceGrid";
+import { getClientManifestSkills } from "@/lib/skill-manifest-client";
 import { cn } from "@/lib/utils";
 import { useStackBuilder } from "./StackBuilderProvider";
+
+const CURATED_SKILL_COUNT = getClientManifestSkills().length;
 
 export function StackCanvas() {
 	const {
@@ -102,7 +105,7 @@ export function StackCanvas() {
 						<p className="mt-0.5 text-xs text-muted-foreground">
 							{selectedIndividualSkills.size > 0
 								? `${selectedIndividualSkills.size} skill${selectedIndividualSkills.size !== 1 ? "s" : ""} selected`
-								: "Browse 180+ curated skills or search the SkillsMP marketplace"}
+								: `Browse ${CURATED_SKILL_COUNT} curated skills or search the SkillsMP marketplace`}
 						</p>
 					</div>
 					<button

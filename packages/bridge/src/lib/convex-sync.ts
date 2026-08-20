@@ -63,10 +63,7 @@ export class ConvexSyncClient {
 	}
 
 	/** Dispatch a new task by relaying to Convex. */
-	async dispatchTask(
-		title: string,
-		description?: string,
-	): Promise<string> {
+	async dispatchTask(title: string, description?: string): Promise<string> {
 		const resp = await fetch(`${this.convexUrl}/bridge/task-dispatch`, {
 			method: "POST",
 			headers: this.authHeaders(),

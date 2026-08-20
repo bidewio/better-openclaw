@@ -199,8 +199,9 @@ export function resolve(input: ResolverInput): ResolverOutput {
 
 	for (let i = 0; i < resolvedDefs.length; i++) {
 		for (let j = i + 1; j < resolvedDefs.length; j++) {
-			const a = resolvedDefs[i]!;
-			const b = resolvedDefs[j]!;
+			const a = resolvedDefs[i];
+			const b = resolvedDefs[j];
+			if (!a || !b) continue;
 			if (a.conflictsWith.includes(b.id) || b.conflictsWith.includes(a.id)) {
 				errors.push({
 					type: "conflict",
@@ -319,7 +320,8 @@ function topologicalSort(definitions: ServiceDefinition[]): ServiceDefinition[] 
 	const defMap = new Map(definitions.map((d) => [d.id, d]));
 
 	while (queue.length > 0) {
-		const id = queue.shift()!;
+		const id = queue.shift();
+		if (id === undefined) continue;
 		const def = defMap.get(id);
 		if (def) sorted.push(def);
 

@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { generateOpenClawConfig } from "../generators/openclaw-json.js";
-import type { ResolverOutput } from "../types.js";
+import type { DeploymentType, ResolverOutput } from "../types.js";
 import type {
 	AgentFrameworkDefinition,
 	EnvLine,
@@ -40,6 +40,13 @@ const PROVIDER_ENV_KEYS = [
 	"OLLAMA_API_KEY",
 	"NVIDIA_API_KEY",
 ];
+
+function resolveDeploymentType(value: string): DeploymentType {
+	if (value === "docker" || value === "bare-metal" || value === "local") {
+		return value;
+	}
+	return "docker";
+}
 
 // ─── OpenClaw Framework Definition ──────────────────────────────────────────
 
@@ -213,7 +220,7 @@ export const openclawFramework: AgentFrameworkDefinition = {
 
 	generateConfig(resolved: ResolverOutput, options: FrameworkConfigOptions): FrameworkConfigResult {
 		const content = generateOpenClawConfig(resolved, {
-			deploymentType: options.deploymentType as any,
+			deploymentType: resolveDeploymentType(options.deploymentType),
 			gatewayPort: options.gatewayPort,
 			openclawVersion: options.frameworkVersion,
 			notificationProviders: options.notificationProviders,

@@ -43,9 +43,7 @@ export function generateClaudeMd(resolved: ResolverOutput, options: ClaudeMdOpti
 
 	const archLines = [`- **Primary framework:** ${frameworkName}`];
 	if (companionFrameworks.length > 0) {
-		const names = companionFrameworks
-			.map((id) => getFrameworkById(id)?.name ?? id)
-			.join(", ");
+		const names = companionFrameworks.map((id) => getFrameworkById(id)?.name ?? id).join(", ");
 		archLines.push(`- **Companion frameworks:** ${names}`);
 	}
 	if (proxy !== "none") {

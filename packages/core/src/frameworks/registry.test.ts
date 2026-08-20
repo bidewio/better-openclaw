@@ -9,6 +9,14 @@ import {
 // Ensure all frameworks are auto-registered by importing the barrel
 import "./index.js";
 
+function requireFramework(id: string) {
+	const framework = getFrameworkById(id);
+	if (!framework) {
+		throw new Error(`Framework not found: ${id}`);
+	}
+	return framework;
+}
+
 const EXPECTED_FRAMEWORK_IDS = [
 	"openclaw",
 	"copaw",
@@ -39,10 +47,10 @@ describe("framework registry", () => {
 		for (const id of EXPECTED_FRAMEWORK_IDS) {
 			const fw = getFrameworkById(id);
 			expect(fw).toBeDefined();
-			expect(fw!.id).toBe(id);
-			expect(fw!.name).toBeTruthy();
-			expect(fw!.icon).toBeTruthy();
-			expect(fw!.description).toBeTruthy();
+			expect(fw?.id).toBe(id);
+			expect(fw?.name).toBeTruthy();
+			expect(fw?.icon).toBeTruthy();
+			expect(fw?.description).toBeTruthy();
 		}
 	});
 
@@ -76,7 +84,7 @@ describe("framework registry", () => {
 	});
 
 	it("openclaw has mandatory services (convex, mission-control, tailscale)", () => {
-		const openclaw = getFrameworkById("openclaw")!;
+		const openclaw = requireFramework("openclaw");
 		const mandatory = openclaw.getMandatoryServices();
 		expect(mandatory).toContain("convex");
 		expect(mandatory).toContain("mission-control");
@@ -84,13 +92,21 @@ describe("framework registry", () => {
 	});
 
 	it("memu has postgresql as mandatory service", () => {
-		const memu = getFrameworkById("memu")!;
+		const memu = requireFramework("memu");
 		expect(memu.getMandatoryServices()).toContain("postgresql");
 	});
 
 	it("non-openclaw frameworks do not require convex/mission-control/tailscale", () => {
-		for (const id of ["copaw", "nanoclaw", "nanobot", "zeroclaw", "claude-code", "codex", "hermes"]) {
-			const fw = getFrameworkById(id)!;
+		for (const id of [
+			"copaw",
+			"nanoclaw",
+			"nanobot",
+			"zeroclaw",
+			"claude-code",
+			"codex",
+			"hermes",
+		]) {
+			const fw = requireFramework(id);
 			const mandatory = fw.getMandatoryServices();
 			expect(mandatory).not.toContain("convex");
 			expect(mandatory).not.toContain("mission-control");
@@ -99,19 +115,19 @@ describe("framework registry", () => {
 	});
 
 	it("openclaw, copaw, and hermes recommend clawrouter", () => {
-		const openclaw = getFrameworkById("openclaw")!;
+		const openclaw = requireFramework("openclaw");
 		expect(openclaw.getRecommendedServices()).toContain("clawrouter");
 
-		const copaw = getFrameworkById("copaw")!;
+		const copaw = requireFramework("copaw");
 		expect(copaw.getRecommendedServices()).toContain("clawrouter");
 
-		const hermes = getFrameworkById("hermes")!;
+		const hermes = requireFramework("hermes");
 		expect(hermes.getRecommendedServices()).toContain("clawrouter");
 	});
 
 	it("other frameworks do not recommend clawrouter", () => {
 		for (const id of ["nanoclaw", "nanobot", "zeroclaw", "claude-code", "codex"]) {
-			const fw = getFrameworkById(id)!;
+			const fw = requireFramework(id);
 			expect(fw.getRecommendedServices()).not.toContain("clawrouter");
 		}
 	});

@@ -72,6 +72,8 @@ export default function TokenDashboard() {
 		}));
 	}, [toolUsage]);
 
+	const fallbackChartColor = CHART_COLORS[0] ?? "var(--accent-blue)";
+
 	// Cost timeline chart data
 	const timelineData = useMemo(() => {
 		if (!costTimeline) return [];
@@ -235,8 +237,11 @@ export default function TokenDashboard() {
 											]}
 										/>
 										<Bar dataKey="count" radius={[0, 4, 4, 0]}>
-											{toolChartData.map((_entry, i) => (
-												<Cell key={`cell-${i}`} fill={CHART_COLORS[i % CHART_COLORS.length]!} />
+											{toolChartData.map((entry, i) => (
+												<Cell
+													key={`tool-${entry.name}`}
+													fill={CHART_COLORS[i % CHART_COLORS.length] ?? fallbackChartColor}
+												/>
 											))}
 										</Bar>
 									</BarChart>
@@ -259,8 +264,11 @@ export default function TokenDashboard() {
 											paddingAngle={3}
 											dataKey="value"
 										>
-											{modelDistribution.map((_, i) => (
-												<Cell key={`cell-${i}`} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+											{modelDistribution.map((item, i) => (
+												<Cell
+													key={`operation-${item.name}`}
+													fill={CHART_COLORS[i % CHART_COLORS.length]}
+												/>
 											))}
 										</Pie>
 										<Tooltip

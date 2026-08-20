@@ -1,5 +1,6 @@
 import { CheckCircle2, CircleDashed, Clock } from "lucide-react";
 import type { Metadata } from "next";
+import { docsStats } from "@/lib/docs-stats";
 
 export const metadata: Metadata = {
 	title: "Roadmap | better-openclaw",
@@ -23,7 +24,7 @@ const ROADMAP: { quarter: string; items: RoadmapItem[] }[] = [
 					"The foundation of better-openclaw. A robust engine capable of generating complex Docker Compose stacks in seconds.",
 				status: "completed",
 				features: [
-					"90+ Service Catalog across 21 categories",
+					`${docsStats.serviceCount} Service Catalog across ${docsStats.categoryCount} categories`,
 					"Interactive CLI Wizard with dependency resolution",
 					"REST API for programmatic stack generation",
 					"Web Builder UI with live preview",
@@ -236,9 +237,9 @@ export default function RoadmapPage() {
 										</p>
 
 										<ul className="grid sm:grid-cols-2 gap-3">
-											{item.features.map((feature, fIdx) => (
+											{item.features.map((feature) => (
 												<li
-													key={fIdx}
+													key={feature}
 													className="flex items-start gap-2 text-sm text-foreground/80"
 												>
 													<div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />

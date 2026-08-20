@@ -111,18 +111,14 @@ describe("Hermes Agent end-to-end stack generation", () => {
 			const gw = composed.services["hermes-gateway"];
 			if (gw.depends_on) {
 				for (const [, condition] of Object.entries(gw.depends_on)) {
-					expect((condition as { condition: string }).condition).toBe(
-						"service_healthy",
-					);
+					expect((condition as { condition: string }).condition).toBe("service_healthy");
 				}
 			}
 		});
 	});
 
 	describe("generated .env file", () => {
-		const envFile = Object.entries(result.files).find(([path]) =>
-			path.endsWith(".env"),
-		);
+		const envFile = Object.entries(result.files).find(([path]) => path.endsWith(".env"));
 
 		it("produces an .env file", () => {
 			expect(envFile).toBeDefined();

@@ -14,10 +14,12 @@ const route = new OpenAPIHono({
 					error: {
 						code: "VALIDATION_ERROR" as const,
 						message: "Invalid generation input",
-						details: result.error.issues.map((issue: any) => ({
-							field: issue.path.join("."),
-							message: issue.message,
-						})),
+						details: result.error.issues.map(
+							(issue: { path: Array<string | number>; message: string }) => ({
+								field: issue.path.join("."),
+								message: issue.message,
+							}),
+						),
 					},
 				},
 				400,

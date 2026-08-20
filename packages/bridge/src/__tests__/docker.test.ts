@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { deriveOverallStatus, buildServiceStatusMap } from "../../src/heartbeat/service-health.js";
-import type { ContainerInfo } from "../../src/lib/docker.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { buildServiceStatusMap, deriveOverallStatus } from "../../src/heartbeat/service-health.js";
 import { verifyBridgeToken } from "../../src/lib/auth.js";
+import type { ContainerInfo } from "../../src/lib/docker.js";
 
 // ─── Auth Tests ─────────────────────────────────────────────────────────
 

@@ -191,7 +191,10 @@ export class CoolifyDeployer implements PaasDeployer {
 				throw new Error("No Coolify servers available");
 			}
 
-			const server = servers[0]!;
+			const [server] = servers;
+			if (!server) {
+				throw new Error("No Coolify servers available");
+			}
 
 			step1.status = "done";
 			step1.detail = `${server.name} (${server.ip})`;

@@ -15,7 +15,7 @@ const CreateStackSchema = z.object({
 		.array(z.string().max(100))
 		.min(1, "At least one service is required")
 		.max(200, "Too many services"),
-	config: z.record(z.unknown()).optional().default({}),
+	config: z.record(z.string(), z.unknown()).optional().default({}),
 });
 
 /** Zod schema for updating a stack (PATCH). All fields optional. */
@@ -31,7 +31,7 @@ const UpdateStackSchema = z.object({
 		.min(1, "At least one service is required")
 		.max(200, "Too many services")
 		.optional(),
-	config: z.record(z.unknown()).optional(),
+	config: z.record(z.string(), z.unknown()).optional(),
 });
 
 const route = new Hono();

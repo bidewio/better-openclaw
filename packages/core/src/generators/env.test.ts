@@ -23,7 +23,7 @@ describe("generateEnvFiles (via generate)", () => {
 
 	it(".env.example has empty values for secrets", () => {
 		const result = generate(baseInput);
-		const envExample = result.files[".env.example"]!;
+		const envExample = result.files[".env.example"] ?? "";
 
 		// .env.example should have placeholder empty values for secrets
 		expect(envExample).toContain("REDIS_PASSWORD=");
@@ -31,14 +31,14 @@ describe("generateEnvFiles (via generate)", () => {
 
 	it(".env has populated secret values when generateSecrets is true", () => {
 		const result = generate(baseInput);
-		const env = result.files[".env"]!;
+		const env = result.files[".env"] ?? "";
 
 		// Find REDIS_PASSWORD line and check it has a value
 		const redisLine = env.split("\n").find((l) => l.startsWith("REDIS_PASSWORD="));
 		expect(redisLine).toBeDefined();
 		// Value should not be empty
-		const value = redisLine?.split("=")[1];
-		expect(value?.length).toBeGreaterThan(0);
+		const value = redisLine?.split("=")[1] ?? "";
+		expect(value.length).toBeGreaterThan(0);
 	});
 
 	it("env files contain service-specific variables", () => {
@@ -46,7 +46,7 @@ describe("generateEnvFiles (via generate)", () => {
 			...baseInput,
 			services: ["redis", "postgresql", "n8n"],
 		});
-		const env = result.files[".env"]!;
+		const env = result.files[".env"] ?? "";
 
 		expect(env).toContain("REDIS_PASSWORD");
 		expect(env).toContain("POSTGRES_PASSWORD");
@@ -54,7 +54,7 @@ describe("generateEnvFiles (via generate)", () => {
 
 	it("env files group variables by service with comments", () => {
 		const result = generate(baseInput);
-		const envExample = result.files[".env.example"]!;
+		const envExample = result.files[".env.example"] ?? "";
 
 		// Should have comment sections
 		expect(envExample).toContain("#");
@@ -66,7 +66,7 @@ describe("generateEnvFiles (via generate)", () => {
 			proxy: "caddy",
 			domain: "example.com",
 		});
-		const env = result.files[".env"]!;
+		const env = result.files[".env"] ?? "";
 
 		expect(env).toContain("example.com");
 	});

@@ -1,11 +1,7 @@
 import { Hono } from "hono";
 import { z } from "zod";
+import { composePull, composeRecreate, composeScale } from "../lib/compose-exec.js";
 import type { DockerClient } from "../lib/docker.js";
-import {
-	composePull,
-	composeRecreate,
-	composeScale,
-} from "../lib/compose-exec.js";
 
 const ServiceIdSchema = z.object({ serviceId: z.string().min(1) });
 const ScaleSchema = z.object({
@@ -16,11 +12,7 @@ const ServiceIdsSchema = z.object({
 	serviceIds: z.array(z.string().min(1)).optional(),
 });
 
-export function commandRoutes(
-	docker: DockerClient,
-	projectDir: string,
-	projectName: string,
-): Hono {
+export function commandRoutes(docker: DockerClient, projectDir: string, projectName: string): Hono {
 	const app = new Hono();
 
 	/** Resolve a service ID to a Docker container ID. */
@@ -92,11 +84,7 @@ export function commandRoutes(
 			return c.json({ error: { code: "VALIDATION", message: body.error.message } }, 400);
 		}
 
-		const result = await composeScale(
-			projectDir,
-			body.data.serviceId,
-			body.data.replicas,
-		);
+		const result = await composeScale(projectDir, body.data.serviceId, body.data.replicas);
 		return c.json({
 			ok: true,
 			command: "scale",

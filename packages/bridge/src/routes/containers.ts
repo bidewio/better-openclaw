@@ -11,10 +11,7 @@ export function containerRoutes(docker: DockerClient): Hono {
 			const detail = await docker.inspectContainer(id);
 			return c.json(detail);
 		} catch {
-			return c.json(
-				{ error: { code: "NOT_FOUND", message: `Container '${id}' not found` } },
-				404,
-			);
+			return c.json({ error: { code: "NOT_FOUND", message: `Container '${id}' not found` } }, 404);
 		}
 	});
 
@@ -28,10 +25,7 @@ export function containerRoutes(docker: DockerClient): Hono {
 			const logs = await docker.getContainerLogs(id, { tail, since });
 			return c.text(logs);
 		} catch {
-			return c.json(
-				{ error: { code: "NOT_FOUND", message: `Container '${id}' not found` } },
-				404,
-			);
+			return c.json({ error: { code: "NOT_FOUND", message: `Container '${id}' not found` } }, 404);
 		}
 	});
 

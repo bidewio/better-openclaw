@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { CLOUD_ENABLED } from "@/lib/cloud";
+import { docsStats } from "@/lib/docs-stats";
 
 export const metadata: Metadata = {
 	title: "Clawexa Cloud — Hosted OpenClaw Platform",
@@ -38,7 +39,7 @@ function CloudComingSoon() {
 				<div className="mb-8 inline-flex items-center gap-2 rounded-sm border border-primary/20 bg-primary/10 px-3 py-1">
 					<span className="h-1.5 w-1.5 rounded-full bg-primary" />
 					<span className="font-mono text-[9px] uppercase tracking-widest text-primary">
-						COMING SOON
+						PRIVATE EARLY ACCESS
 					</span>
 				</div>
 
@@ -47,27 +48,37 @@ function CloudComingSoon() {
 				</h1>
 
 				<p className="mt-8 max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed">
-					Clawexa Cloud is currently under development. The hosted version of better-openclaw will
-					let you deploy AI agent stacks without managing servers, Docker, or infrastructure.
+					Don&apos;t want to run this yourself? We will deploy and operate your stack on a dedicated
+					VPS — the same {docsStats.serviceCount}+ services from the builder, provisioned, wired,
+					and kept running.
 				</p>
 
-				<p className="mt-4 font-mono text-xs text-muted-foreground/60">Stay tuned for updates.</p>
+				<p className="mt-6 max-w-2xl mx-auto text-base text-muted-foreground/80 leading-relaxed">
+					Self-serve signup is not open yet. During early access we set instances up by hand, which
+					means you tell us what you need to run and we do the rest. Tell us what you are trying to
+					build and we will tell you honestly whether this is a fit.
+				</p>
 
 				<div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
-					<Link
-						href="/new"
+					<a
+						href="mailto:bachir@bidew.io?subject=Clawexa%20early%20access&body=What%20I%20want%20to%20run%3A%0A%0AWhat%20I%20am%20doing%20today%20instead%3A%0A%0A"
 						className="group relative flex h-16 items-center justify-center overflow-hidden bg-primary px-10 font-mono text-sm font-bold uppercase tracking-widest text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[0_0_30px_rgba(163,135,95,0.3)]"
 					>
 						<span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-foreground/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-						<span className="relative">SELF-HOST NOW &rarr;</span>
-					</Link>
+						<span className="relative">REQUEST AN INSTANCE &rarr;</span>
+					</a>
 					<Link
-						href="/docs"
+						href="/new"
 						className="group flex h-16 items-center justify-center border border-border bg-transparent px-10 font-mono text-sm font-bold uppercase tracking-widest text-foreground/80 transition-all hover:border-primary/40 hover:bg-muted/50 hover:text-foreground"
 					>
-						VIEW DOCUMENTATION
+						SELF-HOST INSTEAD
 					</Link>
 				</div>
+
+				<p className="mt-8 font-mono text-xs text-muted-foreground/60">
+					better-openclaw is free and AGPL-3.0 forever. This is only for people who would rather not
+					operate it themselves.
+				</p>
 			</div>
 		</section>
 	);
@@ -92,8 +103,9 @@ function CloudContent() {
 					</h1>
 
 					<p className="mt-8 max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed">
-						The hosted version of better-openclaw. Same powerful stack builder with 100+ services
-						and skill packs — without managing servers, Docker, or infrastructure.
+						The hosted version of better-openclaw. Same powerful stack builder with{" "}
+						{docsStats.serviceCount}+ services and skill packs — without managing servers, Docker,
+						or infrastructure.
 					</p>
 
 					<div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -150,7 +162,7 @@ function CloudContent() {
 								</li>
 								<li className="flex items-center gap-3">
 									<span className="h-1 w-1 bg-primary" />
-									100% open source (MIT)
+									100% open source (AGPL-3.0)
 								</li>
 							</ul>
 							<Link
@@ -190,7 +202,7 @@ function CloudContent() {
 								</li>
 								<li className="flex items-center gap-3">
 									<span className="h-1 w-1 bg-primary" />
-									Same 100+ services catalog
+									Same {docsStats.serviceCount}+ services catalog
 								</li>
 							</ul>
 							<a

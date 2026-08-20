@@ -38,7 +38,7 @@ Better OpenClaw exists to make self-hosted AI infrastructure accessible to every
 
 ### Short Term (Q1-Q2 2026)
 
-- ✅ Core service definitions (70+ services)
+- ✅ Core service definitions (202 services across 37 categories)
 - ✅ Interactive CLI wizard
 - ✅ REST API for programmatic generation
 - ✅ Visual stack builder (web UI)
@@ -151,4 +151,4 @@ Quality always beats quantity. We'd rather have 1,000 happy users than 100,000 f
 
 ---
 
-**This is a living document.** As the project evolves, so will this vision. Last updated: March 2026.
+**This is a living document.** As the project evolves, so will this vision. Last updated: August 2026.

@@ -67,9 +67,7 @@ export const hermesFramework: AgentFrameworkDefinition = {
 		// Collect env vars from companion services
 		for (const { definition: def } of resolved.services) {
 			for (const env of def.openclawEnvVars) {
-				gatewayEnv[env.key] = env.secret
-					? `\${${env.key}}`
-					: env.defaultValue;
+				gatewayEnv[env.key] = env.secret ? `\${${env.key}}` : env.defaultValue;
 			}
 		}
 
@@ -92,19 +90,11 @@ export const hermesFramework: AgentFrameworkDefinition = {
 			image: `\${HERMES_IMAGE:-${defaultImage}}`,
 			environment: gatewayEnv,
 			volumes: ["hermes-data:/data"],
-			ports: [
-				"${HERMES_API_PORT:-8642}:8642",
-				"${HERMES_WEBHOOK_PORT:-8644}:8644",
-			],
+			ports: ["${HERMES_API_PORT:-8642}:8642", "${HERMES_WEBHOOK_PORT:-8644}:8644"],
 			networks: [this.networkName],
 			restart: "unless-stopped",
 			healthcheck: {
-				test: [
-					"CMD",
-					"curl",
-					"-sf",
-					"http://localhost:8642/health",
-				],
+				test: ["CMD", "curl", "-sf", "http://localhost:8642/health"],
 				interval: "30s",
 				timeout: "5s",
 				retries: 5,
@@ -120,7 +110,7 @@ export const hermesFramework: AgentFrameworkDefinition = {
 	},
 
 	buildCompanionService(
-		resolved: ResolverOutput,
+		_resolved: ResolverOutput,
 		options: FrameworkComposeOptions,
 	): Record<string, unknown> | null {
 		const defaultImage = getHermesImage(
@@ -149,12 +139,7 @@ export const hermesFramework: AgentFrameworkDefinition = {
 			networks: [this.networkName],
 			restart: "unless-stopped",
 			healthcheck: {
-				test: [
-					"CMD",
-					"curl",
-					"-sf",
-					"http://localhost:8642/health",
-				],
+				test: ["CMD", "curl", "-sf", "http://localhost:8642/health"],
 				interval: "30s",
 				timeout: "5s",
 				retries: 5,
@@ -196,8 +181,7 @@ export const hermesFramework: AgentFrameworkDefinition = {
 			official: "",
 			build: "hermes-agent:local",
 		};
-		const imageValue =
-			imageVariantMap[options.frameworkImageVariant ?? "official"] ?? "";
+		const imageValue = imageVariantMap[options.frameworkImageVariant ?? "official"] ?? "";
 
 		return [
 			{

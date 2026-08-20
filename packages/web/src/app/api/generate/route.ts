@@ -1,4 +1,5 @@
-import { GenerationInputSchema, generate } from "@better-openclaw/core";
+import { generate } from "@better-openclaw/core/generate";
+import { GenerationInputSchema } from "@better-openclaw/core/schema";
 import JSZip from "jszip";
 import { NextResponse } from "next/server";
 

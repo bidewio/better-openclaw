@@ -2,7 +2,7 @@
   "name": "create-better-openclaw",
   "version": "1.0.31",
   "private": false,
-  "description": "Scaffold production-ready OpenClaw Docker Compose stacks in one command. 95+ services, presets, auto-wiring, and skill packs.",
+  "description": "Scaffold production-ready OpenClaw Docker Compose stacks in one command. 186 services, presets, auto-wiring, and skill packs.",
   "author": "bidew.io <bachir@bidew.io>",
   "license": "AGPL-3.0",
   "repository": {

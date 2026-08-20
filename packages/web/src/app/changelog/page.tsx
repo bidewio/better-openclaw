@@ -368,9 +368,9 @@ export default function ChangelogPage() {
 								<h3 className="text-2xl font-semibold text-foreground mb-8">{release.title}</h3>
 
 								<div className="space-y-4">
-									{release.changes.map((change, cIdx) => (
+									{release.changes.map((change) => (
 										<div
-											key={cIdx}
+											key={`${change.type}-${change.description}`}
 											className="group flex gap-4 p-4 rounded-xl border border-border/30 bg-[#0a0a0a]/30 hover:bg-secondary/20 hover:border-border/50 transition-colors"
 										>
 											<div className="mt-1 flex-shrink-0">

@@ -9,6 +9,7 @@ import { Navbar } from "@/components/navbar";
 import { PresetsSection } from "@/components/presets-section";
 import { SideNavigation } from "@/components/SideNavigation";
 import { UseCaseCarousel } from "@/components/use-case-carousel";
+import { docsStats } from "@/lib/docs-stats";
 
 export default function HomePage() {
 	return (
@@ -16,7 +17,7 @@ export default function HomePage() {
 			<BackgroundLayers />
 			<SideNavigation />
 			<Navbar />
-			<NotificationTicker />
+			<NotificationTicker serviceCount={docsStats.serviceCount} />
 
 			{/* Main Content Area */}
 			<main className="relative z-10 lg:pl-14">
@@ -25,7 +26,7 @@ export default function HomePage() {
 				</section>
 
 				<section id="features" className="min-h-screen">
-					<FeaturesGrid />
+					<FeaturesGrid serviceCount={docsStats.serviceCount} />
 				</section>
 
 				<section id="presets" className="min-h-[80vh]">

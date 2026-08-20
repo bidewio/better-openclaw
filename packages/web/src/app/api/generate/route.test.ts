@@ -6,10 +6,16 @@ const coreMocks = vi.hoisted(() => ({
 	generate: vi.fn(),
 }));
 
-vi.mock("@better-openclaw/core", () => ({
+// route.ts imports from the SUBPATH entrypoints, not the bare specifier —
+// mocking "@better-openclaw/core" here silently does nothing and the real
+// generator runs instead, which made these assertions meaningless.
+vi.mock("@better-openclaw/core/schema", () => ({
 	GenerationInputSchema: {
 		safeParse: coreMocks.safeParse,
 	},
+}));
+
+vi.mock("@better-openclaw/core/generate", () => ({
 	generate: coreMocks.generate,
 }));
 

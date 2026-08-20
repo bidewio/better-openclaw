@@ -11,11 +11,49 @@
  *   GET  /deploy/providers — List available PaaS providers
  */
 
+import { isIP } from "node:net";
 import type { OperationsLogger } from "@better-openclaw/core";
 import { getAvailableDeployers, getDeployer } from "@better-openclaw/core";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 
 const route = new OpenAPIHono();
+
+function isPrivateOrLocalIPv4(hostname: string): boolean {
+	const ipv4 = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+	if (!ipv4) {
+		return false;
+	}
+
+	const a = Number.parseInt(ipv4[1] ?? "", 10);
+	const b = Number.parseInt(ipv4[2] ?? "", 10);
+	return (
+		a === 10 || // 10.0.0.0/8
+		(a === 172 && b >= 16 && b <= 31) || // 172.16.0.0/12
+		(a === 192 && b === 168) || // 192.168.0.0/16
+		(a === 169 && b === 254) // 169.254.0.0/16 (link-local)
+	);
+}
+
+function parseIpv4FromMappedIPv6(value: string): string | null {
+	const dottedIpv4 = value.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+	if (dottedIpv4) {
+		return value;
+	}
+
+	// URL normalization can rewrite ::ffff:127.0.0.1 to ::ffff:7f00:1.
+	const segments = value.split(":");
+	if (segments.length !== 2) {
+		return null;
+	}
+
+	const a = Number.parseInt(segments[0] ?? "", 16);
+	const b = Number.parseInt(segments[1] ?? "", 16);
+	if (Number.isNaN(a) || Number.isNaN(b)) {
+		return null;
+	}
+
+	return `${(a >> 8) & 255}.${a & 255}.${(b >> 8) & 255}.${b & 255}`;
+}
 
 /**
  * SSRF protection: reject URLs that point to localhost, private networks,
@@ -39,32 +77,47 @@ function validateInstanceUrl(url: string): string | null {
 		return "URL must use HTTPS in production";
 	}
 
-	const hostname = parsed.hostname.toLowerCase();
+	// URL.hostname for IPv6 can be bracketed ("[::1]"), normalize it.
+	const hostname = parsed.hostname.toLowerCase().replace(/^\[(.*)\]$/, "$1");
 
 	// Block localhost and loopback
-	// Note: URL.hostname wraps IPv6 addresses in brackets, e.g. "[::1]"
 	if (
 		hostname === "localhost" ||
 		hostname === "127.0.0.1" ||
-		hostname === "[::1]" ||
 		hostname === "::1" ||
+		hostname === "::" ||
 		hostname === "0.0.0.0" ||
 		hostname.endsWith(".localhost")
 	) {
 		return "URL must not point to localhost";
 	}
 
-	// Block private/internal IP ranges
-	const ipv4 = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
-	if (ipv4) {
-		const [, a, b] = ipv4.map(Number);
+	// Block private/internal IPv4 ranges
+	if (isPrivateOrLocalIPv4(hostname)) {
+		return "URL must not point to a private network address";
+	}
+
+	// Block loopback/link-local/ULA IPv6 and IPv4-mapped private ranges.
+	if (isIP(hostname) === 6) {
 		if (
-			a === 10 || // 10.0.0.0/8
-			(a === 172 && b! >= 16 && b! <= 31) || // 172.16.0.0/12
-			(a === 192 && b === 168) || // 192.168.0.0/16
-			(a === 169 && b === 254) // 169.254.0.0/16 (link-local)
+			hostname === "::1" ||
+			hostname === "::" ||
+			hostname.startsWith("fe80:") || // link-local
+			hostname.startsWith("fc") || // unique local (fc00::/7)
+			hostname.startsWith("fd")
 		) {
 			return "URL must not point to a private network address";
+		}
+		if (hostname.startsWith("::ffff:")) {
+			const mappedIpv4 = parseIpv4FromMappedIPv6(hostname.slice("::ffff:".length));
+			if (
+				!mappedIpv4 ||
+				mappedIpv4 === "127.0.0.1" ||
+				mappedIpv4 === "0.0.0.0" ||
+				isPrivateOrLocalIPv4(mappedIpv4)
+			) {
+				return "URL must not point to a private network address";
+			}
 		}
 	}
 

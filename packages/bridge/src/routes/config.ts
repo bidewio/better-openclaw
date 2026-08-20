@@ -75,10 +75,7 @@ export function configRoutes(projectDir: string): Hono {
 		const composePath = join(projectDir, "docker-compose.yml");
 
 		if (!existsSync(composePath)) {
-			return c.json(
-				{ error: { code: "NOT_FOUND", message: "docker-compose.yml not found" } },
-				404,
-			);
+			return c.json({ error: { code: "NOT_FOUND", message: "docker-compose.yml not found" } }, 404);
 		}
 
 		const content = readFileSync(composePath, "utf-8");

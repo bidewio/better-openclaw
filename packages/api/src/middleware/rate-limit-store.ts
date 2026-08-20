@@ -7,6 +7,19 @@ export interface RateLimitStore {
 	increment(key: string, windowMs: number): Promise<RateLimitResult>;
 }
 
+interface RedisPipelineLike {
+	incr(key: string): void;
+	pttl(key: string): void;
+	exec(): Promise<Array<[unknown, number]>>;
+}
+
+interface RedisClientLike {
+	on(event: "error" | "connect", listener: () => void): void;
+	connect(): Promise<void>;
+	multi(): RedisPipelineLike;
+	pexpire(key: string, ttlMs: number): Promise<unknown>;
+}
+
 // ---------------------------------------------------------------------------
 // In-memory store
 // ---------------------------------------------------------------------------
@@ -55,7 +68,7 @@ export class MemoryRateLimitStore implements RateLimitStore {
 
 export class RedisRateLimitStore implements RateLimitStore {
 	private redisUrl: string;
-	private client: any = null;
+	private client: RedisClientLike | null = null;
 	private connectPromise: Promise<void> | null = null;
 	private useFallback = false;
 	private fallback = new MemoryRateLimitStore();
@@ -64,10 +77,13 @@ export class RedisRateLimitStore implements RateLimitStore {
 		this.redisUrl = redisUrl;
 	}
 
-	private async getClient(): Promise<any> {
+	private async getClient(): Promise<RedisClientLike> {
 		if (this.client) return this.client;
 		if (this.connectPromise) {
 			await this.connectPromise;
+			if (!this.client) {
+				throw new Error("Redis client not initialized");
+			}
 			return this.client;
 		}
 
@@ -77,7 +93,7 @@ export class RedisRateLimitStore implements RateLimitStore {
 				maxRetriesPerRequest: 1,
 				lazyConnect: true,
 				connectTimeout: 3000,
-			});
+			}) as unknown as RedisClientLike;
 
 			this.client.on("error", () => {
 				this.useFallback = true;
@@ -91,6 +107,9 @@ export class RedisRateLimitStore implements RateLimitStore {
 		})();
 
 		await this.connectPromise;
+		if (!this.client) {
+			throw new Error("Redis client not initialized");
+		}
 		return this.client;
 	}
 
@@ -108,8 +127,10 @@ export class RedisRateLimitStore implements RateLimitStore {
 			const results = await pipeline.exec();
 
 			// results = [[err, count], [err, pttl]]
-			const count: number = results[0][1] as number;
-			const pttl: number = results[1][1] as number;
+			const countResult = results[0];
+			const pttlResult = results[1];
+			const count: number = typeof countResult?.[1] === "number" ? countResult[1] : 0;
+			const pttl: number = typeof pttlResult?.[1] === "number" ? pttlResult[1] : -1;
 
 			// Set expiry only on first increment (PTTL returns -1 when no expiry)
 			if (pttl === -1) {

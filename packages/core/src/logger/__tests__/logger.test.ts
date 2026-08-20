@@ -8,6 +8,8 @@ import { ConsoleSink } from "../sinks/console-sink.js";
 import { FileSink } from "../sinks/file-sink.js";
 import type { OperationsLogEntry } from "../types.js";
 
+type ErrorWithCode = Error & { code?: string };
+
 describe("OperationsLogger", () => {
 	it("creates log entries with auto-generated fields", () => {
 		const entries: OperationsLogEntry[] = [];
@@ -83,7 +85,10 @@ describe("OperationsLogger", () => {
 			url: "https://example.com",
 		});
 
-		const ctx = entries[0].context!;
+		const ctx = entries[0].context;
+		if (!ctx) {
+			throw new Error("Expected context to be present");
+		}
 		expect(ctx.apiKey).toBe("[REDACTED]");
 		expect(ctx.password).toBe("[REDACTED]");
 		expect(ctx.token).toBe("[REDACTED]");
@@ -98,8 +103,8 @@ describe("OperationsLogger", () => {
 			sinks: [new CallbackSink((e) => entries.push(e))],
 		});
 
-		const err = new Error("something broke");
-		(err as any).code = "ECONNREFUSED";
+		const err: ErrorWithCode = new Error("something broke");
+		err.code = "ECONNREFUSED";
 		logger.error("deployment", "deploy failed", err);
 
 		expect(entries[0].level).toBe("error");
@@ -216,8 +221,8 @@ describe("StepTracker", () => {
 		// Summary entry should be logged
 		const summary = entries.find((e) => e.message === "Deploy to Dokploy success");
 		expect(summary).toBeTruthy();
-		expect(summary!.outcome).toBe("success");
-		expect(summary!.steps).toHaveLength(4);
+		expect(summary?.outcome).toBe("success");
+		expect(summary?.steps).toHaveLength(4);
 	});
 
 	it("auto-completes previous step when beginning a new one", () => {

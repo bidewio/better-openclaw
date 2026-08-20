@@ -21,15 +21,16 @@ export const bridgeDefinition: ServiceDefinition = {
 	],
 	volumes: [
 		{
-			host: "/var/run/docker.sock",
-			container: "/var/run/docker.sock",
-			description: "Docker Engine socket for container management",
+			name: "bridge-docker-sock",
+			containerPath: "/var/run/docker.sock",
+			description:
+				"Docker Engine socket for container management (must be bind-mounted to /var/run/docker.sock on host)",
 		},
 		{
-			host: ".",
-			container: "/project",
+			name: "bridge-project",
+			containerPath: "/project",
 			description:
-				"Project root (read-only for docker-compose.yml and .env access)",
+				"Project root, read-only, for docker-compose.yml and .env access (bind-mount the project directory here)",
 		},
 	],
 	environment: [
@@ -85,8 +86,7 @@ export const bridgeDefinition: ServiceDefinition = {
 	openclawEnvVars: [],
 
 	docsUrl: "https://github.com/bidewio/better-openclaw/tree/main/packages/bridge",
-	selfHostedDocsUrl:
-		"https://github.com/bidewio/better-openclaw/tree/main/packages/bridge",
+	selfHostedDocsUrl: "https://github.com/bidewio/better-openclaw/tree/main/packages/bridge",
 	tags: ["management", "docker", "sidecar", "api", "monitoring"],
 	maturity: "beta",
 

@@ -1,12 +1,8 @@
 "use client";
 
-import type { ResolverOutput } from "@better-openclaw/core";
-import {
-	type ComposeResult,
-	composeMultiFile,
-	type EnvVarGroup,
-	getStructuredEnvVars,
-} from "@better-openclaw/core";
+import { type ComposeResult, composeMultiFile } from "@better-openclaw/core/composer";
+import { type EnvVarGroup, getStructuredEnvVars } from "@better-openclaw/core/generators/env";
+import type { ResolverOutput } from "@better-openclaw/core/types";
 import {
 	AlertTriangle,
 	Box,
@@ -199,8 +195,8 @@ export function PreviewPanel({
 				<div className="rounded-lg border border-accent/20 bg-accent/5 p-3">
 					<p className="mb-1 text-xs font-semibold text-accent">Auto-added dependencies</p>
 					<ul className="space-y-0.5">
-						{addedDeps.map((dep, i) => (
-							<li key={`${dep.service}-${i}`} className="text-xs text-muted-foreground">
+						{addedDeps.map((dep) => (
+							<li key={`${dep.service}-${dep.reason}`} className="text-xs text-muted-foreground">
 								<span className="font-medium text-foreground">{dep.service}</span>
 								{" — "}
 								{dep.reason}
@@ -218,8 +214,8 @@ export function PreviewPanel({
 						Warnings
 					</p>
 					<ul className="space-y-0.5">
-						{warnings.map((w, i) => (
-							<li key={`warning-${i}`} className="text-xs text-muted-foreground">
+						{warnings.map((w) => (
+							<li key={w.message} className="text-xs text-muted-foreground">
 								{w.message}
 							</li>
 						))}
@@ -232,8 +228,8 @@ export function PreviewPanel({
 				<div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
 					<p className="mb-1 text-xs font-semibold text-red-400">Errors</p>
 					<ul className="space-y-0.5">
-						{errors.map((e, i) => (
-							<li key={`error-${i}`} className="text-xs text-muted-foreground">
+						{errors.map((e) => (
+							<li key={e.message} className="text-xs text-muted-foreground">
 								{e.message}
 							</li>
 						))}

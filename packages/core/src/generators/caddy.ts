@@ -37,7 +37,8 @@ export function generateCaddyfile(resolved: ResolverOutput, domain: string): str
 		if (exposedPorts.length === 0) continue;
 
 		// Use the first exposed port as the primary route target
-		const primaryPort = exposedPorts[0]!;
+		const [primaryPort] = exposedPorts;
+		if (!primaryPort) continue;
 		const subdomain = `${definition.id}.${domain}`;
 
 		const needsWebSocket = primaryPort.websocket === true;
@@ -74,7 +75,8 @@ export function generateCaddyfile(resolved: ResolverOutput, domain: string): str
 
 		// If there are additional exposed ports, add them as separate entries
 		for (let i = 1; i < exposedPorts.length; i++) {
-			const port = exposedPorts[i]!;
+			const port = exposedPorts[i];
+			if (!port) continue;
 			const portSubdomain = `${definition.id}-${port.description
 				.toLowerCase()
 				.replace(/[^a-z0-9]+/g, "-")

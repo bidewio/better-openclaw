@@ -27,7 +27,8 @@ export function generateTraefikConfig(
 		const exposedPorts = definition.ports.filter((p) => p.exposed);
 		if (exposedPorts.length === 0) continue;
 
-		const primaryPort = exposedPorts[0]!;
+		const primaryPort = exposedPorts[0];
+		if (!primaryPort) continue;
 		const routerName = definition.id.replace(/-/g, "");
 
 		const labels: Record<string, string> = {

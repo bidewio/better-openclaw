@@ -46,9 +46,7 @@ function computeConfigHash(projectDir: string): string {
 export function startHeartbeat(config: HeartbeatConfig): () => void {
 	const tick = async () => {
 		try {
-			const containers = await config.docker.listProjectContainers(
-				config.projectName,
-			);
+			const containers = await config.docker.listProjectContainers(config.projectName);
 			const serviceStatuses = buildServiceStatusMap(containers);
 			const status = deriveOverallStatus(containers);
 			const configHash = computeConfigHash(config.projectDir);

@@ -7,6 +7,18 @@ function resolveWith(services: string[]): ResolverOutput {
 	return resolve({ services, skillPacks: [], proxy: "traefik", gpu: false });
 }
 
+function getLabels(
+	serviceLabels: Map<string, Record<string, string>>,
+	serviceId: string,
+): Record<string, string> {
+	const labels = serviceLabels.get(serviceId);
+	expect(labels).toBeDefined();
+	if (!labels) {
+		throw new Error(`Expected labels for ${serviceId}`);
+	}
+	return labels;
+}
+
 describe("generateTraefikConfig", () => {
 	const domain = "example.com";
 
@@ -25,20 +37,19 @@ describe("generateTraefikConfig", () => {
 		const resolved = resolveWith(["redis"]);
 		const { serviceLabels } = generateTraefikConfig(resolved, domain);
 
-		const redisLabels = serviceLabels.get("redis");
-		expect(redisLabels).toBeDefined();
-		expect(redisLabels?.["traefik.enable"]).toBe("true");
-		expect(redisLabels?.["traefik.http.routers.redis.rule"]).toBe("Host(`redis.example.com`)");
-		expect(redisLabels?.["traefik.http.routers.redis.entrypoints"]).toBe("websecure");
-		expect(redisLabels?.["traefik.http.routers.redis.tls.certresolver"]).toBe("letsencrypt");
-		expect(redisLabels?.["traefik.http.services.redis.loadbalancer.server.port"]).toBe("6379");
+		const redisLabels = getLabels(serviceLabels, "redis");
+		expect(redisLabels["traefik.enable"]).toBe("true");
+		expect(redisLabels["traefik.http.routers.redis.rule"]).toBe("Host(`redis.example.com`)");
+		expect(redisLabels["traefik.http.routers.redis.entrypoints"]).toBe("websecure");
+		expect(redisLabels["traefik.http.routers.redis.tls.certresolver"]).toBe("letsencrypt");
+		expect(redisLabels["traefik.http.services.redis.loadbalancer.server.port"]).toBe("6379");
 	});
 
 	it("generates HTTP to HTTPS redirect labels", () => {
 		const resolved = resolveWith(["redis"]);
 		const { serviceLabels } = generateTraefikConfig(resolved, domain);
 
-		const redisLabels = serviceLabels.get("redis")!;
+		const redisLabels = getLabels(serviceLabels, "redis");
 		expect(redisLabels["traefik.http.routers.redis-http.entrypoints"]).toBe("web");
 		expect(redisLabels["traefik.http.routers.redis-http.middlewares"]).toBe("redirect-to-https");
 	});
@@ -47,23 +58,21 @@ describe("generateTraefikConfig", () => {
 		const resolved = resolveWith(["redis"]);
 		const { serviceLabels } = generateTraefikConfig(resolved, domain);
 
-		const gwLabels = serviceLabels.get("openclaw-gateway");
-		expect(gwLabels).toBeDefined();
-		expect(gwLabels?.["traefik.http.routers.gateway.rule"]).toBe("Host(`example.com`)");
-		expect(gwLabels?.["traefik.http.services.gateway.loadbalancer.server.port"]).toBe("18789");
+		const gwLabels = getLabels(serviceLabels, "openclaw-gateway");
+		expect(gwLabels["traefik.http.routers.gateway.rule"]).toBe("Host(`example.com`)");
+		expect(gwLabels["traefik.http.services.gateway.loadbalancer.server.port"]).toBe("18789");
 	});
 
 	it("adds global redirect middleware on traefik service", () => {
 		const resolved = resolveWith(["redis"]);
 		const { serviceLabels } = generateTraefikConfig(resolved, domain);
 
-		const traefikLabels = serviceLabels.get("traefik");
-		expect(traefikLabels).toBeDefined();
+		const traefikLabels = getLabels(serviceLabels, "traefik");
+		expect(traefikLabels["traefik.http.middlewares.redirect-to-https.redirectscheme.scheme"]).toBe(
+			"https",
+		);
 		expect(
-			traefikLabels?.["traefik.http.middlewares.redirect-to-https.redirectscheme.scheme"],
-		).toBe("https");
-		expect(
-			traefikLabels?.["traefik.http.middlewares.redirect-to-https.redirectscheme.permanent"],
+			traefikLabels["traefik.http.middlewares.redirect-to-https.redirectscheme.permanent"],
 		).toBe("true");
 	});
 
@@ -74,16 +83,16 @@ describe("generateTraefikConfig", () => {
 		// ffmpeg has no exposed ports
 		expect(serviceLabels.has("ffmpeg")).toBe(false);
 		// traefik itself is handled separately (not as a regular service)
-		expect(serviceLabels.get("traefik")?.["traefik.http.routers.traefik.rule"]).toBeUndefined();
+		const traefikLabels = getLabels(serviceLabels, "traefik");
+		expect(traefikLabels["traefik.http.routers.traefik.rule"]).toBeUndefined();
 	});
 
 	it("sanitizes service names with hyphens in router names", () => {
 		const resolved = resolveWith(["open-webui"]);
 		const { serviceLabels } = generateTraefikConfig(resolved, domain);
 
-		const labels = serviceLabels.get("open-webui");
-		expect(labels).toBeDefined();
+		const labels = getLabels(serviceLabels, "open-webui");
 		// Router name has hyphens removed
-		expect(labels?.["traefik.http.routers.openwebui.rule"]).toBe("Host(`open-webui.example.com`)");
+		expect(labels["traefik.http.routers.openwebui.rule"]).toBe("Host(`open-webui.example.com`)");
 	});
 });

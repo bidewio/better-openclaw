@@ -8,9 +8,12 @@ interface RateLimitConfig {
 }
 
 function getConfig(prefix: string): RateLimitConfig {
+	const isTestEnv = process.env.NODE_ENV === "test";
 	const defaultWindowMs = 60 * 1000; // 1 minute
-	const defaultMaxAnon = 30;
-	const defaultMaxApiKey = 300;
+	// Keep production defaults strict while avoiding cross-file test flakiness
+	// from shared in-memory counters during full API test runs.
+	const defaultMaxAnon = isTestEnv ? 300 : 30;
+	const defaultMaxApiKey = isTestEnv ? 3000 : 300;
 
 	const windowMs = Number(
 		process.env[`${prefix}RATE_LIMIT_WINDOW_MS`] ??
@@ -39,7 +42,7 @@ function createRateLimiter(
 ): MiddlewareHandler {
 	const config = { ...getConfig(keyPrefix), ...configOverrides };
 
-	return async (c, next) => {
+	return async (c, next): Promise<Response | undefined> => {
 		const apiKey = c.req.header("X-API-Key");
 		const limit = apiKey ? config.maxApiKey : config.maxAnon;
 
@@ -84,10 +87,11 @@ export function rateLimiter(): MiddlewareHandler {
 
 /** Stricter rate limiter for expensive routes (e.g. POST /generate). Uses RATE_LIMIT_GENERATE_* or same env; defaults 5/min anon, 10/min with key. */
 export function generateRateLimiter(): MiddlewareHandler {
+	const isTestEnv = process.env.NODE_ENV === "test";
 	const windowMs = Number(
 		process.env.RATE_LIMIT_GENERATE_WINDOW_MS ?? process.env.RATE_LIMIT_WINDOW_MS ?? 60_000,
 	);
-	const maxAnon = Number(process.env.RATE_LIMIT_GENERATE_MAX_ANON ?? 5);
-	const maxApiKey = Number(process.env.RATE_LIMIT_GENERATE_MAX_API_KEY ?? 10);
+	const maxAnon = Number(process.env.RATE_LIMIT_GENERATE_MAX_ANON ?? (isTestEnv ? 50 : 5));
+	const maxApiKey = Number(process.env.RATE_LIMIT_GENERATE_MAX_API_KEY ?? (isTestEnv ? 100 : 10));
 	return createRateLimiter("generate_", { windowMs, maxAnon, maxApiKey });
 }

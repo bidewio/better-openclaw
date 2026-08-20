@@ -20,7 +20,9 @@ describe("generateScripts", () => {
 
 		for (const script of expectedScripts) {
 			expect(result).toHaveProperty(script);
-			expect(result[script]?.length).toBeGreaterThan(0);
+			const content = result[script];
+			expect(content).toBeDefined();
+			expect(content?.length).toBeGreaterThan(0);
 		}
 	});
 
@@ -44,9 +46,9 @@ describe("generateScripts", () => {
 
 	it("backup.sh references volumes or backup", () => {
 		const result = generateScripts();
-		const backup = result["scripts/backup.sh"]!;
+		const backup = result["scripts/backup.sh"];
 		expect(backup).toBeDefined();
-		expect(backup.length).toBeGreaterThan(50);
+		expect(backup?.length).toBeGreaterThan(50);
 	});
 
 	it("status.sh calls docker compose ps", () => {
@@ -95,9 +97,9 @@ describe("generateScripts", () => {
 
 	it("backup.ps1 references volumes or backup", () => {
 		const result = generateScripts();
-		const backup = result["scripts/backup.ps1"]!;
+		const backup = result["scripts/backup.ps1"];
 		expect(backup).toBeDefined();
-		expect(backup.length).toBeGreaterThan(50);
+		expect(backup?.length).toBeGreaterThan(50);
 	});
 
 	it("status.ps1 calls docker compose ps", () => {

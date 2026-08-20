@@ -61,12 +61,23 @@ export async function GET(request: NextRequest) {
 		});
 
 		if (!upstream.ok) {
+			let detail: string | undefined;
+			try {
+				const body = await upstream.text();
+				if (body.trim()) {
+					detail = body.slice(0, 500);
+				}
+			} catch {
+				// Ignore body parse failures; status + message are sufficient.
+			}
+
 			return NextResponse.json(
 				{
 					success: false,
 					error: {
 						code: "UPSTREAM_ERROR",
 						message: `SkillsMP returned ${upstream.status}`,
+						...(detail ? { detail } : {}),
 					},
 				},
 				{ status: upstream.status },

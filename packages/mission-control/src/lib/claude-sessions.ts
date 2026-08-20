@@ -221,7 +221,7 @@ export function scanClaudeSessions(claudeHome?: string): SessionStats[] {
 	for (const projectSlug of projectDirs) {
 		const projectDir = join(projectsDir, projectSlug);
 
-		let stat;
+		let stat: ReturnType<typeof statSync>;
 		try {
 			stat = statSync(projectDir);
 		} catch {

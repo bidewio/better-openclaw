@@ -53,7 +53,11 @@ describe("preset smoke tests", () => {
 			expect(result.files[".env.example"]).toBeDefined();
 			expect(result.metadata.serviceCount).toBeGreaterThan(0);
 
-			const composeContent = result.files["docker-compose.yml"]!;
+			const composeContent = result.files["docker-compose.yml"];
+			expect(composeContent).toBeDefined();
+			if (!composeContent) {
+				throw new Error("docker-compose.yml is missing");
+			}
 			const parsed = yaml.parse(composeContent);
 			expect(parsed).toBeDefined();
 			expect(parsed.services).toBeDefined();

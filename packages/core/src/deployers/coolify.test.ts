@@ -76,7 +76,7 @@ describe("parseEnvContent", () => {
 	it("skips comments", () => {
 		const result = parseEnvContent("# This is a comment\nFOO=bar");
 		expect(result).toHaveLength(1);
-		expect(result[0]!.key).toBe("FOO");
+		expect(result[0]?.key).toBe("FOO");
 	});
 
 	it("skips blank lines", () => {
@@ -89,27 +89,27 @@ describe("parseEnvContent", () => {
 			"DATABASE_URL=postgres://user:pass@host:5432/db?sslmode=require",
 		);
 		expect(result).toHaveLength(1);
-		expect(result[0]!.key).toBe("DATABASE_URL");
-		expect(result[0]!.value).toBe("postgres://user:pass@host:5432/db?sslmode=require");
+		expect(result[0]?.key).toBe("DATABASE_URL");
+		expect(result[0]?.value).toBe("postgres://user:pass@host:5432/db?sslmode=require");
 	});
 
 	it("handles empty values", () => {
 		const result = parseEnvContent("EMPTY_VAR=");
 		expect(result).toHaveLength(1);
-		expect(result[0]!.key).toBe("EMPTY_VAR");
-		expect(result[0]!.value).toBe("");
+		expect(result[0]?.key).toBe("EMPTY_VAR");
+		expect(result[0]?.value).toBe("");
 	});
 
 	it("skips lines without = sign", () => {
 		const result = parseEnvContent("INVALID_LINE\nVALID=yes");
 		expect(result).toHaveLength(1);
-		expect(result[0]!.key).toBe("VALID");
+		expect(result[0]?.key).toBe("VALID");
 	});
 
 	it("handles quoted values", () => {
 		const result = parseEnvContent('PASSWORD="my secret"');
-		expect(result[0]!.key).toBe("PASSWORD");
-		expect(result[0]!.value).toBe('"my secret"');
+		expect(result[0]?.key).toBe("PASSWORD");
+		expect(result[0]?.value).toBe('"my secret"');
 	});
 });
 
@@ -174,7 +174,7 @@ describe("CoolifyDeployer", () => {
 		});
 		expect(result.success).toBe(false);
 		expect(result.error).toContain("No Coolify servers");
-		expect(result.steps[0]!.status).toBe("error");
+		expect(result.steps[0]?.status).toBe("error");
 		vi.unstubAllGlobals();
 	});
 });

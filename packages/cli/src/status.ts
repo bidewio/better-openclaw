@@ -53,7 +53,7 @@ export async function runStatus(options: { dir: string; json?: boolean }): Promi
 			stdio: ["pipe", "pipe", "pipe"],
 			encoding: "utf-8",
 		});
-	} catch (_err) {
+	} catch {
 		if (options.json) {
 			console.log(JSON.stringify({ error: "No running services found", dir }));
 		} else {

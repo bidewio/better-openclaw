@@ -18,9 +18,7 @@ export const bridgeAuth = (): MiddlewareHandler => {
 		}
 
 		const header = c.req.header("Authorization");
-		const provided = header?.startsWith("Bearer ")
-			? header.slice(7)
-			: undefined;
+		const provided = header?.startsWith("Bearer ") ? header.slice(7) : undefined;
 
 		if (!verifyBridgeToken(provided, expected)) {
 			return c.json(
@@ -30,5 +28,6 @@ export const bridgeAuth = (): MiddlewareHandler => {
 		}
 
 		await next();
+		return;
 	};
 };

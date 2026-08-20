@@ -115,3 +115,4 @@ packages/promo-video/src/
 packages/promo-video/src/scenes/
 packages/promo-video/scripts/
 packages/promo-video/dist/
+*.tsbuildinfo

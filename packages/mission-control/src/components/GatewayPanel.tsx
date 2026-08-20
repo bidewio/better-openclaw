@@ -92,10 +92,14 @@ export default function GatewayPanel() {
 				{/* URL + Token Inputs */}
 				<div className="space-y-3">
 					<div>
-						<label className="block text-xs font-medium text-muted-foreground mb-1">
+						<label
+							htmlFor="gateway-url"
+							className="block text-xs font-medium text-muted-foreground mb-1"
+						>
 							Gateway URL
 						</label>
 						<input
+							id="gateway-url"
 							type="text"
 							value={url}
 							onChange={(e) => setUrl(e.target.value)}
@@ -105,11 +109,15 @@ export default function GatewayPanel() {
 						/>
 					</div>
 					<div>
-						<label className="block text-xs font-medium text-muted-foreground mb-1">
+						<label
+							htmlFor="gateway-token"
+							className="block text-xs font-medium text-muted-foreground mb-1"
+						>
 							Auth Token
 							<span className="ml-1 text-muted-foreground/60">(optional)</span>
 						</label>
 						<input
+							id="gateway-token"
 							type="password"
 							value={token}
 							onChange={(e) => setToken(e.target.value)}

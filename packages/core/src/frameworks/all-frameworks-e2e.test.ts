@@ -32,15 +32,7 @@ function parseCompose(result: ReturnType<typeof generate>) {
 // ─── OpenClaw Deep E2E ──────────────────────────────────────────────────────
 
 describe("OpenClaw full stack end-to-end", () => {
-	const SERVICES = [
-		"redis",
-		"postgresql",
-		"qdrant",
-		"n8n",
-		"searxng",
-		"browserless",
-		"minio",
-	];
+	const SERVICES = ["redis", "postgresql", "qdrant", "n8n", "searxng", "browserless", "minio"];
 	const result = generateStack("openclaw", SERVICES);
 	const composed = parseCompose(result);
 
@@ -128,9 +120,7 @@ describe("OpenClaw full stack end-to-end", () => {
 		it("depends on services with healthcheck condition", () => {
 			if (gw.depends_on) {
 				for (const [, condition] of Object.entries(gw.depends_on)) {
-					expect((condition as { condition: string }).condition).toBe(
-						"service_healthy",
-					);
+					expect((condition as { condition: string }).condition).toBe("service_healthy");
 				}
 			}
 		});
@@ -254,8 +244,8 @@ describe("OpenClaw full stack end-to-end", () => {
 	});
 
 	describe("skill files", () => {
-		const skillFiles = Object.entries(result.files).filter(([path]) =>
-			path.includes("skills/") && path.endsWith("SKILL.md"),
+		const skillFiles = Object.entries(result.files).filter(
+			([path]) => path.includes("skills/") && path.endsWith("SKILL.md"),
 		);
 
 		it("generates skill files for services", () => {
@@ -276,9 +266,7 @@ describe("OpenClaw full stack end-to-end", () => {
 	});
 
 	describe("health check script", () => {
-		const healthFile = Object.entries(result.files).find(([path]) =>
-			path.includes("health"),
-		);
+		const healthFile = Object.entries(result.files).find(([path]) => path.includes("health"));
 
 		it("generates health check file", () => {
 			expect(healthFile).toBeDefined();
@@ -330,9 +318,7 @@ describe("OpenClaw with traefik proxy", () => {
 // ─── OpenClaw with Companion Frameworks ─────────────────────────────────────
 
 describe("OpenClaw with companion frameworks", () => {
-	const companions = getAllFrameworks().filter(
-		(fw) => fw.canBeCompanion && fw.id !== "openclaw",
-	);
+	const companions = getAllFrameworks().filter((fw) => fw.canBeCompanion && fw.id !== "openclaw");
 
 	for (const companion of companions) {
 		it(`OpenClaw + ${companion.name} companion generates successfully`, () => {
@@ -366,11 +352,7 @@ describe("OpenClaw with companion frameworks", () => {
 // ─── OpenClaw with Monitoring ───────────────────────────────────────────────
 
 describe("OpenClaw with monitoring stack", () => {
-	const result = generateStack("openclaw", [
-		"redis",
-		"prometheus",
-		"grafana",
-	]);
+	const result = generateStack("openclaw", ["redis", "prometheus", "grafana"]);
 
 	it("generates monitoring compose file", () => {
 		// Monitoring services go in docker-compose.monitoring.yml, not base compose
@@ -388,16 +370,12 @@ describe("OpenClaw with monitoring stack", () => {
 	});
 
 	it("generates grafana datasource config", () => {
-		const grafanaFiles = Object.entries(result.files).filter(([p]) =>
-			p.includes("grafana"),
-		);
+		const grafanaFiles = Object.entries(result.files).filter(([p]) => p.includes("grafana"));
 		expect(grafanaFiles.length).toBeGreaterThan(0);
 	});
 
 	it("generates grafana dashboard", () => {
-		expect(result.files).toHaveProperty(
-			"config/grafana/dashboards/openclaw-stack-overview.json",
-		);
+		expect(result.files).toHaveProperty("config/grafana/dashboards/openclaw-stack-overview.json");
 	});
 });
 
@@ -860,9 +838,7 @@ describe("OpenClaw large stack (many services)", () => {
 
 	it("metadata has correct service count", () => {
 		// resolvedServices includes requested + mandatory (convex, mission-control, tailscale)
-		expect(result.metadata.resolvedServices.length).toBeGreaterThanOrEqual(
-			MANY_SERVICES.length,
-		);
+		expect(result.metadata.resolvedServices.length).toBeGreaterThanOrEqual(MANY_SERVICES.length);
 	});
 
 	it("memory estimate is reasonable", () => {

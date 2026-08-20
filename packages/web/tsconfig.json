@@ -28,11 +28,15 @@
       ],
       "@better-openclaw/core": [
         "../core/dist"
+      ],
+      "@better-openclaw/core/*": [
+        "../core/dist/*"
       ]
     }
   },
   "include": [
     "next-env.d.ts",
+    "**/*.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",

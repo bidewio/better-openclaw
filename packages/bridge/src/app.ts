@@ -1,16 +1,16 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { DockerClient } from "./lib/docker.js";
+import { startHeartbeat } from "./heartbeat/heartbeat.js";
 import { ConvexSyncClient } from "./lib/convex-sync.js";
+import { DockerClient } from "./lib/docker.js";
 import { bridgeAuth } from "./middleware/bridge-auth.js";
 import { operationsLoggerMiddleware } from "./middleware/operations-logger.js";
-import { healthRoutes } from "./routes/health.js";
-import { stackRoutes } from "./routes/stack.js";
-import { containerRoutes } from "./routes/containers.js";
 import { commandRoutes } from "./routes/commands.js";
 import { configRoutes } from "./routes/config.js";
+import { containerRoutes } from "./routes/containers.js";
+import { healthRoutes } from "./routes/health.js";
+import { stackRoutes } from "./routes/stack.js";
 import { taskRoutes } from "./routes/tasks.js";
-import { startHeartbeat } from "./heartbeat/heartbeat.js";
 
 export interface BridgeConfig {
 	projectName: string;
@@ -62,8 +62,7 @@ export function createApp(config: BridgeConfig) {
 			convexSync
 				? {
 						approveTask: (taskId) => convexSync!.approveTask(taskId),
-						dispatchTask: (title, description) =>
-							convexSync!.dispatchTask(title, description),
+						dispatchTask: (title, description) => convexSync!.dispatchTask(title, description),
 					}
 				: null,
 		),

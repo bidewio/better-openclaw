@@ -91,8 +91,7 @@ describe("generateNemoClaw", () => {
 	// ── Inference profile ────────────────────────────────────────────────────
 
 	describe("inference profile", () => {
-		const getProfile = () =>
-			generateNemoClaw(defaultOptions)["nemoclaw-blueprint/inference.yaml"];
+		const getProfile = () => generateNemoClaw(defaultOptions)["nemoclaw-blueprint/inference.yaml"];
 
 		it("uses NVIDIA provider", () => {
 			expect(getProfile()).toContain("name: nvidia");
@@ -131,8 +130,7 @@ describe("generateNemoClaw", () => {
 	// ── Setup script ─────────────────────────────────────────────────────────
 
 	describe("setup script", () => {
-		const getScript = () =>
-			generateNemoClaw(defaultOptions)["scripts/nemoclaw-setup.sh"];
+		const getScript = () => generateNemoClaw(defaultOptions)["scripts/nemoclaw-setup.sh"];
 
 		it("has bash shebang", () => {
 			expect(getScript()).toMatch(/^#!/);

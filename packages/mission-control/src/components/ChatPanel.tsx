@@ -225,7 +225,7 @@ function MessageList({ conversationId }: { conversationId: string }) {
 
 	return (
 		<>
-			{messages.map((msg, _i) => {
+			{messages.map((msg) => {
 				const isFromUser = !!msg.fromUser;
 				const agentInfo = msg.fromAgent;
 				const colors = agentInfo

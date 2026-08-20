@@ -7,7 +7,46 @@ export interface OpenClawConfigOptions {
 	notificationProviders?: string[];
 }
 
-const PROVIDER_CONFIGS: Record<AiProvider, any> = {
+interface ProviderCost {
+	input: number;
+	output: number;
+	cacheRead?: number;
+	cacheWrite?: number;
+}
+
+interface ProviderModelConfig {
+	id: string;
+	name: string;
+	api: string;
+	reasoning: boolean;
+	input: string[];
+	cost: ProviderCost;
+	contextWindow: number;
+	maxTokens: number;
+}
+
+interface ProviderConfig {
+	baseUrl: string | null;
+	api: string;
+	auth: string;
+	apiKey?: string;
+	models: ProviderModelConfig[];
+}
+
+interface ResolvedProviderConfig {
+	baseUrl: string;
+	api: string;
+	auth: string;
+	apiKey?: string;
+	models: ProviderModelConfig[];
+}
+
+interface AuthProfileConfig {
+	provider: string;
+	mode: "token" | "api_key";
+}
+
+const PROVIDER_CONFIGS: Record<AiProvider, ProviderConfig> = {
 	openai: {
 		baseUrl: "https://api.openai.com/v1",
 		api: "openai-completions",
@@ -456,7 +495,7 @@ export function generateOpenClawConfig(
 		}
 	}
 
-	const providers: Record<string, any> = {};
+	const providers: Record<string, ResolvedProviderConfig> = {};
 	const agentsModels: Record<string, { alias: string }> = {};
 	let primaryModel = "";
 
@@ -489,7 +528,7 @@ export function generateOpenClawConfig(
 		}
 	}
 
-	const authProfiles: Record<string, any> = {
+	const authProfiles: Record<string, AuthProfileConfig> = {
 		"local:default": {
 			provider: "local",
 			mode: "token",

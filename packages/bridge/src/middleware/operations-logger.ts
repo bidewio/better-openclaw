@@ -20,12 +20,7 @@ export const operationsLoggerMiddleware = (): MiddlewareHandler => {
 			source: "bridge",
 			correlationId,
 			sinks: [fileSink],
-			minLevel:
-				(process.env.OPENCLAW_LOG_LEVEL as
-					| "debug"
-					| "info"
-					| "warn"
-					| "error") ?? "info",
+			minLevel: (process.env.OPENCLAW_LOG_LEVEL as "debug" | "info" | "warn" | "error") ?? "info",
 		});
 
 		c.set("logger" as never, logger as never);

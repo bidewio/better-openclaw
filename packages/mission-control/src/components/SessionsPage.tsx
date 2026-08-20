@@ -63,8 +63,8 @@ export default function SessionsPage() {
 			}
 			await syncSessions({ sessions: data.sessions });
 			setLastScanTime(Date.now());
-		} catch (err: any) {
-			setScanError(err.message || "Failed to connect to scanner");
+		} catch (err: unknown) {
+			setScanError(err instanceof Error ? err.message : "Failed to connect to scanner");
 		} finally {
 			setIsScanning(false);
 		}

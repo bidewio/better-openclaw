@@ -1,6 +1,6 @@
 # better-openclaw
 
-> CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks with Docker Compose. 75 services, 10 skill packs, one command.
+> CLI tool, REST API, and web UI for scaffolding production-ready OpenClaw stacks with Docker Compose. 186 services, 43 skill packs, one command.
 
 ## Project Description
 
@@ -64,9 +64,9 @@ Web API (Next.js): `POST https://better-openclaw.dev/api/generate` — generates
 
 ## Service Catalog Summary
 
-19 categories, 75 services including: PostgreSQL, Redis, Neo4j, Qdrant, ChromaDB, Weaviate, n8n, Temporal, xyOps, FFmpeg, Remotion, MinIO, Caddy, Traefik, Grafana, Prometheus, Ollama, Whisper, Stable Diffusion, Open WebUI, LibreChat, Dify, AnythingLLM, Cal.com, Gitea, Outline, and many more.
+36 categories, 186 services including: PostgreSQL, Redis, Neo4j, Qdrant, ChromaDB, Weaviate, n8n, Temporal, xyOps, FFmpeg, Remotion, MinIO, Caddy, Traefik, Grafana, Prometheus, Ollama, Whisper, Stable Diffusion, Open WebUI, LibreChat, Dify, AnythingLLM, Cal.com, Gitea, Outline, and many more.
 
-Categories: AI Coding Agents, AI Platforms & Chat UIs, AI / Local Models, Automation & Workflows, Vector Databases, Media & Video, Social Media, Analytics, Knowledge & Documents, Object Storage, Database & Caching, Developer Tools, Reverse Proxy, Monitoring, Browser Automation, Search, Notifications, Desktop Environment, Streaming & Relay.
+Category examples: AI Coding Agents, AI Platforms & Chat UIs, AI / Local Models, Automation & Workflows, Vector Databases, Media & Video, Social Media, Analytics, Knowledge & Documents, Object Storage, Database & Caching, Developer Tools, Reverse Proxy, Monitoring, Browser Automation, Search, Communication, Desktop, and Streaming.
 
 ## Skill Packs
 

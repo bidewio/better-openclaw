@@ -44,7 +44,11 @@ export function usePasskeys() {
 					authenticatorAttachment,
 				});
 				if (addError) {
-					setError(addError.message ?? "Failed to register passkey");
+					// better-auth types `message` as string | RawError<...>, but setError
+					// takes string | null — normalise before storing.
+					setError(
+						typeof addError.message === "string" ? addError.message : "Failed to register passkey",
+					);
 					return false;
 				}
 				// Refresh list after adding

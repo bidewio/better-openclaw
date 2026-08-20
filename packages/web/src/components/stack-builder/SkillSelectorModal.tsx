@@ -305,7 +305,8 @@ export function SkillSelectorModal({
 							{/* Skill cards grouped by category */}
 							<div className="space-y-5">
 								{CATEGORY_ORDER.filter((cat) => groupedFiltered.has(cat)).map((cat) => {
-									const skills = groupedFiltered.get(cat)!;
+									const skills = groupedFiltered.get(cat);
+									if (!skills) return null;
 									return (
 										<div key={cat}>
 											<h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">

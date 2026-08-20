@@ -28,6 +28,12 @@ const STATUS_CONFIG: Record<string, { color: string; bg: string; icon: React.Rea
 	},
 };
 
+const FALLBACK_STATUS_CONFIG = {
+	color: "text-red-400",
+	bg: "bg-red-500/20",
+	icon: <IconCircleX size={14} />,
+};
+
 export default function FleetPage() {
 	const overview = useQuery(api.fleet.getFleetOverview);
 	const instances = useQuery(api.fleet.listFleetInstances);
@@ -157,7 +163,8 @@ export default function FleetPage() {
 					<tbody>
 						{instances && instances.length > 0 ? (
 							instances.map((inst) => {
-								const cfg = (STATUS_CONFIG[inst.status] ?? STATUS_CONFIG.offline)!;
+								const cfg =
+									STATUS_CONFIG[inst.status] ?? STATUS_CONFIG.offline ?? FALLBACK_STATUS_CONFIG;
 								return (
 									<tr key={inst._id} className="border-b border-border/10 hover:bg-secondary/20">
 										<td className="p-3">
@@ -247,19 +254,22 @@ function RegisterInstanceModal({ onClose }: { onClose: () => void }) {
 	};
 
 	return (
-		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-			onClick={onClose}
-		>
-			<div
-				className="bg-background rounded-xl border border-border p-6 w-full max-w-md space-y-4"
-				onClick={(e) => e.stopPropagation()}
-			>
+		<div className="fixed inset-0 z-50 flex items-center justify-center">
+			<button
+				type="button"
+				className="absolute inset-0 bg-black/50"
+				onClick={onClose}
+				aria-label="Close fleet registration modal"
+			/>
+			<div className="relative bg-background rounded-xl border border-border p-6 w-full max-w-md space-y-4">
 				<h3 className="text-lg font-semibold">Register Fleet Instance</h3>
 				<div className="space-y-3">
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Stack</label>
+						<label htmlFor="fleet-stack" className="text-xs text-muted-foreground block mb-1">
+							Stack
+						</label>
 						<select
+							id="fleet-stack"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={stackId}
 							onChange={(e) => setStackId(e.target.value as Id<"stacks">)}
@@ -273,8 +283,11 @@ function RegisterInstanceModal({ onClose }: { onClose: () => void }) {
 						</select>
 					</div>
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Label</label>
+						<label htmlFor="fleet-label" className="text-xs text-muted-foreground block mb-1">
+							Label
+						</label>
 						<input
+							id="fleet-label"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={label}
 							onChange={(e) => setLabel(e.target.value)}
@@ -282,8 +295,11 @@ function RegisterInstanceModal({ onClose }: { onClose: () => void }) {
 						/>
 					</div>
 					<div>
-						<label className="text-xs text-muted-foreground block mb-1">Host (optional)</label>
+						<label htmlFor="fleet-host" className="text-xs text-muted-foreground block mb-1">
+							Host (optional)
+						</label>
 						<input
+							id="fleet-host"
 							className="w-full bg-secondary/50 rounded-lg px-3 py-2 text-sm border border-border/50"
 							value={host}
 							onChange={(e) => setHost(e.target.value)}

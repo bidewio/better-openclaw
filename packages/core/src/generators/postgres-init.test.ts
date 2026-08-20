@@ -2,6 +2,13 @@ import { describe, expect, it } from "vitest";
 import type { ResolverOutput } from "../types.js";
 import { generatePostgresInit, getDbRequirements } from "./postgres-init.js";
 
+function requireScript(script: string | null): string {
+	if (!script) {
+		throw new Error("Expected postgres init script to be generated");
+	}
+	return script;
+}
+
 function makeResolved(serviceIds: string[]): ResolverOutput {
 	return {
 		services: serviceIds.map((id) => ({
@@ -81,7 +88,7 @@ describe("generatePostgresInit", () => {
 
 	it("includes all services that need DBs", () => {
 		const resolved = makeResolved(["postgresql", "n8n", "outline", "dify"]);
-		const script = generatePostgresInit(resolved)!;
+		const script = requireScript(generatePostgresInit(resolved));
 		expect(script).toContain('"n8n"');
 		expect(script).toContain('"outline"');
 		expect(script).toContain('"dify"');
@@ -89,27 +96,27 @@ describe("generatePostgresInit", () => {
 
 	it("uses environment variable substitution for passwords (not literals)", () => {
 		const resolved = makeResolved(["postgresql", "n8n"]);
-		const script = generatePostgresInit(resolved)!;
+		const script = requireScript(generatePostgresInit(resolved));
 		// Passwords should be referenced as env vars, not hardcoded
 		expect(script).toContain("${N8N_DB_PASSWORD:-$POSTGRES_PASSWORD}");
 	});
 
 	it("script uses psql with ON_ERROR_STOP", () => {
 		const resolved = makeResolved(["postgresql", "n8n"]);
-		const script = generatePostgresInit(resolved)!;
+		const script = requireScript(generatePostgresInit(resolved));
 		expect(script).toContain("ON_ERROR_STOP=1");
 	});
 
 	it("script creates user with IF NOT EXISTS check", () => {
 		const resolved = makeResolved(["postgresql", "n8n"]);
-		const script = generatePostgresInit(resolved)!;
+		const script = requireScript(generatePostgresInit(resolved));
 		expect(script).toContain("IF NOT EXISTS");
 		expect(script).toContain("CREATE ROLE");
 	});
 
 	it("includes service names in summary line", () => {
 		const resolved = makeResolved(["postgresql", "n8n", "outline"]);
-		const script = generatePostgresInit(resolved)!;
+		const script = requireScript(generatePostgresInit(resolved));
 		expect(script).toContain("N8n");
 		expect(script).toContain("Outline");
 	});

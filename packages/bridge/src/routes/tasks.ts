@@ -12,10 +12,12 @@ const DispatchSchema = z.object({
  * These forward task commands to the Convex backend via ConvexSyncClient.
  * The convexSync parameter is optional — if not configured, endpoints return 501.
  */
-export function taskRoutes(convexSync: {
-	approveTask: (taskId: string) => Promise<void>;
-	dispatchTask: (title: string, description?: string) => Promise<string>;
-} | null): Hono {
+export function taskRoutes(
+	convexSync: {
+		approveTask: (taskId: string) => Promise<void>;
+		dispatchTask: (title: string, description?: string) => Promise<string>;
+	} | null,
+): Hono {
 	const app = new Hono();
 
 	/** POST /tasks/approve — Approve a pending task. */
@@ -50,10 +52,7 @@ export function taskRoutes(convexSync: {
 			return c.json({ error: { code: "VALIDATION", message: body.error.message } }, 400);
 		}
 
-		const taskId = await convexSync.dispatchTask(
-			body.data.title,
-			body.data.description,
-		);
+		const taskId = await convexSync.dispatchTask(body.data.title, body.data.description);
 		return c.json({ ok: true, taskId });
 	});
 

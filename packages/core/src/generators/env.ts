@@ -361,8 +361,15 @@ export function generateEnvFiles(
 		});
 
 		const notifyEnvMap: Record<string, { key: string; desc: string }[]> = {
-			discord: [{ key: "NOTIFY_DISCORD", desc: "Discord webhook URL (https://discord.com/api/webhooks/...)" }],
-			slack: [{ key: "NOTIFY_SLACK", desc: "Slack webhook URL (https://hooks.slack.com/services/...)" }],
+			discord: [
+				{
+					key: "NOTIFY_DISCORD",
+					desc: "Discord webhook URL (https://discord.com/api/webhooks/...)",
+				},
+			],
+			slack: [
+				{ key: "NOTIFY_SLACK", desc: "Slack webhook URL (https://hooks.slack.com/services/...)" },
+			],
 			telegram: [
 				{ key: "NOTIFY_TELEGRAM_TOKEN", desc: "Telegram bot token" },
 				{ key: "NOTIFY_TELEGRAM_CHAT", desc: "Telegram chat ID" },

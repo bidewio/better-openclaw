@@ -162,6 +162,14 @@ export {
 	getServicesByCategory,
 	serviceRegistry,
 } from "./services/registry.js";
+// ─── Hermes Skill Converter ────────────────────────────────────────────────
+export type { HermesSkill, OpenClawSkill } from "./skills/hermes-converter.js";
+export {
+	hermesToOpenClaw,
+	openClawToHermes,
+	serializeHermesSkill,
+	serializeOpenClawSkill,
+} from "./skills/hermes-converter.js";
 // ─── Skill Packs ────────────────────────────────────────────────────────────
 export {
 	getAllSkillPacks,
@@ -176,17 +184,9 @@ export {
 	getManifestSkillById,
 	getManifestSkillCount,
 } from "./skills/skill-manifest.js";
-// ─── Hermes Skill Converter ────────────────────────────────────────────────
-export type { HermesSkill, OpenClawSkill } from "./skills/hermes-converter.js";
-export {
-	hermesToOpenClaw,
-	openClawToHermes,
-	serializeHermesSkill,
-	serializeOpenClawSkill,
-} from "./skills/hermes-converter.js";
 // ─── Analytics ─────────────────────────────────────────────────────────────
 export type { AnalyticsPayload } from "./track-analytics.js";
-export { buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
+export { analyticsDisabled, buildAnalyticsPayload, trackAnalytics } from "./track-analytics.js";
 // ─── Types ──────────────────────────────────────────────────────────────────
 export type {
 	AddedDependency,

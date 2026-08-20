@@ -4,14 +4,21 @@
  * (Math.random() differs between server and client).
  */
 
-const TICKER_MESSAGES = [
-	"WARN: Latency_spike detected in zone_3 (resolved)",
-	"INFO: New node registered [US-WEST-2] — status: ONLINE",
-	"SYS: Auto-scaling triggered — +2 compute nodes allocated",
-	"OK: Health check passed — all 58 services nominal",
-	"INFO: Skill pack 'researcher' deployed to cluster_alpha",
-	"SYS: TLS certificates renewed — expires: 2027-02-21",
-];
+interface TickerMessage {
+	id: string;
+	text: string;
+}
+
+function getTickerMessages(serviceCount: number): TickerMessage[] {
+	return [
+		"WARN: Latency_spike detected in zone_3 (resolved)",
+		"INFO: New node registered [US-WEST-2] — status: ONLINE",
+		"SYS: Auto-scaling triggered — +2 compute nodes allocated",
+		`OK: Health check passed — all ${serviceCount} services nominal`,
+		"INFO: Skill pack 'researcher' deployed to cluster_alpha",
+		"SYS: TLS certificates renewed — expires: 2027-02-21",
+	].map((text, index) => ({ id: `ticker-${index}`, text }));
+}
 
 /** Deterministic pseudo-random timestamp based on index (avoids hydration mismatch). */
 function deterministicTimestamp(index: number): string {
@@ -21,8 +28,24 @@ function deterministicTimestamp(index: number): string {
 	return `${h}:${m}:${s}`;
 }
 
-export function NotificationTicker() {
-	const doubled = [...TICKER_MESSAGES, ...TICKER_MESSAGES];
+interface NotificationTickerProps {
+	serviceCount?: number;
+}
+
+export function NotificationTicker({ serviceCount = 186 }: NotificationTickerProps) {
+	const tickerMessages = getTickerMessages(serviceCount);
+	const doubled = [
+		...tickerMessages.map((entry, index) => ({
+			...entry,
+			renderKey: `loop-a-${entry.id}`,
+			sequence: index,
+		})),
+		...tickerMessages.map((entry, index) => ({
+			...entry,
+			renderKey: `loop-b-${entry.id}`,
+			sequence: tickerMessages.length + index,
+		})),
+	];
 
 	return (
 		<div
@@ -34,22 +57,24 @@ export function NotificationTicker() {
 				className="flex h-full items-center gap-12 whitespace-nowrap"
 				style={{ animation: "ticker-scroll 40s linear infinite" }}
 			>
-				{doubled.map((msg, i) => (
+				{doubled.map((entry) => (
 					<span
-						key={`ticker-${i}`}
+						key={entry.renderKey}
 						className="flex items-center gap-3 font-mono text-xs tracking-wider"
 					>
-						<span className="text-muted-foreground/60">{deterministicTimestamp(i)}</span>
+						<span className="text-muted-foreground/60">
+							{deterministicTimestamp(entry.sequence)}
+						</span>
 						<span
 							className={
-								msg.startsWith("WARN")
+								entry.text.startsWith("WARN")
 									? "text-amber-500"
-									: msg.startsWith("OK")
+									: entry.text.startsWith("OK")
 										? "text-emerald-500"
 										: "text-muted-foreground"
 							}
 						>
-							{msg}
+							{entry.text}
 						</span>
 					</span>
 				))}

@@ -1,6 +1,8 @@
 // Client-safe manifest data loader
-import type { SkillManifestEntry } from "@better-openclaw/core";
-import { getAllManifestSkills } from "@better-openclaw/core";
+import {
+	getAllManifestSkills,
+	type SkillManifestEntry,
+} from "@better-openclaw/core/skills/skill-manifest";
 
 export function getClientManifestSkills(): SkillManifestEntry[] {
 	return getAllManifestSkills();

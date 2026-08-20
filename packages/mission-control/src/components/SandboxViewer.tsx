@@ -32,7 +32,10 @@ interface SandboxViewerProps {
 	compact?: boolean;
 }
 
-const STATUS_CONFIG: Record<string, { icon: React.ReactNode; label: string; color: string }> = {
+const STATUS_CONFIG: Record<
+	SandboxSession["status"],
+	{ icon: React.ReactNode; label: string; color: string }
+> = {
 	creating: {
 		icon: <IconLoader2 size={14} className="animate-spin" />,
 		label: "Creating",
@@ -61,17 +64,17 @@ export default function SandboxViewer({ session, compact = false }: SandboxViewe
 	const iframeRef = useRef<HTMLIFrameElement>(null);
 	const terminateSession = useMutation(api.sandboxes.terminateSession);
 
-	const statusInfo = STATUS_CONFIG[session.status] ?? STATUS_CONFIG.error!;
+	const statusInfo = STATUS_CONFIG[session.status];
 	const isChrome = session.image.includes("chrome");
-	const hasDevTools = isChrome && session.devtoolsUrl;
+	const hasDevTools = isChrome && typeof session.devtoolsUrl === "string";
 
 	const handleTerminate = useCallback(async () => {
 		await terminateSession({ sessionId: session._id });
 	}, [terminateSession, session._id]);
 
 	const handleRefresh = useCallback(() => {
-		if (iframeRef.current) {
-			iframeRef.current.src = iframeRef.current.src;
+		if (iframeRef.current?.contentWindow) {
+			iframeRef.current.contentWindow.location.reload();
 		}
 	}, []);
 
@@ -88,7 +91,9 @@ export default function SandboxViewer({ session, compact = false }: SandboxViewe
 	const iframeHeight = compact ? "h-[300px]" : isFullscreen ? "flex-1" : "h-[500px]";
 
 	const currentUrl =
-		activeTab === "devtools" && hasDevTools ? session.devtoolsUrl! : session.novncUrl;
+		activeTab === "devtools" && hasDevTools
+			? (session.devtoolsUrl ?? session.novncUrl)
+			: session.novncUrl;
 
 	return (
 		<div className={containerClass}>

@@ -31,12 +31,6 @@ const container = {
 	},
 };
 
-const _techBullets = [
-	"GLOBAL DISTRIBUTED INFRASTRUCTURE",
-	"AUTONOMOUS AGENT ORCHESTRATION",
-	"SUB-10MS EXECUTION LATENCY",
-];
-
 const INSTALL_PRESETS = ["researcher", "devops", "full", "coding-team", "ai-playground"] as const;
 
 const COMMAND_TABS = ["CLI", "Install", "MCP", "Skills"] as const;
@@ -217,6 +211,7 @@ export function HeroContent() {
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 										strokeWidth={2}
+										aria-hidden="true"
 									>
 										<path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
 									</svg>
@@ -225,9 +220,9 @@ export function HeroContent() {
 									<>
 										<button
 											type="button"
-											className="fixed inset-0 z-10 cursor-default"
+											className="fixed inset-0 z-10"
 											onClick={() => setPkgDropdownOpen(false)}
-											aria-label="Close dropdown"
+											aria-label="Close package manager menu"
 										/>
 										<div className="absolute right-0 top-full z-20 mt-1 min-w-[100px] rounded-md border border-border/50 bg-[#111] py-1 shadow-lg">
 											{PKG_MANAGERS.map((pm) => (
@@ -273,6 +268,7 @@ export function HeroContent() {
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 										strokeWidth={2}
+										aria-hidden="true"
 									>
 										<path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
 									</svg>
@@ -281,9 +277,9 @@ export function HeroContent() {
 									<>
 										<button
 											type="button"
-											className="fixed inset-0 z-1 cursor-default"
+											className="fixed inset-0 z-1"
 											onClick={() => setMcpPkgDropdownOpen(false)}
-											aria-label="Close dropdown"
+											aria-label="Close MCP package manager menu"
 										/>
 										<div className="absolute right-0 top-full z-1 mt-1 min-w-[100px] min-h-[100px] rounded-md border border-border/50 bg-[#111] py-1 shadow-lg">
 											{MCP_PKG_MANAGERS.map((mcppm) => (
@@ -390,6 +386,7 @@ export function HeroContent() {
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 								strokeWidth={1.5}
+								aria-hidden="true"
 							>
 								<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
 								<path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
@@ -501,6 +498,7 @@ export function HeroHUD() {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
+							{/* biome-ignore lint/performance/noImgElement: Product Hunt provides a fixed third-party embed badge URL. */}
 							<img
 								alt="better-openclaw - Build your openclaw superstack under a minute | Product Hunt"
 								width="250"

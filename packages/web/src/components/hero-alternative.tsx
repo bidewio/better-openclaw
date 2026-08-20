@@ -26,14 +26,6 @@ const terminalLines = [
 	},
 ];
 
-/* ── Status Indicators ─────────────────────────────────────────────────────── */
-const systemStatus = [
-	{ icon: Activity, label: "System", value: "Operational", color: "text-emerald-400" },
-	{ icon: Server, label: "Nodes", value: "58/58", color: "text-blue-400" },
-	{ icon: Shield, label: "Security", value: "Enforced", color: "text-purple-400" },
-	{ icon: Cpu, label: "Load", value: "12%", color: "text-amber-400" },
-];
-
 /* ── Stagger helpers ───────────────────────────────────────────────────────── */
 const container = {
 	hidden: { opacity: 0 },
@@ -94,8 +86,23 @@ function useTypewriter(lines: typeof terminalLines) {
 }
 
 /* ── Component ─────────────────────────────────────────────────────────────── */
-export function HeroAlternative() {
+interface HeroAlternativeProps {
+	serviceCount?: number;
+}
+
+export function HeroAlternative({ serviceCount = 186 }: HeroAlternativeProps) {
 	const typed = useTypewriter(terminalLines);
+	const systemStatus = [
+		{ icon: Activity, label: "System", value: "Operational", color: "text-emerald-400" },
+		{
+			icon: Server,
+			label: "Nodes",
+			value: `${serviceCount}/${serviceCount}`,
+			color: "text-blue-400",
+		},
+		{ icon: Shield, label: "Security", value: "Enforced", color: "text-purple-400" },
+		{ icon: Cpu, label: "Load", value: "12%", color: "text-amber-400" },
+	];
 
 	return (
 		<section className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-32">

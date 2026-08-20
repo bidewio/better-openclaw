@@ -37,7 +37,7 @@ packages/mission-control/
 
 ## Quick Start Configuration
 
-Node 20+ and a free [Convex.dev](https://convex.dev/) account are the only true prerequisites.
+Node 22+ and a free [Convex.dev](https://convex.dev/) account are the only true prerequisites.
 
 ### 1. Database Provisioning
 

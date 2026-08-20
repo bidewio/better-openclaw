@@ -61,17 +61,20 @@ function parseSimpleYaml(yaml: string): Record<string, unknown> {
 	const lines = yaml.split("\n");
 	for (const line of lines) {
 		const match = line.match(/^(\w[\w-]*):\s*(.+)$/);
-		if (match) {
-			const [, key, rawValue] = match;
-			// Handle array syntax: [a, b, c]
-			const arrayMatch = rawValue.match(/^\[(.+)]$/);
-			if (arrayMatch) {
-				result[key] = arrayMatch[1]
-					.split(",")
-					.map((s) => s.trim().replace(/^["']|["']$/g, ""));
-			} else {
-				result[key] = rawValue.replace(/^["']|["']$/g, "");
-			}
+		// noUncheckedIndexedAccess makes every capture `string | undefined`,
+		// so narrow before use rather than asserting.
+		if (!match) continue;
+		const key = match[1];
+		const rawValue = match[2];
+		if (key === undefined || rawValue === undefined) continue;
+
+		// Handle array syntax: [a, b, c]
+		const arrayMatch = rawValue.match(/^\[(.+)]$/);
+		const arrayBody = arrayMatch?.[1];
+		if (arrayBody !== undefined) {
+			result[key] = arrayBody.split(",").map((s) => s.trim().replace(/^["']|["']$/g, ""));
+		} else {
+			result[key] = rawValue.replace(/^["']|["']$/g, "");
 		}
 	}
 	return result;
@@ -79,8 +82,12 @@ function parseSimpleYaml(yaml: string): Record<string, unknown> {
 
 function parseFrontMatter(content: string): { meta: Record<string, unknown>; body: string } {
 	const match = content.match(FRONT_MATTER_RE);
-	if (!match) return { meta: {}, body: content };
-	return { meta: parseSimpleYaml(match[1]), body: match[2].trim() };
+	const frontMatter = match?.[1];
+	const body = match?.[2];
+	if (frontMatter === undefined || body === undefined) {
+		return { meta: {}, body: content };
+	}
+	return { meta: parseSimpleYaml(frontMatter), body: body.trim() };
 }
 
 // ─── Hermes → OpenClaw ─────────────────────────────────────────────────────

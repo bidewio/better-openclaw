@@ -52,7 +52,7 @@ describe("pinImageTags", () => {
 			if (svc.definition.gitSource) continue;
 			expect(svc.definition.imageTag).toBeDefined();
 			expect(typeof svc.definition.imageTag).toBe("string");
-			expect(svc.definition.imageTag?.length).toBeGreaterThan(0);
+			expect(svc.definition.imageTag?.length ?? 0).toBeGreaterThan(0);
 		}
 	});
 
